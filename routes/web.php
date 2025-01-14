@@ -6,14 +6,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
+Route::get('/invoice', function () {
+    return view('/app');
+});
 Route::get('/privacy-policy', function () {
-    return view('invozen.privacy');
+    return view('pages.privacy');
 });
 Route::get('/terms-of-service', function () {
-    return view('invozen.terms');
+    return view('pages.terms');
 });
 Route::get('/contact-us', function () {
-    return view('invozen.contact');
+    return view('pages.contact');
 });
 Route::get('/dashboard', function () {
     return view('dashboard');

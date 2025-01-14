@@ -53,6 +53,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
+            text-decoration: none;
         }
 
         /* Features Section */
@@ -127,7 +128,8 @@
         </section>
         <h1>Invozen - Simplify Your Invoicing, Get Paid Faster</h1>
         <p>Generate, send, and manage invoices effortlessly with Invozen.</p>
-        <button class="cta-btn">Get Started for Free</button>
+{{--        <button class="cta-btn">Get Started for Free</button>--}}
+        <a class="cta-btn" href="/invoice">Get Started for Free</a>
     </header>
 
     <!-- Features Section -->
