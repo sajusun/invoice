@@ -13,7 +13,7 @@
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
         <input type="email" readonly name="email" value="{{old('email', $request->email)}}" required autofocus autocomplete="username">
         <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        <input type="password" name="new_password" placeholder="New Password" required>
+        <input type="password" name="password" placeholder="New Password" required>
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
         <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
