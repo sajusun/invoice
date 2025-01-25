@@ -8,20 +8,26 @@
 <body>
 <div class="form-container">
     <h2>Login to Invozen</h2>
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-4" :status="session('status')"/>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <span style="font-size: .8rem">{{ $error }}</span>
+            @endforeach
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <input type="text" name="email" placeholder="Username or Email" required>
-        <x-input-error :messages="$errors->get('email')" class="mt-2" />
 
         <input type="password" name="password" placeholder="Password" required>
-        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <x-input-error :messages="$errors->get('password')" class="mt-2"/>
 
         <button type="submit" class="login">Login</button>
     </form>
-{{--    <a href="{{ route('register') }}" class="link">Don't have an account? Register</a>--}}
-{{--    <br>--}}
+
     <a href="{{ route('password.request') }}" class="link">Forgot Your Password?</a>
 </div>
 </body>

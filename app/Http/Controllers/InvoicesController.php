@@ -14,39 +14,50 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
-        $query=Invoices::create([
-            'client_id'=>Auth::id(),
-            'invoice_date'=>request('invoice_date'),
-            'due_date'=>request('due_date'),
-            'total_amount'=>request('total_amount'),
-            ]);
+        $query = Invoices::create([
+            'client_id' => Auth::id(),
+            'invoice_date' => request('invoice_date'),
+            'due_date' => request('due_date'),
+            'total_amount' => request('total_amount'),
+        ]);
         foreach ($request->raws as $datum) {
-             $this->queryLoop($datum,$query->id);
+            $this->queryLoop($datum, $query->id);
         }
-    {
+        {
 
-       };
-        if($query){
+        };
+        if ($query) {
             return response()->json([
-                "success"=>true,
-                "data"=>$query
+                "success" => true,
+                "data" => $query
             ]);
         }
         return response()->json([
-            "success"=>false,
-            "data"=>$query
+            "success" => false,
+            "data" => $query
         ]);
     }
 
     private function queryLoop($query, $id): void
     {
-        $query2=Invoice_Items::create([
-            'invoice_id'=>$id,
-            'description'=>$query['description'],
-            'quantity'=>$query['quantity'],
-            'unit_price'=>$query['unit_price'],
+        $query2 = Invoice_Items::create([
+            'invoice_id' => $id,
+            'description' => $query['description'],
+            'quantity' => $query['quantity'],
+            'unit_price' => $query['unit_price'],
 //            'total_price'=>$query['total_price'],
         ]);
+    }
+
+    public function errorHandle(): string
+    {
+        return '@if ($errors->any())
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <span style="font-size: .8rem">{{ $error }}</span>
+            @endforeach
+        </div>
+    @endif';
     }
 
 }
