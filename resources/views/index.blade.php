@@ -122,14 +122,26 @@
     <header>
         <section class="auth">
             <div>
+            @auth()
+                    <a href="/dashboard">Dashboard</a>
+
+            @else
+
                 <a href="/login">Login</a>
                 <a href="/register" type="submit">Register</a>
             </div>
+            @endauth
+
         </section>
         <h1>Invozen - Simplify Your Invoicing, Get Paid Faster</h1>
         <p>Generate, send, and manage invoices effortlessly with Invozen.</p>
 {{--        <button class="cta-btn">Get Started for Free</button>--}}
+        @auth()
+            <a class="cta-btn" href="/invoice">Make Invoice</a>
+
+        @else
         <a class="cta-btn" href="/invoice">Get Started for Free</a>
+        @endauth
     </header>
 
     <!-- Features Section -->

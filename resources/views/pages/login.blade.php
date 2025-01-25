@@ -20,7 +20,9 @@
 
         <button type="submit" class="login">Login</button>
     </form>
-    <a href="{{ route('register') }}" class="link">Don't have an account? Register</a>
+{{--    <a href="{{ route('register') }}" class="link">Don't have an account? Register</a>--}}
+{{--    <br>--}}
+    <a href="{{ route('password.request') }}" class="link">Forgot Your Password?</a>
 </div>
 </body>
 </html>
