@@ -298,3 +298,13 @@ body {
 .login:hover {
     background-color: #218838;
 }
+
+
+/**/
+.error-mgs{
+    font-size: .8rem;
+    list-style: none;
+    padding: 0;
+    margin: auto;
+    color: brown;
+}
