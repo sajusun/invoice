@@ -1,13 +1,29 @@
-@php use Illuminate\Support\Facades\Auth; @endphp
-    <!DOCTYPE html>
+@php use Illuminate\Support\Facades\Auth; @endphp<!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
     <title>Invoice</title>
     <style>
-.client-details button{
-
-}
+        .client-details button {
+        }
+        .client-area{
+            text-align: left;
+        }
+        .client{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: stretch;
+        }
+        .client-details{
+            text-align: left;
+            display: grid;
+            justify-content: space-around;
+            align-items: baseline;
+            align-content: space-around;
+            justify-items: stretch;
+        }
     </style>
 </head>
 <body>
@@ -40,13 +56,26 @@
     </div>
 
 
-{{--client section--}}
-    <div class="client-details">
+    {{--client section--}}
+    <div class="client-area">
         <div><strong>Billed To:</strong></div>
-        <div><input name="name" placeholder="Client Name"></div>
-        <div><input name="name" placeholder="Client Address"></div>
-        <div><input name="name" placeholder="Client Email"></div>
-        <div><input name="name" placeholder="Client Phone"></div>
+        <div class="client">
+            <div class="client-details">
+                <label for="name">Name</label>
+                <input name="name" placeholder="Name">
+            </div>
+            <div class="client-details">
+                <label for="name">Address</label>
+                <input name="address" placeholder="Address">
+            </div>
+            <div class="client-details">
+                <label for="Phone">Phone</label>
+                <input name="Phone" placeholder="Phone">
+            </div>
+        </div>
+{{--        <div><input name="name" placeholder="Client Address"></div>--}}
+{{--        <div><input name="name" placeholder="Client Email"></div>--}}
+{{--        <div><input name="name" placeholder="Client Phone"></div>--}}
         <button class="btn btn-info" id="saveBtn">save & continue</button>
 
     </div>

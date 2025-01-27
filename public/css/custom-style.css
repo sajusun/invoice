@@ -37,7 +37,7 @@ body {
 
 .company-details, .invoice-details, .client-details {
     width: 100%;
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 .company-details div, .client-details div, .invoice-details div {
@@ -49,9 +49,6 @@ body {
     text-align: right;
 }
 
-.client-details {
-    text-align: left;
-}
 
 table {
     width: 100%;
