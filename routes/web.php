@@ -7,7 +7,7 @@ Route::get('/', function () {
     return view('index');
 });
 Route::get('/invoice', function () {
-    return view('/app');
+    return view('pages/invoice');
 });
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');
