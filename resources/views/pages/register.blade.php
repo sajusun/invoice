@@ -9,7 +9,7 @@
     <h2>Create an Account</h2>
     <form method="POST" action="{{ route('register') }}">
         @csrf
-        <input type="text" name="Name" placeholder="Name" required>
+        <input type="text" name="name" placeholder="Name" required>
         <x-input-error :messages="$errors->get('name')" class="error-mgs"/>
         <input type="email" name="email" placeholder="Email" required>
         <x-input-error :messages="$errors->get('email')" class="error-mgs"/>
