@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('custom-layouts.headTagContent')
+
+{{--    <meta charset="UTF-8">--}}
+{{--    <meta name="viewport" content="width=device-width, initial-scale=1.0">--}}
     <title>Invoice Generator</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">--}}
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">--}}
     <style>
         body { padding: 20px; }
         .invoice-container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -14,7 +16,7 @@
         .btn-add { background: #198754; color: white; }
         .remove-btn { display: none; cursor: pointer; color: red; }
         /*tr:hover .remove-btn { display: inline; }*/
-        tr:hover .remove-btn { display: inline-block;position: absolute;right: 0}
+        tr:hover .remove-btn { display: inline-block;position: absolute;right: 0;font-size: 1.5rem}
 
     </style>
 </head>

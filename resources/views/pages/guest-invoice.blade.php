@@ -1,4 +1,5 @@
-@php use Illuminate\Support\Facades\Auth; @endphp<!DOCTYPE html>
+@php use Illuminate\Support\Facades\Auth; @endphp
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
@@ -6,17 +7,20 @@
     <style>
         .client-details button {
         }
-        .client-area{
+
+        .client-area {
             text-align: left;
         }
-        .client{
+
+        .client {
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;
             justify-content: space-around;
             align-items: stretch;
         }
-        .client-details{
+
+        .client-details {
             text-align: left;
             display: grid;
             justify-content: space-around;
@@ -73,9 +77,9 @@
                 <input name="Phone" placeholder="Phone">
             </div>
         </div>
-{{--        <div><input name="name" placeholder="Client Address"></div>--}}
-{{--        <div><input name="name" placeholder="Client Email"></div>--}}
-{{--        <div><input name="name" placeholder="Client Phone"></div>--}}
+        {{--        <div><input name="name" placeholder="Client Address"></div>--}}
+        {{--        <div><input name="name" placeholder="Client Email"></div>--}}
+        {{--        <div><input name="name" placeholder="Client Phone"></div>--}}
         <button class="btn btn-info" id="saveBtn">save & continue</button>
 
     </div>

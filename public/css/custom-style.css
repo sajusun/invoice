@@ -6,88 +6,88 @@ html {
     scrollbar-width: thin;  /* Firefox */
 }
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'sans-serif',Serif;
     margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-
-}
-
-.invoice-container {
-    width: 80%;
-    margin: 50px auto;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-}
-
-.header, .footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #007BFF;
-    color: white;
-    border-radius: 10px 10px 0 0;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.company-details, .invoice-details, .client-details {
-    width: 100%;
-    margin: 10px 0;
-}
-
-.company-details div, .client-details div, .invoice-details div {
-    padding: 5px 0;
-    font-size: small;
-}
-
-.invoice-details {
-    text-align: right;
-}
-
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: small;
-    font-family: FontAwesome, sans-serif;
-}
-
-table, th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-
-th {
-    background-color: #007BFF;
-    color: white;
-}
-
-.total-section {
-    margin-top: 20px;
-    text-align: right;
+    background-color: #f6f6f6
 
 }
 
-.total-section div {
-    padding: 10px 0;
-    font-size: small;
-}
+/*.invoice-container {*/
+/*    width: 80%;*/
+/*    margin: 50px auto;*/
+/*    background-color: #fff;*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+/*    padding: 20px;*/
+/*}*/
 
-.footer p {
-    font-size: 12px;
-    color: #ccc;
-    margin: 0;
-}
+/*.header, .footer {*/
+/*    text-align: center;*/
+/*    padding: 10px;*/
+/*    background-color: #007BFF;*/
+/*    color: white;*/
+/*    border-radius: 10px 10px 0 0;*/
+/*}*/
 
-table tr :nth-last-child(1):not(i){
-    /*width: 90px;*/
-}
+/*.header h1 {*/
+/*    margin: 0;*/
+/*    font-size: 24px;*/
+/*}*/
+
+/*.company-details, .invoice-details, .client-details {*/
+/*    width: 100%;*/
+/*    margin: 10px 0;*/
+/*}*/
+
+/*.company-details div, .client-details div, .invoice-details div {*/
+/*    padding: 5px 0;*/
+/*    font-size: small;*/
+/*}*/
+
+/*.invoice-details {*/
+/*    text-align: right;*/
+/*}*/
+
+
+/*table {*/
+/*    width: 100%;*/
+/*    border-collapse: collapse;*/
+/*    margin-top: 20px;*/
+/*    font-size: small;*/
+/*    font-family: FontAwesome, sans-serif;*/
+/*}*/
+
+/*table, th, td {*/
+/*    !*border: 1px solid #ccc;*!*/
+/*    padding: 10px;*/
+/*}*/
+
+/*th {*/
+/*    background-color: #007BFF;*/
+/*    color: white;*/
+/*}*/
+
+/*.total-section {*/
+/*    margin-top: 20px;*/
+/*    text-align: right;*/
+
+/*}*/
+
+/*.total-section div {*/
+/*    padding: 10px 0;*/
+/*    font-size: small;*/
+/*}*/
+
+/*.footer p {*/
+/*    font-size: 12px;*/
+/*    color: #ccc;*/
+/*    margin: 0;*/
+/*}*/
+
+/*table tr :nth-last-child(1):not(i){*/
+/*    !*width: 90px;*!*/
+/*}*/
 
 hr {
     margin-top: 10px;
@@ -227,7 +227,7 @@ hr {
 
 /*auth pages css*/
 
-body {
+.center-div {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
     margin: 0;
