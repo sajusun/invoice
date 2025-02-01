@@ -1,16 +1,53 @@
-
-
 /* Hide scrollbar for IE, Edge and Firefox */
 html {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: thin;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: thin; /* Firefox */
 }
+
 body {
-    font-family: 'sans-serif',Serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
     background-color: #f6f6f6
+}
 
+.invoice-container {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table th {
+    background: #1b2a4e;
+    color: #fff;
+}
+
+.btn-add {
+    background: #198754;
+    color: white;
+}
+
+.remove-btn {
+    display: none;
+    cursor: pointer;
+    color: red;
+}
+
+/*tr:hover .remove-btn { display: inline; }*/
+tr:hover .remove-btn {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    font-size: 1.5rem
 }
 
 /*.invoice-container {*/
@@ -97,9 +134,8 @@ hr {
 }
 
 
-
 /*button presudo effect*/
-.custom-btn{
+.custom-btn {
     margin: 0 auto;
     padding: 2em;
     width: 300px;
@@ -109,13 +145,13 @@ hr {
     position: relative;
 }
 
-@property --angle{
+@property --angle {
     syntax: "<angle>";
     initial-value: 0deg;
     inherits: false;
 }
 
-.custom-btn::after, .custom-btn::before{
+.custom-btn::after, .custom-btn::before {
     content: '';
     position: absolute;
     height: 100%;
@@ -129,15 +165,17 @@ hr {
     border-radius: 10px;
     animation: 3s spin linear infinite;
 }
-.custom-btn::before{
+
+.custom-btn::before {
     filter: blur(1.5rem);
     opacity: 0.5;
 }
-@keyframes spin{
-    from{
+
+@keyframes spin {
+    from {
         --angle: 0deg;
     }
-    to{
+    to {
         --angle: 360deg;
     }
 }
@@ -236,6 +274,7 @@ hr {
     align-items: center;
     height: 100vh;
 }
+
 .form-container {
     background: #fff;
     padding: 20px 30px;
@@ -244,11 +283,13 @@ hr {
     width: 100%;
     max-width: 400px;
 }
+
 .form-container h2 {
     margin-bottom: 20px;
     color: #333;
     text-align: center;
 }
+
 .form-container input[type="text"],
 .form-container input[type="email"],
 .form-container input[type="password"] {
@@ -258,6 +299,7 @@ hr {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
 .form-container button {
     width: 100%;
     padding: 10px;
@@ -276,29 +318,34 @@ hr {
     color: #007bff;
     text-decoration: none;
 }
+
 .form-container .link:hover {
     text-decoration: underline;
 }
+
 /**/
 .register {
     background-color: #007bff;
     color: white;
 }
+
 .register:hover {
     background-color: #0056b3;
 }
+
 /**/
 .login {
     background-color: #28a745;
     color: white;
 }
+
 .login:hover {
     background-color: #218838;
 }
 
 
 /**/
-.error-mgs{
+.error-mgs {
     font-size: .8rem;
     list-style: none;
     padding: 0;
