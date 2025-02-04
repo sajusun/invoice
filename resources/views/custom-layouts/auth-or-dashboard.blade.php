@@ -1,0 +1,39 @@
+<section class="auth">
+    <div>
+        @auth()
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- <li class="nav-item"><a class="nav-link" href="#">Client Area</a></li> -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-bs-toggle="dropdown">
+                            <img src="https://cdn-icons-png.flaticon.com/256/5828/5828115.png" alt="User" width="30"
+                                 height="30" class="rounded-circle"> Account
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        @else
+
+
+                <li><a href="/login" class="login-link">Sigh In</a></li>
+                <li><a href="/register" class="register-link">Sigh Up</a></li>
+
+
+
+    </div>
+    @endauth
+</section><?php
