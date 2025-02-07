@@ -96,14 +96,3 @@ header p {
     cursor: pointer;
 }
 
-/* Footer */
-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem 10%;
-}
-
-footer a {
-    color: #E76F51;
-    text-decoration: none;
-}

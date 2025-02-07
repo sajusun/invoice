@@ -1,9 +1,12 @@
-.navbar .container{
-    height: 2rem;
+nav .container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .auth {
     display: block;
     position: static;
+    font-family: "Roboto Thin",Roboto;
 }
 .auth div {
     list-style: none;
@@ -17,14 +20,15 @@
 .auth li .register-link{
     background-color: #21B7A5;
     color: #fff;
+    font-weight: bold;
+
 }
 .auth li .login-link{
     background-color: inherit;
-    color: black;
+    color: var(--secondary);
     border: 1px solid darkgrey;
-
+    font-weight: bold;
 }
-
 .auth div a {
     padding: .6rem 1rem;
     border: none;

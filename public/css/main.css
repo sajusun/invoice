@@ -1,3 +1,8 @@
+:root{
+    --color1:#21B7A5;
+    --color2:var(--primary);
+}
+
 /* Hide scrollbar for IE, Edge and Firefox */
 * {
     margin: 0;
@@ -188,6 +193,22 @@ hr {
 
 .login:hover {
     background-color: #218838;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem 10%;
+}
+
+footer a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+footer a:hover {
+    color: var(--bs-gray-500);
+    text-decoration: none;
 }
 
 

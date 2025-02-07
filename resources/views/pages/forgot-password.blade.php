@@ -6,7 +6,7 @@
     <title>Forgot Password - Invozen</title>
 
 </head>
-<body>
+<body class="center-div">
 <div class="form-container">
     <h2>Forgot Password</h2>
     <x-auth-session-status class="mb-4" :status="session('status')" />
