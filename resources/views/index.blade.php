@@ -252,43 +252,19 @@
     <title>Invozen - Invoice Generator</title>
 </head>
 <body>
-
+@include('custom-layouts.navbar')
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">
-            <img
-                src="https://thumbs.dreamstime.com/b/invoice-icon-linear-logo-mark-set-collection-black-white-web-invoice-icon-linear-logo-mark-black-white-330206480.jpg"
-                alt="Invozen Logo" width="40" height="40" class="d-inline-block align-text-top">
-            Invozen
-        </a>
-        @include('custom-layouts.auth-or-dashboard')
-{{--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">--}}
-{{--            <span class="navbar-toggler-icon"></span>--}}
-{{--        </button>--}}
-{{--        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">--}}
-{{--            <ul class="navbar-nav">--}}
-{{--                <!-- <li class="nav-item"><a class="nav-link" href="#">Client Area</a></li> -->--}}
-{{--                <li class="nav-item dropdown">--}}
-{{--                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"--}}
-{{--                       data-bs-toggle="dropdown">--}}
-{{--                        <img src="https://cdn-icons-png.flaticon.com/256/5828/5828115.png" alt="User" width="30"--}}
-{{--                             height="30" class="rounded-circle"> Account--}}
-{{--                    </a>--}}
-{{--                    <ul class="dropdown-menu">--}}
-{{--                        <li><a class="dropdown-item" href="#">Profile</a></li>--}}
-{{--                        <li><a class="dropdown-item" href="#">Settings</a></li>--}}
-{{--                        <li>--}}
-{{--                            <hr class="dropdown-divider">--}}
-{{--                        </li>--}}
-{{--                        <li><a class="dropdown-item" href="#">Logout</a></li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
-{{--            </ul>--}}
-{{--        </div>--}}
-    </div>
-</nav>
-
+{{--<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">--}}
+{{--    <div class="container">--}}
+{{--        <a class="navbar-brand fw-bold" href="#">--}}
+{{--            <img--}}
+{{--                src="https://thumbs.dreamstime.com/b/invoice-icon-linear-logo-mark-set-collection-black-white-web-invoice-icon-linear-logo-mark-black-white-330206480.jpg"--}}
+{{--                alt="Invozen Logo" width="40" height="40" class="d-inline-block align-text-top">--}}
+{{--            Invozen--}}
+{{--        </a>--}}
+{{--        @include('custom-layouts.auth-or-dashboard')--}}
+{{--    </div>--}}
+{{--</nav>--}}
 <!-- Hero Section -->
 {{--<header class="bg-primary text-white text-center py-5">--}}
 {{--    <div class="container">--}}
@@ -311,10 +287,10 @@
 
 <!-- Footer -->
 @include('custom-layouts.footer')
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
 

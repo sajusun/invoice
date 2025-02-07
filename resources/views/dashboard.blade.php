@@ -15,14 +15,12 @@
 {{--        </div>--}}
 {{--    </div>--}}
 {{--</x-app-layout>--}}
-
     <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('custom-layouts.headTagContent')
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">--}}
     <style>
         body { font-family: Arial, sans-serif; }
         .sidebar { width: 250px; height: 100vh; position: fixed; background: #1b2a4e; color: white; padding: 20px; }
@@ -33,22 +31,14 @@
     </style>
 </head>
 <body>
+{{--navbar--}}
+@include('custom-layouts.navbar')
+{{--left site bar--}}
 <div class="sidebar">
     <h3>Dashboard</h3>
-    <a href="{{ route('dashboard') }}">Home</a>
+    <a href="/">Home</a>
     <a href="/invoice">Invoice</a>
     <a href="{{ route('profile.edit') }}">Profile</a>
-
-    <!-- Authentication -->
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-
-        <a href="{{route('logout')}}"
-                         onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-            {{ __('Log Out') }}
-        </a>
-    </form>
 </div>
 
 <div class="main-content">
@@ -106,4 +96,8 @@
     </div>
 </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
