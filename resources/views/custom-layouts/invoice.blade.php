@@ -13,13 +13,13 @@
                 <div class="col-md-6">
                     <input type="text" class="form-control" placeholder="Who is this from?">
                     <input type="text" class="form-control mt-2" placeholder="Who is this to?">
-                    <input type="text" class="form-control mt-2" placeholder="(optional)">
+                    <input type="text" class="form-control mt-2" placeholder="Phone Number">
                 </div>
                 <div class="col-md-6">
                     <input type="text" class="form-control datepicker" placeholder="Date">
                     <input type="text" class="form-control mt-2" placeholder="Payment Terms">
-                    <input type="text" class="form-control mt-2 datepicker" placeholder="Due Date">
-                    <input type="text" class="form-control mt-2" placeholder="Phone Number">
+{{--                    <input type="text" class="form-control mt-2 datepicker" placeholder="Due Date">--}}
+{{--                    <input type="text" class="form-control mt-2" placeholder="Phone Number">--}}
                 </div>
             </div>
             {{----}}
@@ -41,10 +41,10 @@
 
             <button class="btn btn-add" onclick="addItem()">+ Line Item</button>
 
-            <div class="mt-3">
-                <h5>Notes</h5>
-                <textarea class="form-control" placeholder="Notes - any relevant information not already covered"></textarea>
-            </div>
+{{--            <div class="mt-3">--}}
+{{--                <h5>Notes</h5>--}}
+{{--                <textarea class="form-control" placeholder="Notes - any relevant information not already covered"></textarea>--}}
+{{--            </div>--}}
 
             <div class="mt-3">
                 <h5>Terms</h5>
@@ -70,7 +70,11 @@
                 <option value="EUR">EUR</option>
                 <option value="GBP">GBP</option>
             </select>
-        </div></div>
+        </div>
+        <div class="mt-3">
+            <button id="dl_btn" class="dl-btn">Download</button>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>

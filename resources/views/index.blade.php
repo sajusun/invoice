@@ -253,28 +253,17 @@
 </head>
 <body>
 @include('custom-layouts.navbar')
-<!-- Navbar -->
-{{--<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">--}}
-{{--    <div class="container">--}}
-{{--        <a class="navbar-brand fw-bold" href="#">--}}
-{{--            <img--}}
-{{--                src="https://thumbs.dreamstime.com/b/invoice-icon-linear-logo-mark-set-collection-black-white-web-invoice-icon-linear-logo-mark-black-white-330206480.jpg"--}}
-{{--                alt="Invozen Logo" width="40" height="40" class="d-inline-block align-text-top">--}}
-{{--            Invozen--}}
-{{--        </a>--}}
-{{--        @include('custom-layouts.auth-or-dashboard')--}}
-{{--    </div>--}}
-{{--</nav>--}}
-<!-- Hero Section -->
-{{--<header class="bg-primary text-white text-center py-5">--}}
-{{--    <div class="container">--}}
-{{--        <h1 class="display-4">Create Professional Invoices Instantly</h1>--}}
-{{--        <p class="lead">Simple, fast, and free invoice generator</p>--}}
-{{--        <a href="#invoice-editor" class="btn btn-light btn-lg">Create Invoice</a>--}}
-{{--    </div>--}}
-{{--</header>--}}
 
-<!-- Invoice Editor Section (Basic Structure) -->
+<!-- Hero Section -->
+<header class="text-white text-center py-5 shadow-sm">
+    <div class="container">
+        <h1 class="display-4">Create Professional Invoices Instantly</h1>
+        <p class="lead">Simple, fast, and free invoice generator</p>
+        <a href="#invoice-editor" class="btn btn-lg">Create Invoice</a>
+    </div>
+</header>
+
+{{--<!-- Invoice Editor Section (Basic Structure) -->--}}
 <section id="invoice-editor" class="py-5">
     <div class="container text-center">
         <h2>Invoice Generator</h2>

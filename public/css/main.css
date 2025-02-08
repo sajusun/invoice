@@ -1,6 +1,7 @@
-:root{
-    --color1:#21B7A5;
-    --color2:var(--primary);
+:root {
+    --bg-color: #f6f6f6;
+    --color1: #21B7A5;
+    --color2: var(--primary);
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
@@ -9,6 +10,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 html {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: thin; /* Firefox */
@@ -18,7 +20,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f6f6f6
+    background-color: var(--bg-color);
 }
 
 .invoice-container {
@@ -206,6 +208,7 @@ footer a {
     color: var(--secondary);
     text-decoration: none;
 }
+
 footer a:hover {
     color: var(--bs-gray-500);
     text-decoration: none;
@@ -219,4 +222,50 @@ footer a:hover {
     padding: 0;
     margin: auto;
     color: brown;
+}
+
+/*home page header section*/
+/* Hero Section */
+header {
+    background-color: var(--bg-color);
+    padding: 5rem 10%;
+}
+
+header .container {
+    color: var(--color1);
+    font-family: "cursive";
+}
+
+header .container .btn {
+    background-color: var(--color1);
+    color: var(--bg-color);
+    font-weight: bold;
+    border: .1rem solid var(--color1);
+}
+header .container .btn:hover {
+    background-color: var(--bg-color);
+    color: var(--color1);
+    border: .1rem solid var(--color1);
+}
+
+
+/*@media print {*/
+/*    body >*:not(.invoice-container >*) {display:none;}*/
+/*}*/
+@media print {
+
+    * {
+        visibility: hidden;
+    }
+
+    .invoice-container {
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .invoice-container * {
+        visibility: visible;
+    }
 }
