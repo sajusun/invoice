@@ -4,9 +4,11 @@
     @include('custom-layouts.headTagContent')
     <title>Register - Invozen</title>
 </head>
-<body class="center-div">
+<body>
+@include('custom-layouts.navbar')
+<section class="center-div">
 <div class="form-container">
-    <h2>Create an Account</h2>
+    <h2 class="color-main">Create an Account</h2>
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <input type="text" name="name" placeholder="Name" required>
@@ -21,5 +23,7 @@
     </form>
     <a href="{{ route('login') }}" class="link">Already have an account? Login</a>
 </div>
+    </section>
+@include('custom-layouts.footer')
 </body>
 </html>

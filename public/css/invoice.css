@@ -99,3 +99,30 @@ header p {
     border-radius: .312rem;
     font-family: "Roboto Thin",Roboto;
 }
+
+
+/*invoice css*/
+table td, table th {
+    padding: .3rem !important;
+    text-align: center;
+}
+table td input {
+    border: none!important;
+    /*border-left: 0.01rem solid var(--ash)!important;*/
+    /*border-right: 0.01rem solid var(--ash)!important;*/
+    /*border-radius: 0!important;*/
+    text-align: center;
+}
+.item input{
+    border: none !important;
+}
+.item,.quantity,.total{
+    min-width: 9rem;
+    width: 10rem;
+}
+.total input{
+    text-align: right;
+}
+/*table td:nth-child(n + 2) {*/
+/*    min-width: 9rem !important;*/
+/*}*/

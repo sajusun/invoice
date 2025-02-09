@@ -3,11 +3,12 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Login - Invozen</title>
-
 </head>
-<body class="center-div">
+<body>
+@include('custom-layouts.navbar')
+<section class="center-div">
 <div class="form-container">
-    <h2>Login to Invozen</h2>
+    <h2 class="color-main">Login to Invozen</h2>
     <x-auth-session-status class="mb-4" :status="session('status')"/>
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -25,5 +26,8 @@
     </form>
     <a href="{{ route('password.request') }}" class="link">Forgot Your Password?</a>
 </div>
+</section>
+
+@include('custom-layouts.footer')
 </body>
 </html>

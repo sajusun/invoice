@@ -32,7 +32,6 @@
                     <th>Rate</th>
                     <th>Amount</th>
                     <th> </th>
-
                 </tr>
                 </thead>
                 <tbody id="invoice-items">
@@ -88,10 +87,10 @@
         let tbody = document.getElementById("invoice-items");
         let tr = document.createElement("tr");
         tr.innerHTML = `
-                <td><input type="text" class="form-control" placeholder="Description of item/service..."></td>
-                <td><input type="number" class="form-control" value="1" onchange="calculateTotal()"></td>
-                <td><input type="number" class="form-control" value="0" onchange="calculateTotal()"></td>
-                <td class="amount">${getCurrency()} 0.00</td>
+                <td class="description"><input type="text" class="form-control" placeholder="Description of item/service..."></td>
+                <td class="item"><input type="text" class="form-control" value="1" onchange="calculateTotal()"></td>
+                <td class="quantity"><input type="text" class="form-control" value="0" onchange="calculateTotal()"></td>
+                <td class="amount total">${getCurrency()} 0.00</td>
                 <td style="position: relative"><span class="remove-btn" onclick="removeItem(this)">&#128465;</span></td>
             `;
         tbody.appendChild(tr);
