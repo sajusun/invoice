@@ -9,6 +9,9 @@ header h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
 }
+.hide{
+    display: none !important;
+}
 
 header p {
     font-size: 1.25rem;
@@ -87,17 +90,19 @@ header p {
     border-radius: 5px;
     cursor: pointer;
 }
-.form-control[type=text]{
+
+.form-control[type=text] {
     background-color: #fff !important;
 }
-.dl-btn{
+
+.dl-btn {
     background-color: var(--color1);
     color: #fff;
     padding: 0.5rem 3rem;
     font-weight: bold;
     border: 1px solid var(--color1);
     border-radius: .312rem;
-    font-family: "Roboto Thin",Roboto;
+    font-family: "Roboto Thin", Roboto;
 }
 
 
@@ -106,23 +111,59 @@ table td, table th {
     padding: .3rem !important;
     text-align: center;
 }
+
 table td input {
-    border: none!important;
+    border: none !important;
     /*border-left: 0.01rem solid var(--ash)!important;*/
     /*border-right: 0.01rem solid var(--ash)!important;*/
     /*border-radius: 0!important;*/
     text-align: center;
 }
-.item input{
+
+.item input {
     border: none !important;
 }
-.item,.quantity,.total{
+
+.item, .quantity, .total {
     min-width: 9rem;
     width: 10rem;
 }
-.total input{
+
+.total input {
     text-align: right;
 }
+
 /*table td:nth-child(n + 2) {*/
 /*    min-width: 9rem !important;*/
 /*}*/
+
+/*button css*/
+.invoice-container {
+    .btn-add {
+        color: var(--color1) !important;
+        font-size: .9rem;
+    }
+
+    .logo-container input {
+        display: none;
+    }
+
+    .logo-container img{
+        height: 6rem;
+        width: 10rem;
+    }
+
+}
+.side-panel{
+
+    .edit-section{
+        padding: 2rem;
+        border:.05rem solid var(--color1);
+        input, label{
+            cursor: pointer;
+        }
+        label{
+            font-variant: all-small-caps;
+        }
+    }
+}

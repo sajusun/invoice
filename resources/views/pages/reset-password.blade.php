@@ -6,7 +6,7 @@
 </head>
 <body class="center-div">
 <div class="form-container">
-    <h2>Reset Password</h2>
+    <h2 class="color-main">Reset Password</h2>
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
         <!-- Password Reset Token -->

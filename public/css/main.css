@@ -51,11 +51,6 @@ body {
     color: #fff;
 }
 
-.btn-add {
-    background: #198754;
-    color: white;
-}
-
 .remove-btn {
     display: none;
     cursor: pointer;

@@ -8,7 +8,7 @@
 </head>
 <body class="center-div">
 <div class="form-container">
-    <h2>Forgot Password</h2>
+    <h2 class="color-main">Forgot Password</h2>
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <p>Enter your registered email to reset your password.</p>
