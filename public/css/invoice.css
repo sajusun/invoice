@@ -165,5 +165,11 @@ table td input {
         label{
             font-variant: all-small-caps;
         }
+        button{
+            background-color: var(--color1);
+            color: var(--white);
+            margin: .5rem 1rem;
+        }
     }
+
 }
