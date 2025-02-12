@@ -1,3 +1,9 @@
+@php
+    use App\Http\Controllers\InvoicesController;
+    $invoiceController=  new InvoicesController();
+    $invoiceId=  $invoiceController->invoiceId_Maker();
+@endphp
+
 <div class="row">
     <div class="col">
         <div class="invoice-container">
@@ -9,19 +15,20 @@
                 </div>
                 <div>
                     <h2>INVOICE</h2>
-                    <input type="text" class="form-control" placeholder="InvoiceID">
+                    <input type="text" class="form-control" placeholder="InvoiceID"
+                           value="#{{$invoiceId}}">
                 </div>
             </div>
 
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Who is this from?">
-                    <input type="text" class="form-control mt-2" placeholder="Who is this to?">
-                    <input type="text" class="form-control mt-2" placeholder="Contact Number">
+                    <input id="issueFrom" type="text" class="form-control" placeholder="Who is this from?">
+                    <input id="issueTo" type="text" class="form-control mt-2" placeholder="Who is this to?">
+                    <input id="ContactNumber" type="text" class="form-control mt-2" placeholder="Contact Number">
                 </div>
                 <div class="col-md-6">
-                    <input type="text" class="form-control datepicker" placeholder="Date">
-                    <input type="text" class="form-control mt-2" placeholder="Payment Terms">
+                    <input id="date" type="text" class="form-control datepicker" placeholder="Date">
+                    <input id="paymentTerms" type="text" class="form-control mt-2" placeholder="Payment Terms">
                     <input id="email" type="text" class="form-control mt-2 hide" placeholder="Email Address">
 
                     {{--                    <input type="text" class="form-control mt-2 datepicker" placeholder="Due Date">--}}
@@ -71,8 +78,8 @@
     <div class="col-3 side-panel">
         <div class="mt-3">
             <div class="edit-section">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="logoCheck">
+                <div class="form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" value="" id="logoCheck">
                     <label class="form-check-label" for="logoCheck">
                         add logo in top
                     </label>
@@ -90,7 +97,9 @@
                             circle logo
                         </label>
                     </div>
-                    <button id="logoUpBtn" class="py-1 btn btn-light hide" onclick="document.getElementById('logoHolder').click()">+ Upload +</button>
+                    <button id="logoUpBtn" class="py-1 btn btn-light hide"
+                            onclick="document.getElementById('logoHolder').click()">+ Upload +
+                    </button>
                 </div>
                 <hr>
                 <div class="form-check">
@@ -102,19 +111,19 @@
             </div>
         </div>
 
-    <div class="mt-3">
-        <label for="currency">Currency:</label>
-        <select id="currency" class="form-select" onchange="calculateTotal()">
-            <option value="BDT">BDT</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-        </select>
+        <div class="mt-3">
+            <label for="currency">Currency:</label>
+            <select id="currency" class="form-select" onchange="calculateTotal()">
+                <option value="BDT">BDT</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+            </select>
+        </div>
+        <div class="mt-3">
+            <button id="dl_btn" class="dl-btn">Download</button>
+        </div>
     </div>
-    <div class="mt-3">
-        <button id="dl_btn" class="dl-btn">Download</button>
-    </div>
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -176,7 +185,7 @@
                 let logoContainer = document.querySelector(".logo-container");
                 let img = document.getElementById("logoPreview");
                 let button = logoContainer.querySelector("button");
-               // img.classList.toggle("hide");
+                // img.classList.toggle("hide");
 
 
                 if (!img) {
