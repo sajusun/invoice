@@ -121,7 +121,11 @@
             </select>
         </div>
         <div class="mt-3">
-            <button id="dl_btn" class="dl-btn">Download</button>
+            @auth()
+                <button id="save_btn" class="dl-btn" onclick="save()">Save & Print</button>
+            @else
+                <button id="dl_btn" class="dl-btn">Download</button>
+            @endauth
         </div>
     </div>
 </div>
@@ -154,16 +158,23 @@
         calculateTotal();
     }
 
+    let data = [];
+
     function calculateTotal() {
         let currency = document.getElementById("currency").value;
         let rows = document.querySelectorAll("#invoice-items tr");
         let subtotal = 0;
+        let count = 0;
         rows.forEach(row => {
+            let item = row.children[0].querySelector("input").value;
             let qty = row.children[1].querySelector("input").value;
             let rate = row.children[2].querySelector("input").value;
             let amount = qty * rate;
             row.children[3].innerText = `${currency} ${amount.toFixed(2)}`;
             subtotal += amount;
+            console.log(item + "/" + qty + "/" + rate + '/' + amount)
+            data[count] = {name: item, qty: qty, rate: rate}
+            count++;
         });
         document.getElementById("subtotal").innerText = `${currency} ${subtotal.toFixed(2)}`;
         let tax = document.getElementById("tax").value;
@@ -175,6 +186,10 @@
     }
 
     //
+    function save() {
+        calculateTotal();
+        console.log(data)
+    }
 
     // logo add and change function
     document.getElementById("logoHolder").addEventListener("change", function (event) {

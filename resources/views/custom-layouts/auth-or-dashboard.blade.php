@@ -36,4 +36,4 @@
                 <li><a href="/register" class="register-link">Sigh Up</a></li>
     </div>
     @endauth
-</section><?php
+</section>
