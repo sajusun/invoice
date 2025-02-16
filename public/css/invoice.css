@@ -1,0 +1,175 @@
+/* Reset some default styling */
+/* General layout */
+header, .features, .how-it-works, .pricing, footer {
+    padding: 2rem 10%;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+.hide{
+    display: none !important;
+}
+
+header p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.cta-btn {
+    padding: 1rem 2rem;
+    background-color: #E76F51;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+/* Features Section */
+.features {
+    background-color: #f9f9f9;
+}
+
+.feature-item {
+    display: inline-block;
+    width: 30%;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.feature-item h3 {
+    color: #2A9D8F;
+}
+
+/* How It Works Section */
+.how-it-works h2 {
+    margin-bottom: 2rem;
+}
+
+.step {
+    display: inline-block;
+    width: 22%;
+    padding: 1rem;
+    margin: 1rem;
+    background-color: #e9ecef;
+    border-radius: 8px;
+}
+
+/* Pricing Section */
+.pricing h2 {
+    margin-bottom: 1.5rem;
+}
+
+.pricing-plan {
+    display: inline-block;
+    width: 30%;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin: 1rem;
+}
+
+.pricing-plan h3 {
+    color: #2A9D8F;
+}
+
+.pricing-plan p.price {
+    font-size: 1.5rem;
+    color: #E76F51;
+}
+
+.pricing-plan button {
+    padding: 0.5rem 1.5rem;
+    background-color: #2A9D8F;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-control[type=text] {
+    background-color: #fff !important;
+}
+
+.dl-btn {
+    background-color: var(--color1);
+    color: #fff;
+    padding: 0.5rem 3rem;
+    font-weight: bold;
+    border: 1px solid var(--color1);
+    border-radius: .312rem;
+    font-family: "Roboto Thin", Roboto;
+}
+
+
+/*invoice css*/
+table td, table th {
+    padding: .3rem !important;
+    text-align: center;
+}
+
+table td input {
+    border: none !important;
+    /*border-left: 0.01rem solid var(--ash)!important;*/
+    /*border-right: 0.01rem solid var(--ash)!important;*/
+    /*border-radius: 0!important;*/
+    text-align: center;
+}
+
+.item input {
+    border: none !important;
+}
+
+.item, .quantity, .total {
+    min-width: 9rem;
+    width: 10rem;
+}
+
+.total input {
+    text-align: right;
+}
+
+/*table td:nth-child(n + 2) {*/
+/*    min-width: 9rem !important;*/
+/*}*/
+
+/*button css*/
+.invoice-container {
+    .btn-add {
+        color: var(--color1) !important;
+        font-size: .9rem;
+    }
+
+    .logo-container input {
+        display: none;
+    }
+
+    .logo-container img{
+        height: 6rem;
+        width: 10rem;
+    }
+
+}
+.side-panel{
+
+    .edit-section{
+        padding: 2rem;
+        border:.05rem solid var(--color1);
+        input, label{
+            cursor: pointer;
+        }
+        label{
+            font-variant: all-small-caps;
+        }
+        button{
+            background-color: var(--color1);
+            color: var(--white);
+            margin: .5rem 1rem;
+        }
+    }
+
+}
