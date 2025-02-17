@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customers;
 use App\Models\Invoice_Items;
 use App\Models\Invoices;
 use Illuminate\Http\JsonResponse;
@@ -14,25 +15,34 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
-        $query = Invoices::create([
-            'client_id' => Auth::id(),
+        $customer=Customers::create([
+           'user_id' => Auth::id(),
+           'name'=> request('customer_name'),
+           'phone'=> request('customer_name'),
+        ]);
+
+        $invoice = Invoices::create([
+            'user_id' => Auth::id(),
+            'customer_id' => $customer->id,
             'invoice_date' => request('invoice_date'),
-            'due_date' => request('due_date'),
+            'items'=> json_encode(request('items')),
+            'paid' => request('paid_amount'),
             'total_amount' => request('total_amount'),
         ]);
+
         foreach ($request->raws as $datum) {
-            $this->queryLoop($datum, $query->id);
+            $this->queryLoop($datum, $invoice->id);
         }
 
-        if ($query) {
+        if ($invoice) {
             return response()->json([
                 "success" => true,
-                "data" => $query
+                "data" => $invoice
             ]);
         }
         return response()->json([
             "success" => false,
-            "data" => $query
+            "data" => $invoice
         ]);
     }
 
@@ -42,10 +52,7 @@ class InvoicesController extends Controller
         $month = date("m"); // Current month
         $day = date("d"); // Current day
         $randomNumber = str_pad(mt_rand(0, 9999), 4, "0", STR_PAD_LEFT); // 4-digit random number
-
         return  $year . $month . $day . $randomNumber;
-
-
     }
 
     private function queryLoop($query, $id): void
