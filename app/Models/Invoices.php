@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 /**
@@ -17,4 +19,15 @@ class Invoices extends Model
         'invoice_date',
         "total_amount"
     ];
+
+    // An invoice belongs to a customer
+    public function customer(): BelongsTo {
+        return $this->belongsTo(Customers::class);
+    }
+
+    // An invoice belongs to a user (creator)
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
 }
+

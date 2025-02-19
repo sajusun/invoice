@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->index();
-            $table->string('invoice_number')->unique();
+            $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('customer_id');
+            $table->string('invoice_number')->unique();
             $table->date('invoice_date');
             $table->json('items');
             $table->decimal('paid_amount');
