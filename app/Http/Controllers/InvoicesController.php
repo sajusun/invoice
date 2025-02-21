@@ -14,19 +14,19 @@ use Illuminate\Support\Facades\Auth;
 class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
-   {
-        $customer=Customers::create([
-           'user_id' => Auth::id(),
-           'name'=> request('issue_to'),
-           'phone'=> request('phone'),
+    {
+        $customer = Customers::create([
+            'user_id' => Auth::id(),
+            'name' => request('issue_to'),
+            'phone' => request('phone'),
         ]);
 //
         $invoice = Invoices::create([
             'user_id' => Auth::id(),
             'customer_id' => $customer->id,
-            'invoice_number'=> request('invoice_number'),
+            'invoice_number' => request('invoice_number'),
             'invoice_date' => request('date'),
-            'items'=> json_encode(request('items')),
+            'items' => json_encode(request('items')),
             'paid_amount' => request('amount_paid'),
             'total_amount' => request('amount_total'),
         ]);
@@ -55,18 +55,32 @@ class InvoicesController extends Controller
         $month = date("m"); // Current month
         $day = date("d"); // Current day
         $randomNumber = str_pad(mt_rand(0, 9999), 4, "0", STR_PAD_LEFT); // 4-digit random number
-        return  $year . $month . $day . $randomNumber;
+        return $year . $month . $day . $randomNumber;
     }
 
-    private function queryLoop($query, $id): void
+//    private function queryLoop($query, $id): void
+//    {
+//        $query2 = Invoice_Items::create([
+//            'invoice_id' => $id,
+//            'description' => $query['description'],
+//            'quantity' => $query['quantity'],
+//            'unit_price' => $query['unit_price'],
+////            'total_price'=>$query['total_price'],
+//        ]);
+//    }
+    public function get_all_invoices(): JsonResponse
     {
-        $query2 = Invoice_Items::create([
-            'invoice_id' => $id,
-            'description' => $query['description'],
-            'quantity' => $query['quantity'],
-            'unit_price' => $query['unit_price'],
-//            'total_price'=>$query['total_price'],
-        ]);
+//        return all invoices for current user
+        $invoices = Invoices::all()->where('user_id', Auth::id());
+        $invoices2 = Customers::class->invoices();
+
+        return response()->json($invoices2);
+    }
+
+    public function get_invoice(Request $id): JsonResponse
+    {
+        $invoices = Invoices::all()->where('user_id', Auth::id())->where('id', $id);
+        return response()->json($invoices);
     }
 
     public function errorHandle(): string
