@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedBigInteger('customer_id');
+            $table->foreignId('user_id')->index();
+            $table->foreignId('customer_id');
             $table->string('invoice_number')->unique();
             $table->date('invoice_date');
             $table->json('items');
@@ -25,19 +25,6 @@ return new class extends Migration
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
-
-//        Schema::create('invoice_items', function (Blueprint $table) {
-//            $table->id();
-//            $table->unsignedBigInteger('invoice_id');
-//            $table->string('description');
-//            $table->integer('quantity');
-//            $table->decimal('unit_price', 10, 2);
-//            $table->decimal('advance', 10, 2);
-//            $table->decimal('total_price', 10, 2);
-//            $table->timestamps();
-//
-//            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
-//        });
 
     }
 

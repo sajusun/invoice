@@ -158,10 +158,23 @@
         calculateTotal();
     }
 
+    function get_Currency() {
+        return document.getElementById("currency").value;
+    }
+
+    function balance_paid() {
+        return document.getElementById("paid").value;
+    }
+
     let data = [];
+    let balance = 0;
+    let paid = 0;
+    let total = 0;
 
     function calculateTotal() {
-        let currency = document.getElementById("currency").value;
+        data = [];
+        // let currency = document.getElementById("currency").value;
+        let currency = getCurrency();
         let rows = document.querySelectorAll("#invoice-items tr");
         let subtotal = 0;
         let count = 0;
@@ -176,18 +189,46 @@
             data[count] = {name: item, qty: qty, rate: rate}
             count++;
         });
+
         document.getElementById("subtotal").innerText = `${currency} ${subtotal.toFixed(2)}`;
         let tax = document.getElementById("tax").value;
-        let total = subtotal + (subtotal * (tax / 100));
+        total = subtotal + (subtotal * (tax / 100));
         document.getElementById("total").innerText = `${currency} ${total.toFixed(2)}`;
-        let paid = document.getElementById("paid").value;
-        let balance = total - paid;
+        paid = balance_paid();
+        balance = total - paid;
         document.getElementById("balance").innerText = `${currency} ${balance.toFixed(2)}`;
     }
 
+    serverRequest = new serverRequest();
+
     //
     function save() {
+        let issue_from = document.getElementById("issueFrom").value;
+        let issue_to = document.getElementById("issueTo").value;
+        let c_Phone = document.getElementById("ContactNumber").value;
+        let c_email = document.getElementById("email").value;
+        let payment_terms = document.getElementById("paymentTerms").value;
+        let date = document.getElementById("date").value;
+        let server_data = {
+            issue_from: issue_from,
+            issue_to: issue_to,
+            phone: c_Phone,
+            email: c_email,
+            payment_terms: payment_terms,
+            amount_total: total,
+            amount_paid: paid,
+            amount_due: balance,
+            date: date,
+            currency: getCurrency(),
+            invoice_number: {{$invoiceId}},
+            items:data
+        }
         calculateTotal();
+        serverRequest.url = 'http://localhost:8000/invoice';
+        serverRequest.data = server_data;
+        serverRequest.xPost().then((response) => {
+            console.log(response)
+        })
         console.log(data)
     }
 

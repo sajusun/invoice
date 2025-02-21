@@ -109,11 +109,9 @@ class serverRequest {
             }
         })
             .then(async function (response) {
-                //console.log(response.data);
                 result = await response.data;
             })
             .catch(function (error) {
-                //console.log(error);
                 result = {
                     success: false,
                     message: error.response.data.message

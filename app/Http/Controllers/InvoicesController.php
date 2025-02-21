@@ -14,36 +14,39 @@ use Illuminate\Support\Facades\Auth;
 class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
-    {
+   {
         $customer=Customers::create([
            'user_id' => Auth::id(),
-           'name'=> request('customer_name'),
-           'phone'=> request('customer_name'),
+           'name'=> request('issue_to'),
+           'phone'=> request('phone'),
         ]);
-
+//
         $invoice = Invoices::create([
             'user_id' => Auth::id(),
             'customer_id' => $customer->id,
-            'invoice_date' => request('invoice_date'),
+            'invoice_number'=> request('invoice_number'),
+            'invoice_date' => request('date'),
             'items'=> json_encode(request('items')),
-            'paid' => request('paid_amount'),
-            'total_amount' => request('total_amount'),
+            'paid_amount' => request('amount_paid'),
+            'total_amount' => request('amount_total'),
         ]);
-
-        foreach ($request->raws as $datum) {
-            $this->queryLoop($datum, $invoice->id);
-        }
-
-        if ($invoice) {
-            return response()->json([
-                "success" => true,
-                "data" => $invoice
-            ]);
-        }
+//
+//        foreach ($request->raws as $datum) {
+//            $this->queryLoop($datum, $invoice->id);
+//        }
+//
+//        if ($invoice) {
+//            return response()->json([
+//                "success" => true,
+//                "data" => $invoice
+//            ]);
+//        }
         return response()->json([
-            "success" => false,
-            "data" => $invoice
+            "success" => $invoice,
+            "data" => Request('items'),
+            "data2" => $customer
         ]);
+
     }
 
     public function invoiceId_Maker(): string

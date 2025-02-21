@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset>
+    <url>
+        <loc>https://invozen.com/</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>1.00</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/login</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/register</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/invoice</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/privacy-policy</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/terms-of-service</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/contact-us</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://invozen.com/forgot-password</loc>
+        <lastmod>2025-02-20T14:19:40+00:00</lastmod>
+        <priority>0.64</priority>
+    </url>
+
+
+</urlset>

@@ -10,6 +10,8 @@ Route::get('/', function () {
 Route::get('/invoice', function () {
     return view('pages/invoice');
 });
+Route::post('/invoice', [InvoicesController::class, 'makeInvoice']);
+
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');
 });

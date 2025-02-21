@@ -15,8 +15,12 @@ class Invoices extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'client_id',
+        'user_id',
+        'customer_id',
+        'invoice_number',
         'invoice_date',
+        'items',
+        "paid_amount",
         "total_amount"
     ];
 
