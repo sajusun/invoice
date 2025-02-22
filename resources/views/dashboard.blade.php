@@ -1,33 +1,49 @@
-{{--<x-app-layout>--}}
-{{--    <x-slot name="header">--}}
-{{--        <h2 class="font-semibold text-xl text-gray-800 leading-tight">--}}
-{{--            {{ __('Dashboard') }}--}}
-{{--        </h2>--}}
-{{--    </x-slot>--}}
+@php use App\Http\Controllers\CustomersController; @endphp
+@php
+    $customer_ctrl= new CustomersController();
+@endphp
 
-{{--    <div class="py-12">--}}
-{{--        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">--}}
-{{--            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">--}}
-{{--                <div class="p-6 text-gray-900">--}}
-{{--                    {{ __("You're logged in!") }}--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</x-app-layout>--}}
     <!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
     <title>Dashboard</title>
-{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">--}}
+    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">--}}
     <style>
-        body { font-family: Arial, sans-serif; }
-        .sidebar { width: 250px; height: 100vh; position: fixed; background: #1b2a4e; color: white; padding: 20px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 10px; margin: 5px 0; }
-        .sidebar a:hover { background: #162241; }
-        .main-content { margin-left: 270px; padding: 20px; }
-        .card { border: none; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #1b2a4e;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        .sidebar a:hover {
+            background: #162241;
+        }
+
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -38,6 +54,7 @@
     <h3>Dashboard</h3>
     <a href="/">Home</a>
     <a href="/invoice">Invoice</a>
+    <a href="/customers">Customers List</a>
     <a href="{{ route('profile.edit') }}">Profile</a>
 </div>
 
@@ -50,7 +67,7 @@
         <div class="col-md-4">
             <div class="card p-3">
                 <h5>Total Invoices</h5>
-                <p>25</p>
+                <p>{{$num_of_invoices}}</p>
             </div>
         </div>
         <div class="col-md-4">
@@ -79,18 +96,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>$500</td>
-                <td>Paid</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Jane Smith</td>
-                <td>$750</td>
-                <td>Pending</td>
-            </tr>
+            @foreach($invoices as $invoice)
+                <tr>
+                    <td>{{$invoice['invoice_number']}}</td>
+                    <td>{{$customer_ctrl->customer_name($invoice['customer_id'])->name}}</td>
+                    <td>{{$invoice['total_amount']}}</td>
+                    <td>{{$invoice['status']}}</td>
+                </tr>
+            @endforeach
+
+{{--            <tr>--}}
+{{--                <td>1</td>--}}
+{{--                <td>John Doe</td>--}}
+{{--                <td>$500</td>--}}
+{{--                <td>Paid</td>--}}
+{{--            </tr>--}}
+{{--            <tr>--}}
+{{--                <td>2</td>--}}
+{{--                <td>Jane Smith</td>--}}
+{{--                <td>$750</td>--}}
+{{--                <td>Pending</td>--}}
+{{--            </tr>--}}
             </tbody>
         </table>
     </div>
@@ -101,3 +127,10 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
+{{--<script>--}}
+{{--    serverRequest = new serverRequest();--}}
+{{--    serverRequest.url = "http://localhost:8000/invoice/all"--}}
+{{--    serverRequest.xGet().then((response) => {--}}
+{{--        console.log(response)--}}
+{{--    })--}}
+{{--</script>--}}

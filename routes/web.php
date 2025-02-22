@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -10,7 +11,9 @@ Route::get('/', function () {
 Route::get('/invoice', function () {
     return view('pages/invoice');
 });
-Route::post('/invoice', [InvoicesController::class, 'makeInvoice']);
+Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
+Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices']);
+Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
 
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');
@@ -21,9 +24,8 @@ Route::get('/terms-of-service', function () {
 Route::get('/contact-us', function () {
     return view('pages.contact');
 });
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard',[DashboardController::class,'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

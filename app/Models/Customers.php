@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @method static create(array $array)
+ * @method static get(string $string)
+ * @method static find(string $id, string[] $array)
  */
 class Customers extends Model
 {

@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Customers;
 use App\Models\Invoice_Items;
 use App\Models\Invoices;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use function Pest\Laravel\json;
 
 
 class InvoicesController extends Controller
@@ -68,13 +70,20 @@ class InvoicesController extends Controller
 ////            'total_price'=>$query['total_price'],
 //        ]);
 //    }
-    public function get_all_invoices(): JsonResponse
+    public function get_all_invoices(): array
     {
 //        return all invoices for current user
-        $invoices = Invoices::all()->where('user_id', Auth::id());
-        $invoices2 = Customers::class->invoices();
-
-        return response()->json($invoices2);
+//        $invoices = Invoices::all()->where('user_id', Auth::id());
+        $customers = User::find(Auth::id())->customers;
+        $invoices = User::find(Auth::id())->invoices;
+        $num_of_invoices = User::find(Auth::id())->invoices->count();
+        //  $user=$invoices2->invoices;
+        return ['invoices'=>$invoices,
+        'num_of_invoices'=>$num_of_invoices];
+//        return response()->json([
+//            'success' => $customers,
+//            'data' => $invoices
+//        ]);
     }
 
     public function get_invoice(Request $id): JsonResponse
