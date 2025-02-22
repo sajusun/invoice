@@ -1,14 +1,8 @@
-@php use App\Http\Controllers\CustomersController; @endphp
-@php
-    $customer_ctrl= new CustomersController();
-@endphp
-
-    <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
     <title>Dashboard</title>
-    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">--}}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -99,7 +93,7 @@
             @foreach($invoices as $invoice)
                 <tr>
                     <td>{{$invoice['invoice_number']}}</td>
-                    <td>{{$customer_ctrl->customer_name($invoice['customer_id'])->name}}</td>
+                    <td>{{$invoice->customer->name}}</td>
                     <td>{{$invoice['total_amount']}}</td>
                     <td>{{$invoice['status']}}</td>
                 </tr>
@@ -127,10 +121,10 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
-{{--<script>--}}
-{{--    serverRequest = new serverRequest();--}}
-{{--    serverRequest.url = "http://localhost:8000/invoice/all"--}}
-{{--    serverRequest.xGet().then((response) => {--}}
-{{--        console.log(response)--}}
-{{--    })--}}
-{{--</script>--}}
+<script>
+    serverRequest = new serverRequest();
+    serverRequest.url = "http://localhost:8000/invoice/all"
+    serverRequest.xGet().then((response) => {
+        console.log(response)
+    })
+</script>

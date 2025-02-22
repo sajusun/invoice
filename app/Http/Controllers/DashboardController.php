@@ -11,8 +11,9 @@ class DashboardController extends Controller
    public function dashboard():View
    {
        $invoice_ctrl = new InvoicesController();
-       $data=$invoice_ctrl->get_all_invoices();
-        return view('dashboard',['num_of_invoices'=>$data['num_of_invoices'],'invoices'=>$data['invoices']]);
+       $invoices=$invoice_ctrl->get_all_invoices();
+       $num_of_invoices=$invoice_ctrl->num_of_invoices();
+        return view('dashboard',['num_of_invoices'=>$num_of_invoices,'invoices'=>$invoices]);
     }
 
 }

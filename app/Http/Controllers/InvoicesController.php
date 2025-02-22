@@ -6,6 +6,7 @@ use App\Models\Customers;
 use App\Models\Invoice_Items;
 use App\Models\Invoices;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -70,20 +71,24 @@ class InvoicesController extends Controller
 ////            'total_price'=>$query['total_price'],
 //        ]);
 //    }
-    public function get_all_invoices(): array
+    public function get_all_invoices(): Collection
     {
 //        return all invoices for current user
-//        $invoices = Invoices::all()->where('user_id', Auth::id());
-        $customers = User::find(Auth::id())->customers;
+       $invoices = Invoices::all()->where('user_id', Auth::id());
+        $customers = Invoices::with('customer')->where('user_id', Auth::id())->get();
+
         $invoices = User::find(Auth::id())->invoices;
-        $num_of_invoices = User::find(Auth::id())->invoices->count();
         //  $user=$invoices2->invoices;
-        return ['invoices'=>$invoices,
-        'num_of_invoices'=>$num_of_invoices];
+        return $customers;
 //        return response()->json([
 //            'success' => $customers,
 //            'data' => $invoices
 //        ]);
+    }
+
+    public function num_of_invoices()
+    {
+        return User::find(Auth::id())->invoices->count();
     }
 
     public function get_invoice(Request $id): JsonResponse
