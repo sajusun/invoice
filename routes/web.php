@@ -15,7 +15,7 @@ Route::get('/invoice', function () {
 Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
 Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices']);
 Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
-Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->middleware(['auth', 'verified'])->name('customers');
+Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
 
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');

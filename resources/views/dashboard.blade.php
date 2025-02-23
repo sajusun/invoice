@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
@@ -7,6 +7,7 @@
         body {
             font-family: Arial, sans-serif;
         }
+
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -44,12 +45,18 @@
 @include('custom-layouts.navbar')
 {{--left site bar--}}
 <div class="sidebar">
-@include('custom-layouts.sidebar_dashboard')
+    @include('custom-layouts.sidebar_dashboard')
 </div>
 
 <div class="main-content">
     <nav class="navbar navbar-light bg-light p-3 mb-4">
-        <span>{{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong></span>
+{{--        @if(session('success'))--}}
+{{--           <span>{{ session('success'). session()->forget('success')}}</span>--}}
+
+{{--        @endif--}}
+        <span>
+            {{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong>
+        </span>
     </nav>
 
     <div class="row">
@@ -78,7 +85,7 @@
         <table class="table">
             <thead>
             <tr>
-                <th>#</th>
+                <th>Invoice Number</th>
                 <th>Client</th>
                 <th>Amount</th>
                 <th>Status</th>
@@ -94,18 +101,18 @@
                 </tr>
             @endforeach
 
-{{--            <tr>--}}
-{{--                <td>1</td>--}}
-{{--                <td>John Doe</td>--}}
-{{--                <td>$500</td>--}}
-{{--                <td>Paid</td>--}}
-{{--            </tr>--}}
-{{--            <tr>--}}
-{{--                <td>2</td>--}}
-{{--                <td>Jane Smith</td>--}}
-{{--                <td>$750</td>--}}
-{{--                <td>Pending</td>--}}
-{{--            </tr>--}}
+            {{--            <tr>--}}
+            {{--                <td>1</td>--}}
+            {{--                <td>John Doe</td>--}}
+            {{--                <td>$500</td>--}}
+            {{--                <td>Paid</td>--}}
+            {{--            </tr>--}}
+            {{--            <tr>--}}
+            {{--                <td>2</td>--}}
+            {{--                <td>Jane Smith</td>--}}
+            {{--                <td>$750</td>--}}
+            {{--                <td>Pending</td>--}}
+            {{--            </tr>--}}
             </tbody>
         </table>
     </div>
