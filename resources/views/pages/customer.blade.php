@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
@@ -44,68 +44,55 @@
 @include('custom-layouts.navbar')
 {{--left site bar--}}
 <div class="sidebar">
-@include('custom-layouts.sidebar_dashboard')
+    @include('custom-layouts.sidebar_dashboard')
 </div>
 
 <div class="main-content">
     <nav class="navbar navbar-light bg-light p-3 mb-4">
-        <span>{{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong></span>
+{{--        <span>{{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong></span>--}}
     </nav>
 
     <div class="row">
         <div class="col-md-4">
             <div class="card p-3">
-                <h5>Total Invoices</h5>
-                <p>{{$num_of_invoices}}</p>
+                <h5>Total Customers</h5>
+                <p>{{$controller->total_customers()}}</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-3">
                 <h5>Pending Payments</h5>
-                <p>{{$status}}</p>
+{{--                <p>{{$status}}</p>--}}
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-3">
                 <h5>Total Revenue</h5>
-                <p>{{$total}}</p>
+{{--                <p>{{$total}}</p>--}}
             </div>
         </div>
     </div>
 
     <div class="mt-4">
-        <h4>Recent Invoices</h4>
+        <h4>Customers List</h4>
         <table class="table">
             <thead>
             <tr>
                 <th>#</th>
-                <th>Client</th>
-                <th>Amount</th>
-                <th>Status</th>
+                <th>Name</th>
+                <th>phone</th>
+                <th>email</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($invoices as $invoice)
+            @foreach($customers as $customer)
                 <tr>
-                    <td>{{$invoice['invoice_number']}}</td>
-                    <td>{{$invoice->customer->name}}</td>
-                    <td>{{$invoice['total_amount']}}</td>
-                    <td>{{$invoice['status']}}</td>
+                    <td>{{$customer->id}}</td>
+                    <td>{{$customer['name']}}</td>
+                    <td>{{$customer['phone']}}</td>
+                    <td>{{$customer['email']}}</td>
                 </tr>
             @endforeach
-
-{{--            <tr>--}}
-{{--                <td>1</td>--}}
-{{--                <td>John Doe</td>--}}
-{{--                <td>$500</td>--}}
-{{--                <td>Paid</td>--}}
-{{--            </tr>--}}
-{{--            <tr>--}}
-{{--                <td>2</td>--}}
-{{--                <td>Jane Smith</td>--}}
-{{--                <td>$750</td>--}}
-{{--                <td>Pending</td>--}}
-{{--            </tr>--}}
             </tbody>
         </table>
     </div>
@@ -116,10 +103,10 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
-{{--<script>--}}
-{{--    serverRequest = new serverRequest();--}}
-{{--    serverRequest.url = "http://localhost:8000/invoice/all"--}}
-{{--    serverRequest.xGet().then((response) => {--}}
-{{--        console.log(response)--}}
-{{--    })--}}
-{{--</script>--}}
+<script>
+    serverRequest = new serverRequest();
+    serverRequest.url = "http://localhost:8000/dashboard/customers"
+    serverRequest.xGet().then((response) => {
+        console.log(response)
+    })
+</script>

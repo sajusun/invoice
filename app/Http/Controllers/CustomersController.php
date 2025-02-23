@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class CustomersController extends Controller
 {
-    public function customer_name(string $id)
+    public function customers()
     {
-       // $customar=Customers::all(['name'])->where(['invoice_number', $id]);
-        $name = Customers::find($id,['name']);
+       return  User::find(Auth::id())->customers;
+    }
 
-
-        return $name;
+    public function total_customers()
+    {
+       return User::find(Auth::id())->customers()->count();
     }
 }

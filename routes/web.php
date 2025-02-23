@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ProfileController;
@@ -14,6 +15,7 @@ Route::get('/invoice', function () {
 Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
 Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices']);
 Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
+Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->middleware(['auth', 'verified'])->name('customers');
 
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');

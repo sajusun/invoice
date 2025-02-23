@@ -18,12 +18,13 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
+        //first query
         $customer = Customers::create([
             'user_id' => Auth::id(),
             'name' => request('issue_to'),
             'phone' => request('phone'),
         ]);
-//
+        //second query
         $invoice = Invoices::create([
             'user_id' => Auth::id(),
             'customer_id' => $customer->id,
@@ -33,17 +34,7 @@ class InvoicesController extends Controller
             'paid_amount' => request('amount_paid'),
             'total_amount' => request('amount_total'),
         ]);
-//
-//        foreach ($request->raws as $datum) {
-//            $this->queryLoop($datum, $invoice->id);
-//        }
-//
-//        if ($invoice) {
-//            return response()->json([
-//                "success" => true,
-//                "data" => $invoice
-//            ]);
-//        }
+
         return response()->json([
             "success" => $invoice,
             "data" => Request('items'),
@@ -61,29 +52,12 @@ class InvoicesController extends Controller
         return $year . $month . $day . $randomNumber;
     }
 
-//    private function queryLoop($query, $id): void
-//    {
-//        $query2 = Invoice_Items::create([
-//            'invoice_id' => $id,
-//            'description' => $query['description'],
-//            'quantity' => $query['quantity'],
-//            'unit_price' => $query['unit_price'],
-////            'total_price'=>$query['total_price'],
-//        ]);
-//    }
     public function get_all_invoices(): Collection
     {
-//        return all invoices for current user
-       $invoices = Invoices::all()->where('user_id', Auth::id());
+        //return all invoices for current user
         $customers = Invoices::with('customer')->where('user_id', Auth::id())->get();
-
         $invoices = User::find(Auth::id())->invoices;
-        //  $user=$invoices2->invoices;
         return $customers;
-//        return response()->json([
-//            'success' => $customers,
-//            'data' => $invoices
-//        ]);
     }
 
     public function num_of_invoices()
@@ -95,6 +69,17 @@ class InvoicesController extends Controller
     {
         $invoices = Invoices::all()->where('user_id', Auth::id())->where('id', $id);
         return response()->json($invoices);
+    }
+
+
+    public function sum_of_total()
+    {
+        return Invoices::where('user_id', Auth::id())->sum('total_amount');
+    }
+
+    public function invoice_status()
+    {
+     return  Invoices::where('user_id', Auth::id())->get('status')->count();
     }
 
     public function errorHandle(): string
