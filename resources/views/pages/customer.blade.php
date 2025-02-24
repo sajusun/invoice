@@ -2,42 +2,7 @@
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
-    <title>Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            background: #1b2a4e;
-            color: white;
-            padding: 20px;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            margin: 5px 0;
-        }
-
-        .sidebar a:hover {
-            background: #162241;
-        }
-
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <title>Customers</title>
 </head>
 <body>
 {{--navbar--}}
@@ -48,10 +13,6 @@
 </div>
 
 <div class="main-content">
-    <nav class="navbar navbar-light bg-light p-3 mb-4">
-{{--        <span>{{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong></span>--}}
-    </nav>
-
     <div class="row">
         <div class="col-md-4">
             <div class="card p-3">
@@ -73,12 +34,12 @@
         </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 list-view">
         <h4>Customers List</h4>
         <table class="table">
             <thead>
             <tr>
-                <th>#</th>
+                <th>Sn</th>
                 <th>Name</th>
                 <th>phone</th>
                 <th>email</th>
@@ -86,7 +47,7 @@
             </thead>
             <tbody>
             @foreach($customers as $customer)
-                <tr>
+                <tr class="list" data-id="{{$customer->id}}">
                     <td>{{$customer->id}}</td>
                     <td>{{$customer['name']}}</td>
                     <td>{{$customer['phone']}}</td>
@@ -105,8 +66,17 @@
 </html>
 <script>
     serverRequest = new serverRequest();
-    serverRequest.url = "http://localhost:8000/dashboard/customers"
-    serverRequest.xGet().then((response) => {
-        console.log(response)
-    })
+
+    // Select all elements with class "customer-item"
+    document.querySelectorAll(".list").forEach(item => {
+        item.addEventListener("click", function() {
+            let customerId = this.getAttribute("data-id");
+            console.log(customerId)
+            serverRequest.url = `http://localhost:8000/dashboard/customers/${customerId}`;
+            serverRequest.xGet().then((response) => {
+                console.log(response)
+            })
+        });
+    });
+
 </script>

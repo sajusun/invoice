@@ -23,6 +23,6 @@ class Customers extends Model
 
     // A customer can have multiple invoices
     public function invoices(): HasMany {
-        return $this->hasMany(Invoices::class);
+        return $this->hasMany(Invoices::class, 'customer_id', 'phone');
     }
 }

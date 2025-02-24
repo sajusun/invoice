@@ -3,42 +3,7 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
 
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            background: #1b2a4e;
-            color: white;
-            padding: 20px;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 10px;
-            margin: 5px 0;
-        }
-
-        .sidebar a:hover {
-            background: #162241;
-        }
-
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
 </head>
 <body>
 {{--navbar--}}
@@ -80,7 +45,7 @@
         </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 list-view">
         <h4>Recent Invoices</h4>
         <table class="table">
             <thead>
@@ -93,7 +58,7 @@
             </thead>
             <tbody>
             @foreach($invoices as $invoice)
-                <tr>
+                <tr class="list">
                     <td>{{$invoice['invoice_number']}}</td>
                     <td>{{$invoice->customer->name}}</td>
                     <td>{{$invoice['total_amount']}}</td>

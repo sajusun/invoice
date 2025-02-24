@@ -173,3 +173,38 @@ table td input {
     }
 
 }
+
+
+/*dashboard css*/
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    background: #1b2a4e;
+    color: white;
+    padding: 20px;
+}
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.sidebar a:hover {
+    background: #162241;
+}
+
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.list-view .list{
+    cursor: pointer;
+}
