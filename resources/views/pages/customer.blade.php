@@ -16,26 +16,26 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card p-3">
-                <h5>Total Customers</h5>
-                <p>{{$controller->total_customers()}}</p>
+                <h5>Total Invoice</h5>
+                <p id="invoice_Length">None</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-3">
                 <h5>Pending Payments</h5>
-{{--                <p>{{$status}}</p>--}}
+                <p id="pending">None</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-3">
                 <h5>Total Revenue</h5>
-{{--                <p>{{$total}}</p>--}}
+                <p id="revenue">None</p>
             </div>
         </div>
     </div>
 
     <div class="mt-4 list-view">
-        <h4>Customers List</h4>
+        <h4>Total Customers : {{$controller->total_customers()}}</h4>
         <table class="table">
             <thead>
             <tr>
@@ -65,16 +65,26 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
 <script>
-    serverRequest = new serverRequest();
+    function set_invoices(data) {document.getElementById('invoice_Length').innerText = data;}
+    function set_pending(data) {document.getElementById('pending').innerText = data;}
+    function set_revenue(data) {document.getElementById('revenue').innerText = data;}
 
+    serverRequest = new serverRequest();
     // Select all elements with class "customer-item"
     document.querySelectorAll(".list").forEach(item => {
-        item.addEventListener("click", function() {
+        item.addEventListener("click", function () {
             let customerId = this.getAttribute("data-id");
+            document.querySelectorAll(".list td").forEach(el => el.classList.remove("active"));
+            this.querySelectorAll("td").forEach(th => th.classList.add("active"));
+
             console.log(customerId)
             serverRequest.url = `http://localhost:8000/dashboard/customers/${customerId}`;
             serverRequest.xGet().then((response) => {
-                console.log(response)
+                console.log(response['customer_data'])
+                let object = response['customer_data'];
+                set_invoices(object.invoices.length)
+                set_pending(object.invoices.status)
+                set_revenue(object.invoices.total)
             })
         });
     });

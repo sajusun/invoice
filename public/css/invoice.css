@@ -207,4 +207,10 @@ table td input {
 }
 .list-view .list{
     cursor: pointer;
+    padding: 10px;
+    transition: background 0.3s;
+}
+.active{
+    background: #3498db!important;
+    color: white!important;
 }
