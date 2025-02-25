@@ -18,13 +18,20 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
-        //first query
-        $customer = Customers::create([
-            'user_id' => Auth::id(),
-            'name' => request('issue_to'),
-            'phone' => request('phone'),
-        ]);
-        //second query
+        $user=User::find(Auth::id());
+//        search have any existing customer
+        $customer=$user->customers()->where('phone',request('phone'))->first();
+        if (!$customer) {
+//            insert new customer
+            $customer = Customers::create([
+                'user_id' => Auth::id(),
+                'name' => request('issue_to'),
+                'phone' => request('phone'),
+            ]);
+        }
+
+
+        //second query - inset invoice
         $invoice = Invoices::create([
             'user_id' => Auth::id(),
             'customer_id' => $customer->id,

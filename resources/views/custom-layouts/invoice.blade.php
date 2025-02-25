@@ -224,7 +224,7 @@
             items:data
         }
         calculateTotal();
-        serverRequest.url = 'http://localhost:8000/invoice';
+        serverRequest.url = 'http://localhost:8000/invoice/create';
         serverRequest.data = server_data;
         serverRequest.xPost().then((response) => {
             console.log(response)
