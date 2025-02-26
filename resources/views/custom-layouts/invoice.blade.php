@@ -286,5 +286,8 @@
     document.getElementById("emailInputCheck").addEventListener("change", function (event) {
         document.getElementById("email").classList.toggle("hide");
     });
+
+
+
 </script>
 

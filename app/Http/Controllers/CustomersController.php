@@ -15,18 +15,28 @@ class CustomersController extends Controller
     {
        return  User::find(Auth::id())->customers;
     }
-
+//dont remove function here
     public function total_customers()
     {
        return User::find(Auth::id())->customers()->count();
     }
+    public function total_revenue($id)
+    {
+        return User::find(Auth::id())->invoices->where('customer_id', $id)->sum('total_amount');
+    }
+    public function total_pending($id)
+    {
+        return User::find(Auth::id())->invoices->where('customer_id',$id)->where('status', 'pending')->count();
+    }
 
     public function customer_data($id)
     {
-//        $customers = Customers::with('invoices')->where('customers_id',$id)->get();
       return Customers::with('invoices')->findOrFail($id);
+    }
 
-      // return User::find(Auth::id())->customers()->where('id', $id)->first();
+    public function get_customer_by_invoiceId($invoice_id)
+    {
+        return Customers::with('invoices')->where('invoice_id', $invoice_id)->first();
 
     }
 }

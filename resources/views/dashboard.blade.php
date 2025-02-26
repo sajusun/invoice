@@ -3,7 +3,40 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Dashboard</title>
+<style>
+    /* Customer Info Card */
+    .customer-card {
+        display: block;
+        width: auto;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+        margin: 1rem auto;
+    }
 
+    .customer-card.hidden {
+        display: none;
+    }
+
+    .customer-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+    .customer-details{
+        display: flex;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+    }
+
+    .customer-details h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+</style>
 </head>
 <body>
 {{--navbar--}}
@@ -15,10 +48,6 @@
 
 <div class="main-content">
     <nav class="navbar navbar-light bg-light p-3 mb-4">
-{{--        @if(session('success'))--}}
-{{--           <span>{{ session('success'). session()->forget('success')}}</span>--}}
-
-{{--        @endif--}}
         <span>
             {{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong>
         </span>
@@ -44,6 +73,16 @@
             </div>
         </div>
     </div>
+    <!-- Customer Info Card -->
+    <div class="customer-card hidden" id="customerCard">
+        <div class="customer-details">
+            <p><strong>Name:</strong> <span id="customerName"></span></p>
+            <p><strong>Email:</strong> <span id="customerEmail"></span></p>
+            <p><strong>Phone:</strong> <span id="customerPhone"></span></p>
+            <p><strong>Address:</strong> <span id="customerAddress"></span></p>
+        </div>
+    </div>
+    <!-- Customer Info Card -->
 
     <div class="mt-4 list-view">
         <h4>Recent Invoices</h4>
@@ -58,26 +97,13 @@
             </thead>
             <tbody>
             @foreach($invoices as $invoice)
-                <tr class="list">
+                <tr class="list" data-id="{{$invoice->customer->id}}">
                     <td>{{$invoice['invoice_number']}}</td>
                     <td>{{$invoice->customer->name}}</td>
                     <td>{{$invoice['total_amount']}}</td>
                     <td>{{$invoice['status']}}</td>
                 </tr>
             @endforeach
-
-            {{--            <tr>--}}
-            {{--                <td>1</td>--}}
-            {{--                <td>John Doe</td>--}}
-            {{--                <td>$500</td>--}}
-            {{--                <td>Paid</td>--}}
-            {{--            </tr>--}}
-            {{--            <tr>--}}
-            {{--                <td>2</td>--}}
-            {{--                <td>Jane Smith</td>--}}
-            {{--                <td>$750</td>--}}
-            {{--                <td>Pending</td>--}}
-            {{--            </tr>--}}
             </tbody>
         </table>
     </div>
@@ -88,10 +114,45 @@
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
-{{--<script>--}}
-{{--    serverRequest = new serverRequest();--}}
-{{--    serverRequest.url = "http://localhost:8000/invoice/all"--}}
-{{--    serverRequest.xGet().then((response) => {--}}
-{{--        console.log(response)--}}
-{{--    })--}}
-{{--</script>--}}
+<script>
+    function set_name(data) {
+        document.getElementById('customerName').innerText = data;
+    }
+
+    function set_email(data) {
+        document.getElementById('customerEmail').innerText = data;
+    }
+
+    function set_phone(data) {
+        document.getElementById('customerPhone').innerText = data;
+    }
+    function set_address(data) {
+        document.getElementById('customerAddress').innerText = data;
+    }
+serverRequest=new serverRequest();
+let customerId;
+    // Select all elements with class "customer-item"
+    document.querySelectorAll(".list").forEach(item => {
+        item.addEventListener("click", function () {
+            customerId = this.getAttribute("data-id");
+            document.querySelectorAll(".list td").forEach(el => el.classList.remove("active"));
+            this.querySelectorAll("td").forEach(th => th.classList.add("active"));
+            document.getElementById("customerCard").classList.add("hidden");
+
+            // // console.log(customerId)
+            serverRequest.url = `http://localhost:8000/dashboard/customers/${customerId}`;
+            serverRequest.xGet().then((response) => {
+                console.log(response['customer_data'])
+                let object = response['customer_data'];
+                // set_invoices(object.invoices.length)
+                 set_name(response['customer_data']['name'])
+                 set_email(response['customer_data']['email'])
+                 set_phone(response['customer_data']['phone'])
+                 set_address(response['customer_data']['address'])
+
+                document.getElementById("customerCard").classList.remove("hidden");
+
+            })
+        });
+    });
+</script>

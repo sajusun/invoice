@@ -18,6 +18,7 @@ Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
 
 Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
 Route::get('/dashboard/customers/{id}', [DashboardController::class, 'get_customer_data']);
+Route::get('/dashboard/customers/{id}/invoice', [DashboardController::class, 'get_customer_invoice']);
 
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');

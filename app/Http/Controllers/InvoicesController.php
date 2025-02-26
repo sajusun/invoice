@@ -18,9 +18,9 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
-        $user=User::find(Auth::id());
+        $user = User::find(Auth::id());
 //        search have any existing customer
-        $customer=$user->customers()->where('phone',request('phone'))->first();
+        $customer = $user->customers()->where('phone', request('phone'))->first();
         if (!$customer) {
 //            insert new customer
             $customer = Customers::create([
@@ -62,9 +62,13 @@ class InvoicesController extends Controller
     public function get_all_invoices(): Collection
     {
         //return all invoices for current user
-        $customers = Invoices::with('customer')->where('user_id', Auth::id())->get();
-        $invoices = User::find(Auth::id())->invoices;
-        return $customers;
+        return Invoices::with('customer')->where('user_id', Auth::id())->get();
+    }
+
+//    return a specific customers invoice
+    public function find_invoice($id): array
+    {
+        return User::find(Auth::id())->invoices->where('customer_id', $id)->all();
     }
 
     public function num_of_invoices()
@@ -86,17 +90,17 @@ class InvoicesController extends Controller
 
     public function invoice_status()
     {
-     return  Invoices::where('user_id', Auth::id())->get('status')->count();
+        return Invoices::where('user_id', Auth::id())->get('status')->count();
     }
 
-    public function errorHandle(): string
-    {
-        return '@if ($errors->any())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                <span style="font-size: .8rem">{{ $error }}</span>
-            @endforeach
-        </div>
-    @endif';
-    }
+//    public function errorHandle(): string
+//    {
+//        return '@if ($errors->any())
+//        <div class="alert alert-danger">
+//            @foreach ($errors->all() as $error)
+//                <span style="font-size: .8rem">{{ $error }}</span>
+//            @endforeach
+//        </div>
+//    @endif';
+//    }
 }
