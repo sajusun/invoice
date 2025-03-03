@@ -4,12 +4,21 @@
     --color1: #21B7A5;
     --ash: #ced4da;
     --color2: var(--primary);
+
+    --font0x: .5rem;
+    --font1x: 1rem;
+    --font2x: 1.5rem;
+    --font3x: 2rem;
+    --font4x: 2.5rem;
+    --font5x: 3rem;
 }
-.color-main{
-    color: var(--color1)!important;
+
+.color-main {
+    color: var(--color1) !important;
 }
-.bg-color-main{
-    background-color: var(--color1)!important;
+
+.bg-color-main {
+    background-color: var(--color1) !important;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
@@ -29,6 +38,54 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--bg-color);
+}
+
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: var(--font2x);
+    }
+
+    .btn-lg {
+        padding: .25rem .5rem;
+        font-size: .5rem;
+        line-height: 1.5;
+        border-radius: .2rem;
+    }
+    .auth div a{
+        padding: .4rem 1rem;
+    }
+    .navbar-brand{
+        font-size: var(--font1x)!important;
+    }
+    /*footer text*/
+    footer{
+        font-size: var(--font0x)!important;
+    }
+/*    login page*/
+    .center-div{
+        font-size: .725rem!important;
+        h2 {
+            font-size: var(--font1x) !important;
+        }
+        .form-container{
+            width: 90%;
+            button{
+                padding: .5rem;
+                font-size: var(--font0x)!important;
+            }
+        }
+    }
+    .c
+}
+.navbar-brand{
+    font-size: 2rem;
+    padding-top: .1rem;
+    font-family: 'Roboto Thin', math;
+    font-variant: small-caps;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .invoice-container {
@@ -259,6 +316,7 @@ header .container .btn {
     font-weight: bold;
     border: .1rem solid var(--color1);
 }
+
 header .container .btn:hover {
     background-color: var(--bg-color);
     color: var(--color1);

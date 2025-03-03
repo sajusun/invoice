@@ -24,7 +24,10 @@
                 <div class="col-md-6">
                     <input id="issueFrom" type="text" class="form-control" placeholder="Who is this from?">
                     <input id="issueTo" type="text" class="form-control mt-2" placeholder="Who is this to?">
-                    <input id="ContactNumber" type="text" class="form-control mt-2" placeholder="Contact Number">
+                    <input id="ContactNumber" list="number_list" type="text" class="form-control mt-2" placeholder="Contact Number">
+                    <datalist id="number_list">
+                        <option value="1"></option>
+                    </datalist>
                 </div>
                 <div class="col-md-6">
                     <input id="date" type="text" class="form-control datepicker" placeholder="Date">
