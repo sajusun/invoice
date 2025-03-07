@@ -213,4 +213,5 @@ table td input {
 .active{
     background: #3498db!important;
     color: white!important;
+    transition: background 0.4s ease, transform 0.4s ease;
 }

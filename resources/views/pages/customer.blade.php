@@ -76,19 +76,19 @@
     function set_revenue(data) {
         document.getElementById('revenue').innerText = data;
     }
-   let customerId;
+
+    let customerId;
     serverRequest = new serverRequest();
     // Select all elements with class "customer-item"
     document.querySelectorAll(".list").forEach(item => {
         item.addEventListener("click", function () {
-             customerId = this.getAttribute("data-id");
+            customerId = this.getAttribute("data-id");
             document.querySelectorAll(".list td").forEach(el => el.classList.remove("active"));
             this.querySelectorAll("td").forEach(th => th.classList.add("active"));
 
             console.log(customerId)
             serverRequest.url = `http://localhost:8000/dashboard/customers/${customerId}`;
             serverRequest.xGet().then((response) => {
-                console.log(response['customer_data'])
                 let object = response['customer_data'];
                 set_invoices(object.invoices.length)
                 set_pending(response['customer_pending'])
@@ -96,12 +96,13 @@
             })
         });
     });
-function find_invoices() {
 
-   serverRequest.url=`http://localhost:8000/dashboard/customers/${customerId}/invoice`;
-   serverRequest.xGet().then( (response)=>{
-       console.log(response)
-   })
+    function find_invoices() {
 
-}
+        serverRequest.url = `http://localhost:8000/dashboard/customers/${customerId}/invoice`;
+        serverRequest.xGet().then((response) => {
+            console.log(response)
+        })
+
+    }
 </script>

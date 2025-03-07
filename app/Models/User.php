@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @method static find(int|string|null $id)
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -37,7 +36,7 @@ class User extends Authenticatable
 
     public function customers():HasMany
     {
-        return $this->hasMany(customers::class);
+        return $this->hasMany(Customers::class);
     }
 
     /**
