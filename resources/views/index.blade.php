@@ -12,7 +12,7 @@
     <div class="container">
         <h1 class="display-4">Create Professional Invoices Instantly</h1>
         <p class="lead">Simple, fast, and free invoice generator</p>
-        <a href="#invoice-editor" class="btn btn-lg">Create Invoice</a>
+        <a href="/invoice" class="btn btn-lg">Create Invoice</a>
     </div>
 </header>
 
@@ -21,8 +21,8 @@
     <div class="container text-center">
         <h2>Invoice Generator</h2>
         <p class="text-muted">Easily customize and download your invoice</p>
-        <div class="border p-4 bg-light rounded">
-            @include('custom-layouts.invoice')
+        <div class="guide-card">
+            @include('custom-layouts.features_card')
         </div>
     </div>
 </section>
