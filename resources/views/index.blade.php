@@ -16,15 +16,8 @@
     </div>
 </header>
 
-{{--<!-- Invoice Editor Section (Basic Structure) -->--}}
-<section id="invoice-editor" class="py-5">
-    <div class="container text-center">
-        <h2>Invoice Generator</h2>
-        <p class="text-muted">Easily customize and download your invoice</p>
-        <div class="guide-card">
-            @include('custom-layouts.features_card')
-        </div>
-    </div>
+<section class="guide-card">
+    @include('custom-layouts.features_card')
 </section>
 
 <!-- Footer -->
