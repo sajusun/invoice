@@ -68,7 +68,7 @@
 
             <div class="mt-3 text-end">
                 <p>Subtotal: <span id="subtotal">BDT 0.00</span></p>
-                <p>Tax <input type="number" id="tax" value="0" class="form-control d-inline" style="width: 70px;"
+                <p id="taxBox">Tax <input type="number" id="tax" value="0" class="form-control d-inline" style="width: 70px;"
                               onchange="calculateTotal()"> %</p>
                 <p>Total: <span id="total">BDT 0.00</span></p>
                 <p>Amount Paid: <input type="number" id="paid" value="0" class="form-control d-inline"
@@ -109,6 +109,13 @@
                     <input class="form-check-input" type="checkbox" value="" id="emailInputCheck">
                     <label class="form-check-label" for="emailInputCheck">
                         add email input
+                    </label>
+                </div>
+                <hr>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" id="taxField">
+                    <label class="form-check-label" for="taxField">
+                        Include Tax Field
                     </label>
                 </div>
             </div>
@@ -168,6 +175,15 @@
     function balance_paid() {
         return document.getElementById("paid").value;
     }
+    function isTax() {
+        return document.getElementById("taxField").checked;
+    }
+
+    if(!isTax()){
+        document.getElementById("taxBox").classList.add('hide')
+    }else {
+        document.getElementById("taxBox").classList.remove('hide')
+    }
 
     let data = [];
     let balance = 0;
@@ -194,7 +210,11 @@
         });
 
         document.getElementById("subtotal").innerText = `${currency} ${subtotal.toFixed(2)}`;
-        let tax = document.getElementById("tax").value;
+        let tax=0;
+        if(isTax()){
+            tax = document.getElementById("tax").value;
+        }
+
         total = subtotal + (subtotal * (tax / 100));
         document.getElementById("total").innerText = `${currency} ${total.toFixed(2)}`;
         paid = balance_paid();
@@ -288,6 +308,10 @@
 
     document.getElementById("emailInputCheck").addEventListener("change", function (event) {
         document.getElementById("email").classList.toggle("hide");
+    });
+    document.getElementById("taxField").addEventListener("change", function (event) {
+        document.getElementById("taxBox").classList.toggle("hide");
+        calculateTotal();
     });
 
 

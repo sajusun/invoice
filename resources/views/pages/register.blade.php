@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
-    <title>Register - Invozen</title>
+    <title>Sign Up for Invozen - Create Your Free Account</title>
+    <meta name="description" content="Join Invozen today and streamline your invoicing process. Sign up for free and start creating invoices in seconds.">
+    <meta name="keywords" content="sign up, invozen register, create account, free invoicing">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.invozen.com/register">
 </head>
 <body>
 @include('custom-layouts.navbar')

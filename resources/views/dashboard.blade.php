@@ -1,8 +1,15 @@
+<?php
+    $sn=0;
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
-    <title>Dashboard</title>
+    <title>Invozen Dashboard - Manage Your Invoices</title>
+    <meta name="description" content="Access your Invozen dashboard to track invoices, manage clients, and monitor payments with ease.">
+    <meta name="keywords" content="invoice dashboard, manage invoices, invoice tracker">
+    <meta name="robots" content="noindex, follow"> <!-- Prevents indexing but allows following links -->
+    <link rel="canonical" href="https://www.invozen.com/dashboard">
     <style>
         /* Customer Info Card */
         .customer-card {
@@ -47,11 +54,11 @@
 </div>
 
 <div class="main-content">
-    <nav class="navbar navbar-light bg-light p-3 mb-4">
-        <span>
-            {{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong>
-        </span>
-    </nav>
+{{--    <nav class="navbar navbar-light bg-light p-3 mb-4">--}}
+{{--        <span>--}}
+{{--            {{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong>--}}
+{{--        </span>--}}
+{{--    </nav>--}}
 
     <div class="row">
         <div class="col-md-4">
@@ -89,19 +96,36 @@
         <table class="table">
             <thead>
             <tr>
+                <th>#</th>
                 <th>Invoice Number</th>
                 <th>Customer Name</th>
                 <th>Amount</th>
                 <th>Status</th>
+                <th>&nbsp;</th>
             </tr>
             </thead>
             <tbody>
             @foreach($invoices as $invoice)
                 <tr class="list" data-id="{{$invoice->customer}}">
-                    <td>{{$invoice['invoice_number']}}</td>
+                    <td class="w-4">{{++$sn}}</td>
+                    <td class="left-1">{{$invoice['invoice_number']}}</td>
                     <td>{{$invoice->customer->name}}</td>
                     <td>{{$invoice['total_amount']}}</td>
                     <td>{{$invoice['status']}}</td>
+                    <td style="width: 10%;">
+                        <a href="#" class="table-link text-info">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                        </a>
+                        <a href="#" class="table-link danger">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                        </a>
+                    </td>
                 </tr>
             @endforeach
             </tbody>

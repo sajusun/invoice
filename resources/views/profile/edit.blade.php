@@ -1,46 +1,36 @@
-{{--<html>--}}
-{{--<head>--}}
-{{--    <title>Profile Edit</title>--}}
-{{--    @include('custom-layouts.headTagContent')--}}
-{{--</head>--}}
-{{--</html>--}}
-{{--<x-app-layout>--}}
-
-{{--@include('custom-layouts.navbar')--}}
-{{--    <div class="py-12">--}}
-{{--        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">--}}
-{{--            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">--}}
-{{--                <div class="max-w-xl">--}}
-{{--                    @include('profile.partials.update-profile-information-form')--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">--}}
-{{--                <div class="max-w-xl">--}}
-{{--                    @include('profile.partials.update-password-form')--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">--}}
-{{--                <div class="max-w-xl">--}}
-{{--                    @include('profile.partials.delete-user-form')--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</x-app-layout>--}}
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-@include('custom-layouts.headTagContent')
+    @include('custom-layouts.headTagContent')
     <title>Profile Update</title>
-
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        .nav-container { max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .profile-pic-container { text-align: center; position: relative; cursor: pointer; }
-        .profile-pic-container img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #1b2a4e; }
-        .profile-pic-container input { display: none; }
+        .nav-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-pic-container {
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-pic-container img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1b2a4e;
+        }
+
+        .profile-pic-container input {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -48,9 +38,13 @@
 
 <div class="nav-container">
     <h3 class="mb-3">Profile Information</h3>
-    <form>
+    <form method="post" action="{{ route('profile.update') }}">
+        @csrf
+        @method('patch')
         <div class="profile-pic-container" onclick="document.getElementById('profilePicInput').click()">
-            <img id="profilePic" src="https://cdn2.iconfinder.com/data/icons/people-flat-design/64/Face-Profile-User-Man-Boy-Person-Avatar-512.png" alt="Profile Picture">
+            <img id="profilePic"
+                 src="https://cdn2.iconfinder.com/data/icons/people-flat-design/64/Face-Profile-User-Man-Boy-Person-Avatar-512.png"
+                 alt="Profile Picture">
             <input type="file" id="profilePicInput" accept="image/*" onchange="previewProfilePic(event)">
         </div>
         <div class="mb-3 mt-3">
@@ -67,7 +61,9 @@
 
 <div class="nav-container mt-4">
     <h3 class="mb-3">Update Password</h3>
-    <form>
+    <form method="post" action=" {{ route('password.update') }}">
+        @csrf
+        @method('put')
         <div class="mb-3">
             <label class="form-label">Current Password</label>
             <input type="password" class="form-control" placeholder="Enter current password">
@@ -82,21 +78,75 @@
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <div class="max-w-xl">
-                        @include('profile.partials.delete-user-form')
-                    </div>
-                </div>
+    <div class="pt-4">
+        <button class="btn btn-danger" onclick="openPopup()">Delete Account</button>
+    </div>
+</div>
+<div class="popup-overlay" id="popup">
+    <div class="popup-box">
+        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
+            @csrf
+            @method('delete')
+
+            <h4 class="text-danger font-bold">
+                {{ __('Are you sure you want to delete your account?') }}
+            </h4>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            </p>
+
+            <div class="mt-6">
+                <label for="password" class="sr-only">Password</label>
+
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="form-control"
+                    placeholder="{{ __('Password') }}"
+                />
+                <x-input-error :messages="$errors->userDeletion->get('password')" class="error-mgs"/>
+            </div>
+
+            <div class="popup-buttons">
+                <button class="btn  btn-danger" onclick="confirmDelete()">Confirm</button>
+                <button class="cancel" onclick="closePopup()">Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function previewProfilePic(event) {
         const reader = new FileReader();
-        reader.onload = function() {
+        reader.onload = function () {
             document.getElementById('profilePic').src = reader.result;
         }
         reader.readAsDataURL(event.target.files[0]);
+    }
+
+    //end profile js
+    function openPopup() {
+        document.getElementById("popup").style.display = "flex";
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function confirmDelete() {
+        alert("Your account has been deleted.");
+        closePopup();
+    }
+
+    // Close popup when clicking outside the box
+    window.onclick = function (event) {
+        let popup = document.getElementById("popup");
+        if (event.target === popup) {
+            closePopup();
+        }
     }
 </script>
 </body>

@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
-    <title>Login - Invozen</title>
+    <title>Login to Invozen - Secure Access</title>
+    <meta name="description" content="Log in to your Invozen account to manage your invoices, clients, and payments securely.">
+    <meta name="keywords" content="login, invozen, account login, invoice software login">
+    <meta name="robots" content="noindex, nofollow"> <!-- Prevents search engines from indexing the login page -->
+    <link rel="canonical" href="https://www.invozen.com/login">
 </head>
 <body>
 @include('custom-layouts.navbar')
