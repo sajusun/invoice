@@ -28,7 +28,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -43,8 +43,14 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+        return redirect()->route('register')->with('message', 'Registered successfully! Please check your email to verify.');
 
-        return response()->json(['message' => 'User registered successfully! Please check your email to verify.']);
+//        return redirect(route('register',
+//            ['message'=>'registered successfully! Please check your email to verify.'],
+//            absolute: false));
+
+
+//        return response()->json(['message' => 'User registered successfully! Please check your email to verify.']);
 
 //        Auth::login($user);
 //

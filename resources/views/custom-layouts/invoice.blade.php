@@ -24,7 +24,8 @@
                 <div class="col-md-6">
                     <input id="issueFrom" type="text" class="form-control" placeholder="Who is this from?">
                     <input id="issueTo" type="text" class="form-control mt-2" placeholder="Who is this to?">
-                    <input id="ContactNumber" list="number_list" type="text" class="form-control mt-2" placeholder="Contact Number">
+                    <input id="ContactNumber" list="number_list" type="text" class="form-control mt-2"
+                           placeholder="Contact Number">
                     <datalist id="number_list">
                         <option value="1"></option>
                     </datalist>
@@ -67,9 +68,10 @@
             </div>
 
             <div class="mt-3 text-end">
-                <p>Subtotal: <span id="subtotal">BDT 0.00</span></p>
-                <p id="taxBox">Tax <input type="number" id="tax" value="0" class="form-control d-inline" style="width: 70px;"
-                              onchange="calculateTotal()"> %</p>
+                <p id="subtotalBox">Subtotal: <span id="subtotal">BDT 0.00</span></p>
+                <p id="taxBox">Tax <input type="number" id="tax" value="0" class="form-control d-inline"
+                                          style="width: 70px;"
+                                          onchange="calculateTotal()"> %</p>
                 <p>Total: <span id="total">BDT 0.00</span></p>
                 <p>Amount Paid: <input type="number" id="paid" value="0" class="form-control d-inline"
                                        style="width: 100px;" onchange="calculateTotal()"></p>
@@ -175,14 +177,17 @@
     function balance_paid() {
         return document.getElementById("paid").value;
     }
+
     function isTax() {
         return document.getElementById("taxField").checked;
     }
 
-    if(!isTax()){
+    if (!isTax()) {
         document.getElementById("taxBox").classList.add('hide')
-    }else {
+        document.getElementById("subtotalBox").classList.add('hide')
+    } else {
         document.getElementById("taxBox").classList.remove('hide')
+        document.getElementById("subtotalBox").classList.remove('hide')
     }
 
     let data = [];
@@ -210,8 +215,8 @@
         });
 
         document.getElementById("subtotal").innerText = `${currency} ${subtotal.toFixed(2)}`;
-        let tax=0;
-        if(isTax()){
+        let tax = 0;
+        if (isTax()) {
             tax = document.getElementById("tax").value;
         }
 
@@ -244,7 +249,7 @@
             date: date,
             currency: getCurrency(),
             invoice_number: {{$invoiceId}},
-            items:data
+            items: data
         }
         calculateTotal();
         serverRequest.url = 'http://localhost:8000/invoice/create';
@@ -280,14 +285,7 @@
                         document.getElementById("logoHolder").click();
                     });
                 }
-
                 img.src = e.target.result;
-                //button.classList.toggle("hide");
-
-                // Hide the add logo button after first upload
-                // if (button) {
-                //     button.style.display = "none";
-                // }
             };
             reader.readAsDataURL(file);
         }
@@ -302,8 +300,6 @@
         logoSettingsDiv.classList.toggle("hide");
         logoUpBtn.classList.toggle("hide");
         logoPreview.classList.toggle("hide");
-
-
     });
 
     document.getElementById("emailInputCheck").addEventListener("change", function (event) {
@@ -311,9 +307,9 @@
     });
     document.getElementById("taxField").addEventListener("change", function (event) {
         document.getElementById("taxBox").classList.toggle("hide");
+        document.getElementById("subtotalBox").classList.toggle("hide");
         calculateTotal();
     });
-
 
 
 </script>

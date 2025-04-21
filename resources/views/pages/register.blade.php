@@ -12,6 +12,11 @@
 @include('custom-layouts.navbar')
 <section class="center-div">
 <div class="form-container">
+    @if(session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
     <h2 class="color-main">Create an Account</h2>
     <form method="POST" action="{{ route('register') }}">
         @csrf
