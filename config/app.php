@@ -53,6 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'live_url' => 'https://www.invozen.com',
 
     /*
     |--------------------------------------------------------------------------

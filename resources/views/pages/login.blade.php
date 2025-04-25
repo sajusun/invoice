@@ -5,7 +5,7 @@
     <title>Login to Invozen - Secure Access</title>
     <meta name="description" content="Log in to your Invozen account to manage your invoices, clients, and payments securely.">
     <meta name="keywords" content="login, invozen, account login, invoice software login">
-    <meta name="robots" content="noindex, nofollow"> <!-- Prevents search engines from indexing the login page -->
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.invozen.com/login">
 </head>
 <body>

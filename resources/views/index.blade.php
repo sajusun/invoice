@@ -3,26 +3,25 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Invozen - Smart Invoice Management</title>
-    <meta name="description" content="Invozen is the smartest way to create, manage, and send invoices online. Save customer data and streamline your invoicing process effortlessly.">
+    <meta name="description"
+          content="Invozen is the smartest way to create, manage, and send invoices online. Save customer data and streamline your invoicing process effortlessly.">
     <meta name="keywords" content="invoice generator, online invoicing, invozen, billing software, invoice management">
     <meta name="author" content="Invozen">
-
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.invozen.com/">
-
+    <link rel="canonical" href="{{config('app.url')}}">
     <!-- Open Graph (For social media sharing) -->
     <meta property="og:title" content="Invozen - Smart Invoice Management">
-    <meta property="og:description" content="Invozen helps businesses create and manage invoices efficiently with smart tools.">
-    <meta property="og:image" content="https://www.invozen.com/images/preview.png">
-    <meta property="og:url" content="https://www.invozen.com/">
+    <meta property="og:description"
+          content="Invozen helps businesses create and manage invoices efficiently with smart tools.">
+    <meta property="og:image" content="{{config('app.url')}}/images/preview.png">
+    <meta property="og:url" content="{{config('app.url')}}">
     <meta property="og:type" content="website">
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Invozen - Smart Invoice Management">
     <meta name="twitter:description" content="Create and manage invoices effortlessly with Invozen.">
-    <meta name="twitter:image" content="https://www.invozen.com/images/preview.png">
-
+    <meta name="twitter:image" content="{{config('app.url')}}/images/preview.png">
     <!-- Robots Meta Tag (For Search Engine Indexing) -->
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">
@@ -43,7 +42,6 @@
       }
     }
 </script>
-
 <body>
 @include('custom-layouts.navbar')
 
