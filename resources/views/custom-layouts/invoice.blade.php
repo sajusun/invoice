@@ -234,6 +234,7 @@
         let address = document.getElementById("address").value;
         let invoiceNotes = document.getElementById('invoiceNotes').value;
         let date = document.getElementById("date").value;
+
         let server_data = {
             issue_from: issue_from,
             issue_to: issue_to,

@@ -22,7 +22,11 @@ class Invoices extends Model
         'invoice_date',
         'items',
         "paid_amount",
-        "total_amount"
+        "total_amount",
+        "notes",
+        "need_tax",
+        "tax_amount",
+        "currency",
     ];
 
     // An invoice belongs to a customer

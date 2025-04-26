@@ -19,7 +19,8 @@ class Customers extends Model
         'user_id',
         'name',
         'phone',
-        'address'
+        'address',
+        'email'
     ];
 
     // A customer can have multiple invoices

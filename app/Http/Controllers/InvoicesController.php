@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
-use App\Models\Invoice_Items;
 use App\Models\Invoices;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use function Pest\Laravel\json;
 
 
 class InvoicesController extends Controller
@@ -27,7 +25,7 @@ class InvoicesController extends Controller
             'items' => 'required|array|min:1',
             'items.*.name' => 'required|string|max:255',
             'items.*.qty' => 'required|numeric|min:1',
-            'items.*.rate' => 'required|numeric|min:0',
+            'items.*.rate' => 'required|numeric|min:0'
         ]);
 
         $user = User::find(Auth::id());
@@ -44,7 +42,6 @@ class InvoicesController extends Controller
             ]);
         }
 
-
         //second query - inset invoice
         $invoice = Invoices::create([
             'user_id' => Auth::id(),
@@ -57,13 +54,13 @@ class InvoicesController extends Controller
             'notes' => request('invoiceNotes'),
             'currency' => request('currency'),
             'paid_amount' => request('amount_paid'),
-            'total_amount' => request('amount_total'),
+            'total_amount' => request('amount_total')
         ]);
+
 
         return response()->json([
             "success" => $invoice,
-            "data" => Request('items'),
-            "data2" => $customer
+            "data2" => $request->all()
         ]);
 
     }
