@@ -17,10 +17,14 @@ return new class extends Migration
             $table->foreignId('customer_id');
             $table->string('invoice_number')->unique();
             $table->date('invoice_date');
-            $table->json('items');
+            $table->json('items');//all items here in json format
+            $table->string('notes')->nullable();// invoice notes
+            $table->decimal('tax_amount', 20, 2)->default(0);
             $table->decimal('paid_amount');
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 20, 2);
             $table->string('status')->default('pending'); // pending, paid, canceled
+            $table->boolean('need_tax')->default(false); // is tax filed need
+            $table->string('currency')->default('BDT'); // invoice currency
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

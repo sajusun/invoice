@@ -18,6 +18,18 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'issue_to' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|numeric',
+            'date' => 'required|date',
+            'currency' => 'required|string',
+            'items' => 'required|array|min:1',
+            'items.*.name' => 'required|string|max:255',
+            'items.*.qty' => 'required|numeric|min:1',
+            'items.*.rate' => 'required|numeric|min:0',
+        ]);
+
         $user = User::find(Auth::id());
 //        search have any existing customer
         $customer = $user->customers()->where('phone', request('phone'))->first();
@@ -27,6 +39,8 @@ class InvoicesController extends Controller
                 'user_id' => Auth::id(),
                 'name' => request('issue_to'),
                 'phone' => request('phone'),
+                'email' => request('email'),
+                'address' => request('address'),
             ]);
         }
 
@@ -38,6 +52,10 @@ class InvoicesController extends Controller
             'invoice_number' => request('invoice_number'),
             'invoice_date' => request('date'),
             'items' => json_encode(request('items')),
+            'tax_amount' => request('tax'),
+            'need_tax' => request('need_tax'),
+            'notes' => request('invoiceNotes'),
+            'currency' => request('currency'),
             'paid_amount' => request('amount_paid'),
             'total_amount' => request('amount_total'),
         ]);

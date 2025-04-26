@@ -27,19 +27,18 @@
                     <input id="ContactNumber" list="number_list" type="text" class="form-control mt-2"
                            placeholder="Contact Number">
                     <datalist id="number_list">
-                        <option value="1"></option>
+                        <option value="0170"></option>
+                        <option value="0171"></option>
+                        <option value="0181"></option>
                     </datalist>
                 </div>
+
                 <div class="col-md-6">
                     <input id="date" type="text" class="form-control datepicker" placeholder="Date">
-                    <input id="paymentTerms" type="text" class="form-control mt-2" placeholder="Payment Terms">
+                    <input id="address" type="text" class="form-control mt-2" placeholder="address">
                     <input id="email" type="text" class="form-control mt-2 hide" placeholder="Email Address">
-
-                    {{--                    <input type="text" class="form-control mt-2 datepicker" placeholder="Due Date">--}}
-
                 </div>
             </div>
-            {{----}}
 
             <table class="table mt-3">
                 <thead>
@@ -57,14 +56,9 @@
 
             <button class="btn btn-add" onclick="addItem()">+ Line +</button>
 
-            {{--            <div class="mt-3">--}}
-            {{--                <h5>Notes</h5>--}}
-            {{--                <textarea class="form-control" placeholder="Notes - any relevant information not already covered"></textarea>--}}
-            {{--            </div>--}}
-
             <div class="mt-3">
                 <h5>Terms</h5>
-                <textarea class="form-control" placeholder="Terms and conditions"></textarea>
+                <textarea id="invoiceNotes" class="form-control" placeholder="Invoice Notes"></textarea>
             </div>
 
             <div class="mt-3 text-end">
@@ -194,6 +188,8 @@
     let balance = 0;
     let paid = 0;
     let total = 0;
+    let tax = 0;
+
 
     function calculateTotal() {
         data = [];
@@ -215,7 +211,7 @@
         });
 
         document.getElementById("subtotal").innerText = `${currency} ${subtotal.toFixed(2)}`;
-        let tax = 0;
+        tax = 0;
         if (isTax()) {
             tax = document.getElementById("tax").value;
         }
@@ -235,29 +231,33 @@
         let issue_to = document.getElementById("issueTo").value;
         let c_Phone = document.getElementById("ContactNumber").value;
         let c_email = document.getElementById("email").value;
-        let payment_terms = document.getElementById("paymentTerms").value;
+        let address = document.getElementById("address").value;
+        let invoiceNotes = document.getElementById('invoiceNotes').value;
         let date = document.getElementById("date").value;
         let server_data = {
             issue_from: issue_from,
             issue_to: issue_to,
             phone: c_Phone,
             email: c_email,
-            payment_terms: payment_terms,
+            address: address,
+            invoiceNotes: invoiceNotes,
             amount_total: total,
             amount_paid: paid,
             amount_due: balance,
+            need_tax: isTax(),
+            tax: tax,
             date: date,
             currency: getCurrency(),
             invoice_number: {{$invoiceId}},
             items: data
         }
         calculateTotal();
+        console.log(server_data)
         serverRequest.url = 'http://localhost:8000/invoice/create';
         serverRequest.data = server_data;
         serverRequest.xPost().then((response) => {
             console.log(response)
         })
-        console.log(data)
     }
 
     // logo add and change function
