@@ -16,7 +16,7 @@ class InvoicesController extends Controller
 {
     public function makeInvoice(Request $request): JsonResponse
     {
-        $validated = $request->validate([
+        $validated = validator($request->all(),[
             'issue_to' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone' => 'required|numeric',
@@ -27,6 +27,13 @@ class InvoicesController extends Controller
             'items.*.qty' => 'required|numeric|min:1',
             'items.*.rate' => 'required|numeric|min:0'
         ]);
+
+        if ($validated->fails()>0){
+                return response()->json([
+                    'success' => false,
+                    'message' => "Input All Required Fields",
+                ]);
+        }
 
         $user = User::find(Auth::id());
 //        search have any existing customer
@@ -59,7 +66,8 @@ class InvoicesController extends Controller
 
 
         return response()->json([
-            "success" => $invoice,
+            "success" => true,
+            'message' => $invoice,
             "data2" => $request->all()
         ]);
 
