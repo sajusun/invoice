@@ -249,7 +249,7 @@
             tax: tax,
             date: date,
             currency: getCurrency(),
-            invoice_number: {{$invoiceId}},
+            invoice_number: String({{$invoiceId}}),
             items: data
         }
         calculateTotal();
