@@ -329,7 +329,7 @@ header .container .btn:hover {
 @media print {
 
     * {
-        visibility: hidden;
+        visibility: unset;
     }
 
     .invoice-container {

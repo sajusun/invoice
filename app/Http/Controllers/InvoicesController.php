@@ -13,6 +13,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 
 class InvoicesController extends Controller
@@ -20,6 +21,16 @@ class InvoicesController extends Controller
     /**
      * @throws ValidationException
      */
+
+    public function view():View
+    {
+        return view('pages/invoice');
+    }
+
+    public function previewInvoice():View
+    {
+        return view('pages/invoice_maker');
+    }
     public function makeInvoice(Request $request): JsonResponse
     {
         $validated = validator($request->all(), [

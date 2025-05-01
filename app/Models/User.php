@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -34,10 +36,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Invoices::class);
     }
 
-    public function customers():HasMany
+    public function customers(): HasMany
     {
         return $this->hasMany(Customers::class);
     }
+
+    public function settings(): HasOne
+    {
+        return $this->hasOne(Settings::class);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

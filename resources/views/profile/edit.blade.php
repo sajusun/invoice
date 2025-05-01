@@ -3,7 +3,6 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Profile Update</title>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         .nav-container {
             max-width: 600px;

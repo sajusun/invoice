@@ -12,7 +12,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a></li>
                             <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
-                            <li><a class="dropdown-item" href="/invoices">Settings</a></li>
+                            <li><a class="dropdown-item" href="/settings">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

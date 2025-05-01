@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Customers extends Model
 {
     use HasFactory;
-    protected $fillable=[
+
+    protected $fillable = [
         'user_id',
         'name',
         'phone',
@@ -24,7 +25,8 @@ class Customers extends Model
     ];
 
     // A customer can have multiple invoices
-    public function invoices(): HasMany {
+    public function invoices(): HasMany
+    {
         return $this->hasMany(Invoices::class, 'customer_id', 'id');
     }
 }

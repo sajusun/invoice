@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
-use App\Models\Invoices;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use function Pest\Laravel\json;
 
 class CustomersController extends Controller
 {

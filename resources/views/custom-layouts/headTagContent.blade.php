@@ -11,6 +11,8 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="{{asset('/js/classes.js')}}"></script>
 <script src="{{asset('/js/global-var.js')}}"></script>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{asset('/css/bootstrap.css')}}">
