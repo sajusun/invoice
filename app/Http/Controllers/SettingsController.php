@@ -42,6 +42,12 @@ class SettingsController extends Controller
 
         return back()->with('success', 'Settings updated successfully!');
     }
+
+    public function getCompanyName()
+    {
+        $user = Auth::user();
+        return $user->settings->company_name;
+    }
 }
 
 

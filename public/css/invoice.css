@@ -152,6 +152,11 @@ table td input {
         height: 6rem;
         width: 10rem;
     }
+    .company-name p{
+        font-size: 2.8rem;
+        color: black;
+        text-transform: capitalize;
+    }
 
 }
 .side-panel{

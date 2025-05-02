@@ -101,6 +101,7 @@
             </div>
         </form>
     </div>
+   @include('custom-layouts.footer')
    </body>
 
    <script>
