@@ -138,23 +138,28 @@
         .align-bottom {
             vertical-align: bottom !important;
         }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="py-5">
     <div class="page-content container">
-        <div class="page-header text-blue-d2">
+        <div class="page-header text-blue-d2 no-print">
             <h1 class="page-title text-secondary-d1">
                 Invoice
                 <small class="page-info">
                     <i class="fa fa-angle-double-right text-80"></i>
-                    ID: {{$invoice_data['invoice_number']}}
+                    ID: #{{$invoice_data['invoice_number']}}
                 </small>
             </h1>
 
             <div class="page-tools">
                 <div class="action-buttons">
-                    <a class="btn bg-white btn-light mx-1px text-95" href="#" data-title="Print">
+                    <a class="btn bg-white btn-light mx-1px text-95" href="#" data-title="Print" onclick="window.print()">
                         <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
                         Print
                     </a>
@@ -185,16 +190,19 @@
                         <div class="col-sm-6">
                             <div>
                                 <span class="text-sm text-grey-m2 align-middle">To:</span>
-                                <span
-                                    class="text-600 text-110 text-blue align-middle">{{$invoice_data->customer['name']}}</span>
+                                <span class="text-600 text-110 text-gray align-middle">
+                                    {{$invoice_data->customer['name']}}
+                                </span>
                             </div>
                             <div class="text-grey-m2">
-                                <div class="my-1">
-                                    {{$invoice_data->customer['address']}}
+                                <div class="my-1"><i class="fa fa-map-o fa-flip-horizontal text-secondary"></i>
+                                    <b class="text-400">{{$invoice_data->customer['address']}}</b>
                                 </div>
-                                <div class="my-1">
-                                    State, Country
+                                @if($invoice_data->customer['email'])
+                                <div class="my-1"><i class="fa fa-envelope-o fa-flip-horizontal text-secondary"></i>
+                                    <b class="text-600">{{$invoice_data->customer['email']}}</b>
                                 </div>
+                                @endif
                                 <div class="my-1"><i class="fa fa-phone fa-flip-horizontal text-secondary"></i> <b
                                         class="text-600">{{$invoice_data->customer['phone']}}</b></div>
                             </div>
@@ -324,7 +332,8 @@
                                                 Tax ({{$invoice_data['tax_amount']}}%)
                                             </div>
                                             <div class="col-5">
-                                                <span class="text-110 text-secondary-d1">{{(($invoice_data['total_amount']/(1+($invoice_data['tax_amount'] / 100))) / 100)*$invoice_data['tax_amount']}} {{$invoice_data->currency}}</span>
+                                                <span
+                                                    class="text-110 text-secondary-d1">{{(($invoice_data['total_amount']/(1+($invoice_data['tax_amount'] / 100))) / 100)*$invoice_data['tax_amount']}} {{$invoice_data->currency}}</span>
                                             </div>
                                         </div>
                                     @endif
@@ -344,7 +353,7 @@
 
                             <div>
                                 <span class="text-secondary-d1 text-105">Thank you for your business</span>
-{{--                                <a href="#" class="btn btn-info btn-bold px-4 float-right mt-3 mt-lg-0">Pay Now</a>--}}
+                                {{--                                <a href="#" class="btn btn-info btn-bold px-4 float-right mt-3 mt-lg-0">Pay Now</a>--}}
                             </div>
                     </div>
                 </div>

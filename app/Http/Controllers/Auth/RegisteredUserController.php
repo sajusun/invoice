@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Settings;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -41,6 +42,10 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        Settings::create([
+            'user_id' => $user->id,
+            'company_name' => $user->name . "'s Company",
+        ]);
 
         event(new Registered($user));
         return redirect()->route('register')->with('message', 'Registered successfully! Please check your email to verify.');
@@ -48,7 +53,6 @@ class RegisteredUserController extends Controller
 //        return redirect(route('register',
 //            ['message'=>'registered successfully! Please check your email to verify.'],
 //            absolute: false));
-
 
 //        return response()->json(['message' => 'User registered successfully! Please check your email to verify.']);
 

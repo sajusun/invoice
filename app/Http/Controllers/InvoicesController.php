@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customers;
 use App\Models\Invoices;
+use App\Models\Settings;
 use App\Models\User;
 use App\Services\InvoiceService;
 use Exception;
