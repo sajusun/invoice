@@ -13,6 +13,7 @@ Route::get('/', function () {
 
 Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoiceBuilder');
 Route::get('/invoice/preview/{id}', [InvoicesController::class, 'previewInvoice'])->name('previewInvoice');
+Route::get('/invoice/preview', [InvoicesController::class, 'previewInvoice']);
 Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
 
 Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices']);

@@ -113,6 +113,12 @@
                     <td>{{$invoice['total_amount']}}</td>
                     <td>{{$invoice['status']}}</td>
                     <td style="width: 10%;">
+                        <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="table-link text-info">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
+                                            </span>
+                        </a>
                         <a href="#" class="table-link text-info">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>

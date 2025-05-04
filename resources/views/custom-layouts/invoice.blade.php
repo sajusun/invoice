@@ -242,6 +242,7 @@
         let address = document.getElementById("address").value;
         let invoiceNotes = document.getElementById('invoiceNotes').value;
         let date = document.getElementById("date").value;
+        let companyName = document.getElementById("company_name").innerText;
 
         let server_data = {
             issue_from: issue_from,
@@ -249,6 +250,7 @@
             phone: c_Phone,
             email: c_email,
             address: address,
+            company_name: companyName,
             invoiceNotes: invoiceNotes,
             amount_total: total,
             amount_paid: paid,

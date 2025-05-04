@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use function MongoDB\BSON\toJSON;
 
 
 class InvoicesController extends Controller
@@ -32,16 +33,18 @@ class InvoicesController extends Controller
         return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
     }
 
-    public function previewInvoice($id)
+    public function previewInvoice($id = '')
     {
         if (Auth::check())
-            $data = $this->get_invoice($id);
+           $data= InvoiceService::find_invoice($id);
+        elseif (session($id))
+            $data = session($id);
         else
-            if (session($id))
-                $data = session($id);
-            else
-               return Redirect()->route('invoiceBuilder');
+            return Redirect()->route('invoiceBuilder');
 
+        //return Redirect()->route('invoiceBuilder');
+        //return response();
+        //session()->forget($id);
         return view('pages/invoice_preview', ['invoice_data' => $data]);
     }
 
@@ -55,6 +58,7 @@ class InvoicesController extends Controller
             'email' => 'nullable|email',
             'date' => 'required|date',
             'currency' => 'required|string',
+            'company_name' => 'required|string',
             'tax' => 'nullable|numeric',
             'need_tax' => 'nullable|boolean',
             'invoiceNotes' => 'nullable|string',
@@ -142,7 +146,7 @@ class InvoicesController extends Controller
             }
         } else {
             //return redirect()->route('previewInvoice')->with(['message'=>'generate success','data'=>$request->all()]);
-            session()->flash($request->invoice_number, $validatedData);
+            session([$request->invoice_number => $validatedData]);
             return response()->json([
                 'success' => true,
                 'message' => 'redirect to preview page with data',
@@ -172,7 +176,7 @@ class InvoicesController extends Controller
         return User::find(Auth::id())->invoices->count();
     }
 
-    public function get_invoice(Request $id): JsonResponse
+    public function get_invoice($id): JsonResponse
     {
         $invoices = Invoices::all()->where('user_id', Auth::id())->where('id', $id);
         return response()->json($invoices);
