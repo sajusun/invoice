@@ -89,14 +89,14 @@ $sn = 0;
         </div>
     </div>
     <!-- Customer Info Card -->
-    <div class="customer-card hidden" id="customerCard">
-        <div class="customer-details">
-            <p><strong>Name:</strong> <span id="customerName"></span></p>
-            <p><strong>Email:</strong> <span id="customerEmail"></span></p>
-            <p><strong>Phone:</strong> <span id="customerPhone"></span></p>
-            <p><strong>Address:</strong> <span id="customerAddress"></span></p>
-        </div>
-    </div>
+{{--    <div class="customer-card hidden" id="customerCard">--}}
+{{--        <div class="customer-details">--}}
+{{--            <p><strong>Name:</strong> <span id="customerName"></span></p>--}}
+{{--            <p><strong>Email:</strong> <span id="customerEmail"></span></p>--}}
+{{--            <p><strong>Phone:</strong> <span id="customerPhone"></span></p>--}}
+{{--            <p><strong>Address:</strong> <span id="customerAddress"></span></p>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     <!-- Customer Info Card -->
     <div class="mt-4 list-view">
         <h4>Recent Invoices </h4>
@@ -108,38 +108,65 @@ $sn = 0;
                 <th>Customer Name</th>
                 <th>Amount</th>
                 <th>Status</th>
-                <th>&nbsp;</th>
+{{--                <th>&nbsp;</th>--}}
             </tr>
             </thead>
             <tbody>
             @foreach($invoices as $invoice)
-                <tr class="list" data-id="{{$invoice->customer}}">
+                <tr href="#{{$invoice['invoice_number']}}" class="list" data-id="{{$invoice->customer}}" onclick="toggleDetails(this)">
                     <td class="w-4">{{++$sn}}</td>
                     <td class="left-1">{{$invoice['invoice_number']}}</td>
                     <td>{{$invoice->customer->name}}</td>
                     <td>{{$invoice['total_amount']}}</td>
                     <td>{{$invoice['status']}}</td>
-                    <td style="width: 10%;">
-                        <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="table-link text-info">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
-                                            </span>
-                        </a>
-                        <a href="#recentInvoice" class="table-link text-info">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                            </span>
-                        </a>
-                        <a href="#recentInvoice"
-                           onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')"
-                           class="table-link danger">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                            </span>
-                        </a>
+{{--                    <td style="width: 10%;">--}}
+{{--                        <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="table-link text-info">--}}
+{{--                                            <span class="fa-stack">--}}
+{{--                                                <i class="fa fa-square fa-stack-2x"></i>--}}
+{{--                                                <i class="fa fa-eye fa-stack-1x fa-inverse"></i>--}}
+{{--                                            </span>--}}
+{{--                        </a>--}}
+{{--                        <a href="#recentInvoice" class="table-link text-info">--}}
+{{--                                            <span class="fa-stack">--}}
+{{--                                                <i class="fa fa-square fa-stack-2x"></i>--}}
+{{--                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>--}}
+{{--                                            </span>--}}
+{{--                        </a>--}}
+{{--                        <a href="#recentInvoice" onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')" class="table-link danger">--}}
+{{--                                            <span class="fa-stack">--}}
+{{--                                                <i class="fa fa-square fa-stack-2x"></i>--}}
+{{--                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>--}}
+{{--                                            </span>--}}
+{{--                        </a>--}}
+{{--                    </td>--}}
+                </tr>
+                <tr class="details-row hide bg-gray-50">
+                    <td colspan="6" class="px-3 py-2">
+                        <div class="flex justify-around">
+                            <div class="text-sm align-content-start text-left">
+                                <div><b>Name:</b> {{$invoice->customer['name']}}</div>
+                                <div><b>Phone:</b> {{$invoice->customer['phone']}}</div>
+                                <div><b>Email:</b> {{$invoice->customer['email']}}</div>
+
+                            </div>
+                            <div class="text-sm align-content-start text-left">
+                                <div><b>Address:</b> {{$invoice->customer['address']}}</div>
+                                <div><b>Date:</b> {{$invoice['invoice_date']}}</div>
+{{--                                <div><strong>Email:</strong> saju@example.com</div>--}}
+                            </div>
+                            <div class="flex items-center">
+                                <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
+                                    <i class="fa fa-eye"></i> View</a>
+
+                                <a href="#" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
+                                    <i class="fa fa-edit"></i> Edit</a>
+
+                                <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"
+                                        onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')">
+                                    <i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+
                     </td>
                 </tr>
             @endforeach
@@ -173,22 +200,22 @@ $sn = 0;
         document.getElementById('customerAddress').innerText = data;
     }
 
-    serverRequest = new serverRequest();
-    let customerId;
+    // serverRequest = new serverRequest();
+    // let customerId;
     // Select all elements with class "customer-item"
     document.querySelectorAll(".list").forEach(item => {
         item.addEventListener("click", function () {
-            document.getElementById("customerCard").classList.add("hidden");
+           // document.getElementById("customerCard").classList.add("hidden");
 
             // customerId = this.getAttribute("data-id");
-            const customerData = JSON.parse(this.getAttribute("data-id"));
+          //  const customerData = JSON.parse(this.getAttribute("data-id"));
             document.querySelectorAll(".list td").forEach(el => el.classList.remove("active"));
             this.querySelectorAll("td").forEach(th => th.classList.add("active"));
-            set_name(customerData['name'])
-            set_email(customerData['email'])
-            set_phone(customerData['phone'])
-            set_address(customerData['address'])
-            document.getElementById("customerCard").classList.remove("hidden");
+            // set_name(customerData['name'])
+            // set_email(customerData['email'])
+            // set_phone(customerData['phone'])
+            // set_address(customerData['address'])
+            // document.getElementById("customerCard").classList.remove("hidden");
 
             // // console.log(customerId)
             // serverRequest.url = `http://localhost:8000/dashboard/customers/${customerId}`;
@@ -240,8 +267,17 @@ $sn = 0;
             }
         });
     }
-
+    function toggleDetails(row) {
+        // Hide all other detail rows first
+        document.querySelectorAll(".details-row").forEach(r => r.classList.add("hide"));
+        const nextRow = row.nextElementSibling;
+        if (nextRow && nextRow.classList.contains("details-row")) {
+            // Toggle only the one after the clicked row
+            nextRow.classList.toggle("hide");
+        }
+    }
 </script>
+
 
 @if (session('response'))
     <script>

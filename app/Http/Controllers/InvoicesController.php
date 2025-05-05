@@ -4,21 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Customers;
 use App\Models\Invoices;
-use App\Models\Settings;
 use App\Models\User;
 use App\Services\InvoiceService;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
-use Illuminate\View\View;
-use function MongoDB\BSON\toJSON;
 
 
 class InvoicesController extends Controller
@@ -43,9 +38,6 @@ class InvoicesController extends Controller
         else
             return Redirect()->route('invoiceBuilder');
 
-        //return Redirect()->route('invoiceBuilder');
-        //return response();
-        //session()->forget($id);
         return view('pages/invoice_preview', ['invoice_data' => $data]);
     }
 
