@@ -107,7 +107,7 @@ class InvoicesController extends Controller
                 $invoice = Invoices::create([
                     'user_id' => Auth::id(),
                     'customer_id' => $customer->id,
-                    'invoice_number' => 467689787,
+                    'invoice_number' => $validatedData['invoice_number'],
                     'invoice_date' => $validatedData['date'],
                     'items' => json_encode($validatedData['items']),
                     'tax_amount' => $validatedData['tax'],
@@ -127,13 +127,18 @@ class InvoicesController extends Controller
 //                "invoice" => $invoice,
 //                'customer'=>$customer
 //            ]);
-                return view('pages/invoice_preview');
 
+              //after all success
+                //return view('pages/invoice_preview');
+                return response()->json([
+                    'success' => true,
+                    'message' => 'added success',
+                    'redirect' => route('previewInvoice', $validatedData['invoice_number'])// or your target route
+                ]);
 
             } catch (Exception $e) {
                 //back if any errors in transactions
                 DB::rollBack();
-
 //                return response()->json([
 //                    'success' => false,
 //                    'message' => 'Something Went Wrong',

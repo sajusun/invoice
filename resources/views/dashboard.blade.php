@@ -1,12 +1,13 @@
 <?php
-    $sn=0;
-    ?>
-<!DOCTYPE html>
+$sn = 0;
+?>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
     <title>Invozen Dashboard - Manage Your Invoices</title>
-    <meta name="description" content="Access your Invozen dashboard to track invoices, manage clients, and monitor payments with ease.">
+    <meta name="description"
+          content="Access your Invozen dashboard to track invoices, manage clients, and monitor payments with ease.">
     <meta name="keywords" content="invoice dashboard, manage invoices, invoice tracker">
     <meta name="robots" content="noindex, follow"> <!-- Prevents indexing but allows following links -->
     <link rel="canonical" href="{{config('app.live_url')}}/dashboard">
@@ -26,6 +27,7 @@
         .customer-card.hidden {
             display: none;
         }
+
         .customer-image {
             width: 80px;
             height: 80px;
@@ -43,6 +45,7 @@
             margin: 0;
             font-size: 18px;
         }
+
         .fade-out {
             opacity: 0;
         }
@@ -58,11 +61,11 @@
 
 <div class="main-content">
     @if (session('welcome_message'))
-    <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
+        <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
         <span>
             {{ session('welcome_message') }} <strong>{{ Auth::user()->name }}</strong>
         </span>
-    </nav>
+        </nav>
     @endif
 
     <div class="row">
@@ -95,7 +98,6 @@
         </div>
     </div>
     <!-- Customer Info Card -->
-
     <div class="mt-4 list-view">
         <h4>Recent Invoices </h4>
         <table class="table" id="recentInvoice">
@@ -130,7 +132,9 @@
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                         </a>
-                        <a href="#recentInvoice" onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')" class="table-link danger">
+                        <a href="#recentInvoice"
+                           onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')"
+                           class="table-link danger">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
@@ -143,9 +147,8 @@
         </table>
     </div>
 </div>
-
-
 </body>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
@@ -204,7 +207,7 @@
         });
     });
 
-        function confirmDelete(url) {
+    function confirmDelete(url) {
         Swal.fire({
             title: 'Are you sure?',
             text: "This action will permanently delete the invoice.",
@@ -239,6 +242,7 @@
     }
 
 </script>
+
 @if (session('response'))
     <script>
         Swal.fire({
