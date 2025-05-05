@@ -11,12 +11,6 @@
    <div class="max-w-2xl mx-auto px-4 py-6">
        <h1 class="text-2xl font-bold text-gray-800 mb-6"></h1>
 
-       @if (session('success'))
-           <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
-               {{ session('success') }}
-           </div>
-       @endif
-
        <form method="POST" action="{{ route('settings.update') }}" class="space-y-5">
            @csrf
 

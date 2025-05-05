@@ -37,7 +37,7 @@ class InvoicesController extends Controller
     public function previewInvoice($id = '')
     {
         if (Auth::check())
-           $data= InvoiceService::find_invoice($id);
+            $data = InvoiceService::find_invoice($id);
         elseif (session($id))
             $data = session($id);
         else
@@ -194,14 +194,15 @@ class InvoicesController extends Controller
         return Invoices::where('user_id', Auth::id())->get('status')->count();
     }
 
-//    public function errorHandle(): string
-//    {
-//        return '@if ($errors->any())
-//        <div class="alert alert-danger">
-//            @foreach ($errors->all() as $error)
-//                <span style="font-size: .8rem">{{ $error }}</span>
-//            @endforeach
-//        </div>
-//    @endif';
-//    }
+    public function delete_invoice($invoiceNumber)
+    {
+        $deleted = InvoiceService::delete_invoice($invoiceNumber);
+
+        if ($deleted) {
+            return redirect()->back()->with(['message'=>'Invoice Delete Successfully.','response'=>'success']);
+        } else {
+            return redirect()->back()->with(['message'=>'Failed.','response'=>'error']);
+        }
+    }
+
 }

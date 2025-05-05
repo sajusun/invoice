@@ -47,5 +47,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
+Route::middleware(['auth','verified'])->group(function () {
+    Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice'])->name('invoice.delete');
+    Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
+});
 
 require __DIR__.'/auth.php';

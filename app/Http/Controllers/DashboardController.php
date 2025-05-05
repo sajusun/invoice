@@ -22,8 +22,6 @@ class DashboardController extends Controller
         $num_of_invoices = $invoice_ctrl->num_of_invoices();
         $total = $invoice_ctrl->sum_of_total();
         $status = $invoice_ctrl->invoice_status();
-        session()->flash('success', 'Welcome, ' . Auth::user()->name . '!');
-
         return view('dashboard', ['num_of_invoices' => $num_of_invoices, 'total' => $total, 'invoices' => $invoices, 'status' => $status]);
     }
 

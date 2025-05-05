@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Invoices;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,9 +16,16 @@ class InvoiceService
         $randomNumber = str_pad(mt_rand(0, 9999), 4, "0", STR_PAD_LEFT); // 4-digit random number
         return $year . $month . $day . $randomNumber;
     }
-
-    public static function find_invoice($invoice_number)
+//    Find a invoice by invoice_number
+    public static function find_invoice($invoiceNumber)
     {
-        return Auth::user()->invoices()->with(['customer:id,name,phone,email,address'])->where('invoice_number', $invoice_number)->first();
+        return Auth::user()->invoices()->with(['customer:id,name,phone,email,address'])->where('invoice_number', $invoiceNumber)->first();
+    }
+
+//    Delete a Invoice by invoice_number
+    public static function delete_invoice($invoiceNumber)
+    {
+        return Auth::user()->invoices()->where('invoice_number', $invoiceNumber)->delete();
+
     }
 }

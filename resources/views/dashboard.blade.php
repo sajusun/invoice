@@ -9,7 +9,7 @@
     <meta name="description" content="Access your Invozen dashboard to track invoices, manage clients, and monitor payments with ease.">
     <meta name="keywords" content="invoice dashboard, manage invoices, invoice tracker">
     <meta name="robots" content="noindex, follow"> <!-- Prevents indexing but allows following links -->
-    <link rel="canonical" href="https://www.invozen.com/dashboard">
+    <link rel="canonical" href="{{config('app.live_url')}}/dashboard">
     <style>
         /* Customer Info Card */
         .customer-card {
@@ -43,6 +43,9 @@
             margin: 0;
             font-size: 18px;
         }
+        .fade-out {
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
@@ -54,11 +57,13 @@
 </div>
 
 <div class="main-content">
-{{--    <nav class="navbar navbar-light bg-light p-3 mb-4">--}}
-{{--        <span>--}}
-{{--            {{ __('Welcome') }}, <strong>{{ Auth::user()->name }}</strong>--}}
-{{--        </span>--}}
-{{--    </nav>--}}
+    @if (session('welcome_message'))
+    <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
+        <span>
+            {{ session('welcome_message') }} <strong>{{ Auth::user()->name }}</strong>
+        </span>
+    </nav>
+    @endif
 
     <div class="row">
         <div class="col-md-4">
@@ -92,8 +97,8 @@
     <!-- Customer Info Card -->
 
     <div class="mt-4 list-view">
-        <h4>Recent Invoices</h4>
-        <table class="table">
+        <h4>Recent Invoices </h4>
+        <table class="table" id="recentInvoice">
             <thead>
             <tr>
                 <th>#</th>
@@ -119,13 +124,13 @@
                                                 <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
                                             </span>
                         </a>
-                        <a href="#" class="table-link text-info">
+                        <a href="#recentInvoice" class="table-link text-info">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                         </a>
-                        <a href="#" class="table-link danger">
+                        <a href="#recentInvoice" onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')" class="table-link danger">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
@@ -138,11 +143,15 @@
         </table>
     </div>
 </div>
+
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </html>
 <script>
     function set_name(data) {
@@ -194,4 +203,66 @@
             // })
         });
     });
+
+        function confirmDelete(url) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action will permanently delete the invoice.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create and submit a form dynamically
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+
+                const token = document.createElement('input');
+                token.type = 'hidden';
+                token.name = '_token';
+                token.value = '{{ csrf_token() }}';
+                form.appendChild(token);
+
+                const method = document.createElement('input');
+                method.type = 'hidden';
+                method.name = '_method';
+                method.value = 'POST';
+                form.appendChild(method);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+
 </script>
+@if (session('response'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: '{{session('response')}}',
+            title: '{{ session("message") }}',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: false,
+        });
+    </script>
+@endif
+@if(session('welcome_message'))
+    <script>
+        setTimeout(() => {
+            const alertBox = document.getElementById("welcome_message");
+            if (alertBox) {
+                alertBox.classList.add("fade-out"); // apply fade-out style
+                setTimeout(() => {
+                    alertBox.remove(); // remove after transition
+                }, 500); // matches the CSS duration (500ms)
+            }
+        }, 3000);// 3000 milliseconds = 3 seconds
+    </script>
+@endif
+
