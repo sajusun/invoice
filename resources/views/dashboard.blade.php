@@ -99,7 +99,19 @@ $sn = 0;
 {{--    </div>--}}
     <!-- Customer Info Card -->
     <div class="mt-4 list-view">
-        <h4>Recent Invoices </h4>
+        <div class="flex py-1">
+            <h4 class="w-2/5">Recent Invoices </h4>
+            <span class="flex w-3/5 mr-1"><input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search invoices..."
+                    class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                    onkeyup="filterInvoices()"
+                />
+                <button class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm">Search</button>
+            </span>
+
+        </div>
         <table class="table" id="recentInvoice">
             <thead>
             <tr>
@@ -118,27 +130,13 @@ $sn = 0;
                     <td class="left-1">{{$invoice['invoice_number']}}</td>
                     <td>{{$invoice->customer->name}}</td>
                     <td>{{$invoice['total_amount']}}</td>
-                    <td>{{$invoice['status']}}</td>
-{{--                    <td style="width: 10%;">--}}
-{{--                        <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="table-link text-info">--}}
-{{--                                            <span class="fa-stack">--}}
-{{--                                                <i class="fa fa-square fa-stack-2x"></i>--}}
-{{--                                                <i class="fa fa-eye fa-stack-1x fa-inverse"></i>--}}
-{{--                                            </span>--}}
-{{--                        </a>--}}
-{{--                        <a href="#recentInvoice" class="table-link text-info">--}}
-{{--                                            <span class="fa-stack">--}}
-{{--                                                <i class="fa fa-square fa-stack-2x"></i>--}}
-{{--                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>--}}
-{{--                                            </span>--}}
-{{--                        </a>--}}
-{{--                        <a href="#recentInvoice" onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')" class="table-link danger">--}}
-{{--                                            <span class="fa-stack">--}}
-{{--                                                <i class="fa fa-square fa-stack-2x"></i>--}}
-{{--                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>--}}
-{{--                                            </span>--}}
-{{--                        </a>--}}
-{{--                    </td>--}}
+                        <td>
+                            @if($invoice->status=="pending")
+                                 <span class="bg-yellow-500 px-3 py-1 text-white rounded">{{$invoice['status']}}</span>
+                            @else
+                                <span class="bg-green-500 px-3 py-1 text-white rounded">{{$invoice['status']}}</span>
+                            @endif
+                        </td>
                 </tr>
                 <tr class="details-row hide bg-gray-50">
                     <td colspan="6" class="px-3 py-2">
@@ -152,7 +150,7 @@ $sn = 0;
                             <div class="text-sm align-content-start text-left">
                                 <div><b>Address:</b> {{$invoice->customer['address']}}</div>
                                 <div><b>Date:</b> {{$invoice['invoice_date']}}</div>
-{{--                                <div><strong>Email:</strong> saju@example.com</div>--}}
+                                <div><strong>Due:</strong> {{$invoice['total_amount']-$invoice['paid_amount']}}</div>
                             </div>
                             <div class="flex items-center">
                                 <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="bg-blue-500 text-white px-3 py-1 rounded text-xs">

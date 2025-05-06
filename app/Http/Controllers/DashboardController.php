@@ -44,8 +44,7 @@ class DashboardController extends Controller
     public function get_customer_invoice($id): array
     {
         $invoice_ctrl = new InvoicesController();
-        $data = $invoice_ctrl->find_invoice($id);
-        return $data;
+        return $invoice_ctrl->find_invoice($id);
 
     }
 

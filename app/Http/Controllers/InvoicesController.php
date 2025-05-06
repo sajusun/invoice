@@ -157,10 +157,21 @@ class InvoicesController extends Controller
     }
 
 
-    public function get_all_invoices(): Collection
+    public function get_all_invoices()
     {
+        $user= Auth::user();
+
         //return all invoices for current user
-        return Invoices::with('customer')->where('user_id', Auth::id())->get();
+       // return Invoices::with('customer')->where('user_id', Auth::id())->get();
+        return $user->invoices()->with('customer')->orderBy('created_at', 'desc')->paginate(10);
+
+    }
+
+    public function get_recent_invoices()
+    {
+       $user= Auth::user();
+        return $user->invoices()->with('customer')->orderBy('created_at', 'desc')->paginate(10);
+
     }
 
 //    return a specific customers invoice
@@ -188,7 +199,7 @@ class InvoicesController extends Controller
 
     public function invoice_status()
     {
-        return Invoices::where('user_id', Auth::id())->get('status')->count();
+        return Invoices::where('user_id', Auth::id())->where('status','pending')->get('status')->count();
     }
 
     public function delete_invoice($invoiceNumber)
