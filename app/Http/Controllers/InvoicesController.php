@@ -160,7 +160,7 @@ class InvoicesController extends Controller
     public function get_all_invoices()
     {
         $user = Auth::user();
-        return $user->invoices()->select('id','user_id','customer_id','invoice_number','status','total_amount','paid_amount','invoice_date')->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(5);
+        return $user->invoices()->select('id','user_id','customer_id','invoice_number','status','total_amount','paid_amount','invoice_date')->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(10);
 
     }
 
@@ -183,8 +183,6 @@ class InvoicesController extends Controller
                 })->orderBy('created_at', 'desc')->paginate(10);
 
         }else{
-//            $invoice = $user->invoices()->with('customer')->orderBy('created_at', 'desc')->paginate(5);
-
             return response()->json([
                 'success'=>false,
                 'message'=>'search input is empty',

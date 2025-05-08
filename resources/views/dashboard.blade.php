@@ -14,10 +14,6 @@
     <meta name="robots" content="noindex, follow"> <!-- Prevents indexing but allows following links -->
     <link rel="canonical" href="{{config('app.live_url')}}/dashboard">
     <style>
-        .customer-details h3 {
-            margin: 0;
-            font-size: 18px;
-        }
 
         .fade-out {
             opacity: 0;
@@ -359,7 +355,6 @@
         },
         mounted() {
             this.fetchInvoices(this.url);
-            // this.previous=this.invoices;
         },
         methods: {
             fetchInvoices(url) {
@@ -400,7 +395,6 @@
             },
             goto(invoice_number){
                 return `${host}/invoice/${invoice_number}/preview`
-
             },
             confirmDelete(url) {
                 url=`${host}/invoice/${url}/delete`

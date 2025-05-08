@@ -23,6 +23,7 @@ Route::get('invoice/find/customer/{number}', [CustomersController::class, 'find_
 
 
 Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
+Route::get('/dashboard/customers/search', [DashboardController::class, 'search_customers']);
 Route::get('/dashboard/customers/{id}', [DashboardController::class, 'get_customer_data']);
 Route::get('/dashboard/customers/{id}/invoice', [DashboardController::class, 'get_customer_invoice']);
 
