@@ -1,6 +1,4 @@
-<?php
-$sn = 0;
-?>
+
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,35 +14,6 @@ $sn = 0;
     <meta name="robots" content="noindex, follow"> <!-- Prevents indexing but allows following links -->
     <link rel="canonical" href="{{config('app.live_url')}}/dashboard">
     <style>
-        /* Customer Info Card */
-        .customer-card {
-            display: block;
-            width: auto;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s;
-            margin: 1rem auto;
-        }
-
-        .customer-card.hidden {
-            display: none;
-        }
-
-        .customer-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        .customer-details {
-            display: flex;
-            justify-content: space-evenly;
-            flex-wrap: wrap;
-        }
-
         .customer-details h3 {
             margin: 0;
             font-size: 18px;
@@ -72,43 +41,41 @@ $sn = 0;
         </nav>
     @endif
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h6>Total Invoices</h6>
-                <p>{{$num_of_invoices}}</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Total Invoices -->
+            <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
+                <h3 class="text-gray-500 text-sm">Total Invoices</h3>
+                <p class="text-2xl font-bold text-blue-600 mt-2">{{$num_of_invoices}}</p>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h6>Pending Payments</h6>
-                <p>{{$status}}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h6>Total Revenue</h6>
-                <p>{{$total}}</p>
-            </div>
-        </div>
-    </div>
 
+            <!-- Pending Invoices -->
+            <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
+                <h3 class="text-gray-500 text-sm">Pending Invoices</h3>
+                <p class="text-2xl font-bold text-yellow-500 mt-2">{{$status}}</p>
+            </div>
+
+            <!-- Total Revenue -->
+            <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
+                <h3 class="text-gray-500 text-sm">Total Revenue</h3>
+                <p class="text-2xl font-bold text-green-600 mt-2">{{$total}}</p>
+            </div>
+        </div>
     <div id="app" class="mt-4 list-view">
         <div class="flex py-1">
-            <h4 class="w-2/5">Recent Invoices </h4>
+            <h4 class="w-2/5">Invoice List </h4>
             <span class="flex w-3/5 mr-1">
-                <input v-model="search" @input="fetchInvoices"
+                <input v-model="search" @input="key_Searching" @keydown.enter="onTabSearch"
                     type="text"
                     id="searchInput"
                     placeholder="Search invoices..."
                     class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring"
                 />
-                <button class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm">Search</button>
+                <button :disabled="search.trim()===''" class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm" @click="onTabSearch">@{{ searchBtn }}</button>
             </span>
 
         </div>
         <div v-if="loading" class="flex justify-center items-center h-32">
-            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+            <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
         </div>
         <table v-else class="table" id="recentInvoice">
             <thead>
@@ -168,16 +135,15 @@ $sn = 0;
 {{--            @endforeach--}}
 {{--            </tbody>--}}
             <tbody>
-<template v-for="(invoice, index) in invoices" :key="invoice.id">
+        <template v-for="(invoice, index) in invoices" :key="invoice.id">
                 <tr :href="invoice.invoice_number" class="list" :data-id="invoice.customer" onclick="toggleDetails(this)">
                     <td class="w-4">@{{++index}}</td>
                     <td class="left-1">@{{invoice.invoice_number}}</td>
                     <td>@{{invoice.customer.name}}</td>
                     <td>@{{invoice.total_amount}}</td>
                     <td>
-                            <span v-if="invoice.status==='pending'" class="bg-yellow-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
-
-                            <span v-else class="bg-green-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+                        <span v-if="invoice.status==='pending'" class="bg-yellow-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+                        <span v-else class="bg-green-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
                     </td>
                 </tr>
 
@@ -209,12 +175,30 @@ $sn = 0;
 
                     </td>
                 </tr>
-</template>
+        </template>
             </tbody>
         </table>
 {{--        <div class="mt-4">--}}
 {{--            {{ $invoices->links() }}--}}
 {{--        </div>--}}
+        <!-- Pagination Controls -->
+        <div class="flex gap-2 mt-4">
+            <button
+                @click="fetchInvoices(pagination.prev_page_url)"
+                :disabled="!pagination.prev_page_url"
+                class="px-4 py-2 bg-gray-300 rounded"
+            >
+                Prev
+            </button>
+
+            <button
+                @click="fetchInvoices(pagination.next_page_url)"
+                :disabled="!pagination.next_page_url"
+                class="px-4 py-2 bg-gray-300 rounded"
+            >
+                Next
+            </button>
+        </div>
     </div>
 
 </div>
@@ -363,30 +347,56 @@ $sn = 0;
     createApp({
         data() {
             return {
-                invoices: @json($invoices),
+                invoices: [],
+                pagination:{},
                 search: '',
                 previous:[],
-                loading:false
+                loading:false,
+                searchBtn:"Search",
+                ready:false,
+                url:'http://localhost:8000/invoice/search?search='
             }
         },
         mounted() {
-           //  this.fetchInvoices();
-            this.previous=this.invoices;
+            this.fetchInvoices(this.url);
+            // this.previous=this.invoices;
         },
         methods: {
-            fetchInvoices() {
-                if (this.search !== "") {
+            fetchInvoices(url) {
+                    this.searchBtn="searching";
                     this.loading = true;
-                    axios.get(`http://localhost:8000/invoice/search?search=${this.search}`)
+                    axios.get(`${url}${this.search}`)
                         .then(response => {
+                            this.searchBtn="Search";
                             console.log(response)
                             this.invoices = response.data['invoices'].data;
+                            let data=response.data['invoices'];
                             this.loading =false;
+                            this.searchBtn="Search";
+                            this.pagination = {
+                                current_page: data.current_page,
+                                last_page: data.last_page,
+                                next_page_url: data.next_page_url,
+                                prev_page_url: data.prev_page_url
+                            };
+
                         });
-                }else{
-                    this.invoices=this.previous;
-                    this.loading =false;
+            },
+            key_Searching(){
+                if(this.search.trim()==='' && this.ready){
+                    this.ready=false;
+
+                    this.fetchInvoices(this.url);
                 }
+
+            },
+            onTabSearch(){
+                if(this.search.trim()===''){
+                    return
+                }
+                this.fetchInvoices(this.url);
+                this.ready=true;
+
             },
             goto(invoice_number){
                 return `${host}/invoice/${invoice_number}/preview`
