@@ -5,6 +5,10 @@ $sn = 0;
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
     <title>Invozen Dashboard - Manage Your Invoices</title>
     <meta name="description"
           content="Access your Invozen dashboard to track invoices, manage clients, and monitor payments with ease.">
@@ -88,31 +92,25 @@ $sn = 0;
             </div>
         </div>
     </div>
-    <!-- Customer Info Card -->
-{{--    <div class="customer-card hidden" id="customerCard">--}}
-{{--        <div class="customer-details">--}}
-{{--            <p><strong>Name:</strong> <span id="customerName"></span></p>--}}
-{{--            <p><strong>Email:</strong> <span id="customerEmail"></span></p>--}}
-{{--            <p><strong>Phone:</strong> <span id="customerPhone"></span></p>--}}
-{{--            <p><strong>Address:</strong> <span id="customerAddress"></span></p>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-    <!-- Customer Info Card -->
-    <div class="mt-4 list-view">
+
+    <div id="app" class="mt-4 list-view">
         <div class="flex py-1">
             <h4 class="w-2/5">Recent Invoices </h4>
-            <span class="flex w-3/5 mr-1"><input
+            <span class="flex w-3/5 mr-1">
+                <input v-model="search" @input="fetchInvoices"
                     type="text"
                     id="searchInput"
                     placeholder="Search invoices..."
                     class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring"
-                    onkeyup="filterInvoices()"
                 />
                 <button class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm">Search</button>
             </span>
 
         </div>
-        <table class="table" id="recentInvoice">
+        <div v-if="loading" class="flex justify-center items-center h-32">
+            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+        <table v-else class="table" id="recentInvoice">
             <thead>
             <tr>
                 <th>#</th>
@@ -123,54 +121,102 @@ $sn = 0;
 {{--                <th>&nbsp;</th>--}}
             </tr>
             </thead>
+{{--            <tbody>--}}
+{{--            @foreach($invoices as $invoice)--}}
+{{--                <tr href="#{{$invoice['invoice_number']}}" class="list" data-id="{{$invoice->customer}}" onclick="toggleDetails(this)">--}}
+{{--                    <td class="w-4">{{++$sn}}</td>--}}
+{{--                    <td class="left-1">{{$invoice['invoice_number']}}</td>--}}
+{{--                    <td>{{$invoice->customer->name}}</td>--}}
+{{--                    <td>{{$invoice['total_amount']}}</td>--}}
+{{--                        <td>--}}
+{{--                            @if($invoice->status=="pending")--}}
+{{--                                 <span class="bg-yellow-500 px-3 py-1 text-white rounded">{{$invoice['status']}}</span>--}}
+{{--                            @else--}}
+{{--                                <span class="bg-green-500 px-3 py-1 text-white rounded">{{$invoice['status']}}</span>--}}
+{{--                            @endif--}}
+{{--                        </td>--}}
+{{--                </tr>--}}
+{{--                <tr class="details-row hide bg-gray-50">--}}
+{{--                    <td colspan="6" class="px-3 py-2">--}}
+{{--                        <div class="flex justify-around">--}}
+{{--                            <div class="text-sm align-content-start text-left">--}}
+{{--                                <div><b>Name:</b> {{$invoice->customer['name']}}</div>--}}
+{{--                                <div><b>Phone:</b> {{$invoice->customer['phone']}}</div>--}}
+{{--                                <div><b>Email:</b> {{$invoice->customer['email']}}</div>--}}
+
+{{--                            </div>--}}
+{{--                            <div class="text-sm align-content-start text-left">--}}
+{{--                                <div><b>Address:</b> {{$invoice->customer['address']}}</div>--}}
+{{--                                <div><b>Date:</b> {{$invoice['invoice_date']}}</div>--}}
+{{--                                <div><strong>Due:</strong> {{$invoice['total_amount']-$invoice['paid_amount']}}</div>--}}
+{{--                            </div>--}}
+{{--                            <div class="flex items-center">--}}
+{{--                                <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="bg-blue-500 text-white px-3 py-1 rounded text-xs">--}}
+{{--                                    <i class="fa fa-eye"></i> View</a>--}}
+
+{{--                                <a href="#" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">--}}
+{{--                                    <i class="fa fa-edit"></i> Edit</a>--}}
+
+{{--                                <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"--}}
+{{--                                        onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')">--}}
+{{--                                    <i class="fa fa-trash"></i> Delete</button>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+{{--                    </td>--}}
+{{--                </tr>--}}
+{{--            @endforeach--}}
+{{--            </tbody>--}}
             <tbody>
-            @foreach($invoices as $invoice)
-                <tr href="#{{$invoice['invoice_number']}}" class="list" data-id="{{$invoice->customer}}" onclick="toggleDetails(this)">
-                    <td class="w-4">{{++$sn}}</td>
-                    <td class="left-1">{{$invoice['invoice_number']}}</td>
-                    <td>{{$invoice->customer->name}}</td>
-                    <td>{{$invoice['total_amount']}}</td>
-                        <td>
-                            @if($invoice->status=="pending")
-                                 <span class="bg-yellow-500 px-3 py-1 text-white rounded">{{$invoice['status']}}</span>
-                            @else
-                                <span class="bg-green-500 px-3 py-1 text-white rounded">{{$invoice['status']}}</span>
-                            @endif
-                        </td>
+<template v-for="(invoice, index) in invoices" :key="invoice.id">
+                <tr :href="invoice.invoice_number" class="list" :data-id="invoice.customer" onclick="toggleDetails(this)">
+                    <td class="w-4">@{{++index}}</td>
+                    <td class="left-1">@{{invoice.invoice_number}}</td>
+                    <td>@{{invoice.customer.name}}</td>
+                    <td>@{{invoice.total_amount}}</td>
+                    <td>
+                            <span v-if="invoice.status==='pending'" class="bg-yellow-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+
+                            <span v-else class="bg-green-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+                    </td>
                 </tr>
+
                 <tr class="details-row hide bg-gray-50">
                     <td colspan="6" class="px-3 py-2">
                         <div class="flex justify-around">
                             <div class="text-sm align-content-start text-left">
-                                <div><b>Name:</b> {{$invoice->customer['name']}}</div>
-                                <div><b>Phone:</b> {{$invoice->customer['phone']}}</div>
-                                <div><b>Email:</b> {{$invoice->customer['email']}}</div>
+                                <div><b>Name:</b> @{{invoice.customer.name}}</div>
+                                <div><b>Phone:</b> @{{invoice.customer.phone}}</div>
+                                <div><b>Email:</b> @{{invoice.customer.email}}</div>
 
                             </div>
                             <div class="text-sm align-content-start text-left">
-                                <div><b>Address:</b> {{$invoice->customer['address']}}</div>
-                                <div><b>Date:</b> {{$invoice['invoice_date']}}</div>
-                                <div><strong>Due:</strong> {{$invoice['total_amount']-$invoice['paid_amount']}}</div>
+                                <div><b>Address:</b> @{{invoice.customer.address}}</div>
+                                <div><b>Date:</b> @{{invoice.invoice_date}}</div>
+                                <div><strong>Due:</strong> @{{invoice.total_amount - invoice.paid_amount}}</div>
                             </div>
                             <div class="flex items-center">
-                                <a href="{{route('previewInvoice',[$invoice['invoice_number']])}}" class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
+                                <a :href="goto(invoice.invoice_number)" class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
                                     <i class="fa fa-eye"></i> View</a>
 
                                 <a href="#" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
                                     <i class="fa fa-edit"></i> Edit</a>
 
-                                <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"
-                                        onclick="confirmDelete('{{route('invoice.delete',[$invoice['invoice_number']])}}')">
+                                <button class="bg-red-500 text-white px-3 py-1 rounded text-xs" @click="confirmDelete(invoice.invoice_number)" >
                                     <i class="fa fa-trash"></i> Delete</button>
                             </div>
                         </div>
 
                     </td>
                 </tr>
-            @endforeach
+</template>
             </tbody>
         </table>
+{{--        <div class="mt-4">--}}
+{{--            {{ $invoices->links() }}--}}
+{{--        </div>--}}
     </div>
+
 </div>
 </body>
 
@@ -198,7 +244,7 @@ $sn = 0;
         document.getElementById('customerAddress').innerText = data;
     }
 
-    // serverRequest = new serverRequest();
+     serverRequest = new serverRequest();
     // let customerId;
     // Select all elements with class "customer-item"
     document.querySelectorAll(".list").forEach(item => {
@@ -232,39 +278,40 @@ $sn = 0;
         });
     });
 
-    function confirmDelete(url) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This action will permanently delete the invoice.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Create and submit a form dynamically
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = url;
+    {{--function confirmDelete(url) {--}}
+    {{--     url=`${host}/invoice/${url}/delete`--}}
+    {{--    Swal.fire({--}}
+    {{--        title: 'Are you sure?',--}}
+    {{--        text: "This action will permanently delete the invoice.",--}}
+    {{--        icon: 'warning',--}}
+    {{--        showCancelButton: true,--}}
+    {{--        confirmButtonColor: '#d33',--}}
+    {{--        cancelButtonColor: '#3085d6',--}}
+    {{--        confirmButtonText: 'Yes, delete it!'--}}
+    {{--    }).then((result) => {--}}
+    {{--        if (result.isConfirmed) {--}}
+    {{--            // Create and submit a form dynamically--}}
+    {{--            const form = document.createElement('form');--}}
+    {{--            form.method = 'POST';--}}
+    {{--            form.action = url;--}}
 
-                const token = document.createElement('input');
-                token.type = 'hidden';
-                token.name = '_token';
-                token.value = '{{ csrf_token() }}';
-                form.appendChild(token);
+    {{--            const token = document.createElement('input');--}}
+    {{--            token.type = 'hidden';--}}
+    {{--            token.name = '_token';--}}
+    {{--            token.value = '{{ csrf_token() }}';--}}
+    {{--            form.appendChild(token);--}}
 
-                const method = document.createElement('input');
-                method.type = 'hidden';
-                method.name = '_method';
-                method.value = 'POST';
-                form.appendChild(method);
+    {{--            const method = document.createElement('input');--}}
+    {{--            method.type = 'hidden';--}}
+    {{--            method.name = '_method';--}}
+    {{--            method.value = 'POST';--}}
+    {{--            form.appendChild(method);--}}
 
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
-    }
+    {{--            document.body.appendChild(form);--}}
+    {{--            form.submit();--}}
+    {{--        }--}}
+    {{--    });--}}
+    {{--}--}}
     function toggleDetails(row) {
         // Hide all other detail rows first
         document.querySelectorAll(".details-row").forEach(r => r.classList.add("hide"));
@@ -274,8 +321,116 @@ $sn = 0;
             nextRow.classList.toggle("hide");
         }
     }
-</script>
 
+    function filterInvoices() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const rows = document.querySelectorAll("table tbody tr");
+        serverRequest.url = `http://localhost:8000/invoice/search?search=${input}`;
+        serverRequest.xGet().then((response) => {
+            console.log(response)
+            // document.getElementById("customerCard").classList.remove("hidden");
+        })
+        rows.forEach((row) => {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(input)) {
+                row.classList.remove("hidden");
+            } else {
+                row.classList.add("hidden");
+            }
+        });
+    }
+    document.getElementById("searchInput").addEventListener('keyup',function (e) {
+        const rows = document.querySelectorAll("table tbody tr");
+        serverRequest.url = `http://localhost:8000/invoice/search?search=${this.value}`;
+        serverRequest.xGet().then((response) => {
+            console.log(response)
+        })
+        rows.forEach((row) => {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(this.value)) {
+                row.classList.remove("hidden");
+            } else {
+                row.classList.add("hidden");
+            }
+        });
+    });
+
+
+</script>
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                invoices: @json($invoices),
+                search: '',
+                previous:[],
+                loading:false
+            }
+        },
+        mounted() {
+           //  this.fetchInvoices();
+            this.previous=this.invoices;
+        },
+        methods: {
+            fetchInvoices() {
+                if (this.search !== "") {
+                    this.loading = true;
+                    axios.get(`http://localhost:8000/invoice/search?search=${this.search}`)
+                        .then(response => {
+                            console.log(response)
+                            this.invoices = response.data['invoices'].data;
+                            this.loading =false;
+                        });
+                }else{
+                    this.invoices=this.previous;
+                    this.loading =false;
+                }
+            },
+            goto(invoice_number){
+                return `${host}/invoice/${invoice_number}/preview`
+
+            },
+            confirmDelete(url) {
+                url=`${host}/invoice/${url}/delete`
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This action will permanently delete the invoice.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create and submit a form dynamically
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = url;
+
+                        const token = document.createElement('input');
+                        token.type = 'hidden';
+                        token.name = '_token';
+                        token.value = '{{ csrf_token() }}';
+                        form.appendChild(token);
+
+                        const method = document.createElement('input');
+                        method.type = 'hidden';
+                        method.name = '_method';
+                        method.value = 'POST';
+                        form.appendChild(method);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+
+        },
+
+    }).mount('#app');
+</script>
 
 @if (session('response'))
     <script>

@@ -29,7 +29,7 @@ class DashboardController extends Controller
     {
         $customer_ctrl = new CustomersController();
         $customers = $customer_ctrl->customers();
-        return view('pages.customer', ['customers' => $customers, 'controller' => $customer_ctrl]);
+        return view('pages.customer', ['customers' =>  $customers, 'controller' => $customer_ctrl]);
     }
 
     public function get_customer_data($id): array

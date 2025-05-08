@@ -7,7 +7,7 @@ use App\Models\Invoices;
 use App\Models\User;
 use App\Services\InvoiceService;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -120,7 +120,7 @@ class InvoicesController extends Controller
 //                'customer'=>$customer
 //            ]);
 
-              //after all success
+                //after all success
                 //return view('pages/invoice_preview');
                 return response()->json([
                     'success' => true,
@@ -159,19 +159,44 @@ class InvoicesController extends Controller
 
     public function get_all_invoices()
     {
-        $user= Auth::user();
-
-        //return all invoices for current user
-       // return Invoices::with('customer')->where('user_id', Auth::id())->get();
-        return $user->invoices()->with('customer')->orderBy('created_at', 'desc')->paginate(10);
+        $user = Auth::user();
+        return $user->invoices()->select('id','user_id','customer_id','invoice_number','status','total_amount','paid_amount','invoice_date')->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->get(10);
 
     }
 
-    public function get_recent_invoices()
+    public function search_invoice(Request $request)
     {
-       $user= Auth::user();
-        return $user->invoices()->with('customer')->orderBy('created_at', 'desc')->paginate(10);
+        $user = Auth::user();
+        $query = $user->invoices()->with('customer:id,name,email,phone,address');
+        // Search by customer name or invoice number
+        if ($request->has('search') && $request->search !== null) {
+            $search = $request->search;
 
+            $invoices = $user->invoices()->select('id','user_id','customer_id','invoice_number','status','total_amount','paid_amount','invoice_date')->with('customer')
+                ->when($search, function ($query, $search) {
+                    return $query->where('invoice_number', 'like', "%{$search}%")
+                        ->orWhereHas('customer', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('phone', 'like', "%{$search}%");
+                        });
+                })->orderBy('created_at', 'desc')->paginate(10);
+
+        }else{
+            $invoice = $user->invoices()->with('customer')->orderBy('created_at', 'desc')->paginate(5);
+
+            return response()->json([
+                'success'=>false,
+                'message'=>'search input is empty',
+                'invoices'=>$invoice
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'invoices' => $invoices,
+            'input'=>$search
+        ]);
     }
 
 //    return a specific customers invoice
@@ -199,7 +224,7 @@ class InvoicesController extends Controller
 
     public function invoice_status()
     {
-        return Invoices::where('user_id', Auth::id())->where('status','pending')->get('status')->count();
+        return Invoices::where('user_id', Auth::id())->where('status', 'pending')->get('status')->count();
     }
 
     public function delete_invoice($invoiceNumber)
@@ -207,9 +232,9 @@ class InvoicesController extends Controller
         $deleted = InvoiceService::delete_invoice($invoiceNumber);
 
         if ($deleted) {
-            return redirect()->back()->with(['message'=>'Invoice Delete Successfully.','response'=>'success']);
+            return redirect()->back()->with(['message' => 'Invoice Delete Successfully.', 'response' => 'success']);
         } else {
-            return redirect()->back()->with(['message'=>'Failed.','response'=>'error']);
+            return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
         }
     }
 

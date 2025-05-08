@@ -2,7 +2,7 @@
 const monthsInArray = ['January', "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 // page link var
-const host = 'http://localhost:8000/';
+const host = 'http://localhost:8000';
 const appName = "expenses-app";
 const home_Page = `${host + appName}/user`;
 const login_Page = `${host + appName}/login`;
@@ -12,15 +12,15 @@ const in_list_Page = `${host + appName}/in/list`;
 const in_view_Page = `${host + appName}/in/view`;
 
 // app url Links
-let urlLink = {
-    home_Page: `${host + appName}/user`,
-    login_Page: `${host + appName}/login`,
-    signup_Page: `${host + appName}/register`,
-    reset_Page: `${host + appName}/reset`,
-    in_add_Page: `${host + appName}/in/add`,
-    in_list_Page: `${host + appName}/in/list`,
-    in_view_Page: `${host + appName}/in/view`,
-}
+// let urlLink = {
+//     home_Page: `${host + appName}/user`,
+//     login_Page: `${host + appName}/login`,
+//     signup_Page: `${host + appName}/register`,
+//     reset_Page: `${host + appName}/reset`,
+//     in_add_Page: `${host + appName}/in/add`,
+//     in_list_Page: `${host + appName}/in/list`,
+//     in_view_Page: `${host + appName}/in/view`,
+// }
 
 
 //app api links
