@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->index();
 
             // Company details
             $table->string('company_name');
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->boolean('show_email_column')->default(false);
             $table->string('invoice_prefix')->default('INV-'); // e.g., "INV-"
             $table->integer('start_number')->default(1);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
 

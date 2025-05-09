@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('tax_amount', 20, 2)->default(0);
             $table->decimal('paid_amount');
             $table->decimal('total_amount', 20, 2);
-            $table->string('status')->default('pending'); // pending, paid, canceled
+            $table->string('status')->default('canceled'); // pending, paid, canceled
             $table->boolean('need_tax')->default(false); // is tax filed need
             $table->string('currency')->default('BDT'); // invoice currency
             $table->timestamps();

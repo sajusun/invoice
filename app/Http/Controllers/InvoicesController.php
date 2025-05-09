@@ -49,6 +49,7 @@ class InvoicesController extends Controller
             'address' => 'required|string|max:255',
             'phone' => 'required|numeric',
             'email' => 'nullable|email',
+//            'status' => 'nullable|string',
             'date' => 'required|date',
             'currency' => 'required|string',
             'company_name' => 'required|string',
@@ -94,6 +95,8 @@ class InvoicesController extends Controller
                         'address' => $validatedData['address'],
                     ]);
                 }
+                $status = $validatedData['amount_paid'] >= $validatedData['amount_total'] ? 'Paid' : 'Pending';
+
 
                 //inset invoice for the user
                 $invoice = Invoices::create([
@@ -107,7 +110,8 @@ class InvoicesController extends Controller
                     'notes' => $validatedData['invoiceNotes'],
                     'currency' => $validatedData['currency'],
                     'paid_amount' => $validatedData['amount_paid'],
-                    'total_amount' => $validatedData['amount_total']
+                    'total_amount' => $validatedData['amount_total'],
+                    'status' => $status,
                 ]);
 
                 //commited the state...
@@ -124,8 +128,8 @@ class InvoicesController extends Controller
                 //return view('pages/invoice_preview');
                 return response()->json([
                     'success' => true,
-                    'message' => 'added success',
-                    'redirect' => route('previewInvoice', $validatedData['invoice_number'])// or your target route
+                    'message' => 'Invoice Created Success',
+                    'redirect' => route('previewInvoice', $invoice['invoice_number'])// or your target route
                 ]);
 
             } catch (Exception $e) {
@@ -160,19 +164,18 @@ class InvoicesController extends Controller
     public function get_all_invoices()
     {
         $user = Auth::user();
-        return $user->invoices()->select('id','user_id','customer_id','invoice_number','status','total_amount','paid_amount','invoice_date')->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(10);
+        return $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(10);
 
     }
 
     public function search_invoice(Request $request)
     {
         $user = Auth::user();
-        $query = $user->invoices()->with('customer:id,name,email,phone,address');
         // Search by customer name or invoice number
         if ($request->has('search') && $request->search !== null) {
             $search = $request->search;
 
-            $invoices = $user->invoices()->select('id','user_id','customer_id','invoice_number','status','total_amount','paid_amount','invoice_date')->with('customer')
+            $invoices = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')->with('customer')
                 ->when($search, function ($query, $search) {
                     return $query->where('invoice_number', 'like', "%{$search}%")
                         ->orWhereHas('customer', function ($q) use ($search) {
@@ -182,18 +185,18 @@ class InvoicesController extends Controller
                         });
                 })->orderBy('created_at', 'desc')->paginate(10);
 
-        }else{
+        } else {
             return response()->json([
-                'success'=>false,
-                'message'=>'search input is empty',
-                'invoices'=>$this->get_all_invoices()
+                'success' => false,
+                'message' => 'search input is empty',
+                'invoices' => $this->get_all_invoices()
             ]);
         }
 
         return response()->json([
             'success' => true,
             'invoices' => $invoices,
-            'input'=>$search
+            'input' => $search
         ]);
     }
 

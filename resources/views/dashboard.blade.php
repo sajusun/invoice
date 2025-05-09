@@ -138,7 +138,7 @@
                     <td>@{{invoice.customer.name}}</td>
                     <td>@{{invoice.total_amount}}</td>
                     <td>
-                        <span v-if="invoice.status==='pending'" class="bg-yellow-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+                        <span v-if="invoice.status==='Pending'" class="bg-yellow-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
                         <span v-else class="bg-green-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
                     </td>
                 </tr>

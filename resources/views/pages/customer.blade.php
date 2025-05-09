@@ -455,23 +455,6 @@
         }
     }
 
-    // function filterInvoices() {
-    //     const input = document.getElementById("searchInput").value.toLowerCase();
-    //     const rows = document.querySelectorAll("table tbody tr");
-    //     serverRequest.url = `http://localhost:8000/invoice/search?search=${input}`;
-    //     serverRequest.xGet().then((response) => {
-    //         console.log(response)
-    //         // document.getElementById("customerCard").classList.remove("hidden");
-    //     })
-    //     rows.forEach((row) => {
-    //         const text = row.textContent.toLowerCase();
-    //         if (text.includes(input)) {
-    //             row.classList.remove("hidden");
-    //         } else {
-    //             row.classList.add("hidden");
-    //         }
-    //     });
-    // }
     document.getElementById("searchInput").addEventListener('keyup',function (e) {
         const rows = document.querySelectorAll("table tbody tr");
         serverRequest.url = `http://localhost:8000/invoice/search?search=${this.value}`;
@@ -553,8 +536,8 @@
                 this.ready=true;
 
             },
-            goto(invoice_number){
-                return `${host}/invoice/${invoice_number}/preview`
+            goto(customer_id){
+                return `${host}/dashboard/customers/${customer_id}/preview`
             },
             confirmDelete(url) {
                 url=`${host}/invoice/${url}/delete`
