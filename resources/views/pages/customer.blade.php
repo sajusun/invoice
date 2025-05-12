@@ -271,8 +271,8 @@
 <html lang="en">
 <head>
     @include('custom-layouts.headTagContent')
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{{--    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>--}}
+{{--    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>--}}
 
 
     <title>Invozen Dashboard - Manage Your Invoices</title>
@@ -281,22 +281,16 @@
     <meta name="keywords" content="invoice dashboard, manage invoices, invoice tracker">
     <meta name="robots" content="noindex, follow"> <!-- Prevents indexing but allows following links -->
     <link rel="canonical" href="{{config('app.live_url')}}/dashboard/customers">
-    <style>
-
-        .fade-out {
-            opacity: 0;
-        }
-    </style>
 </head>
-<body>
+<body class="bg-gray-100 h-full">
 {{--navbar--}}
 @include('custom-layouts.navbar')
-{{--left site bar--}}
-<div class="sidebar">
+<!-- Sidebar -->
+<div class="flex">
     @include('custom-layouts.sidebar_dashboard')
-</div>
 
-<div class="main-content" id="app">
+<main class="flex-1 p-6">
+    <div id="customer">
 
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <!-- Total Invoices -->
@@ -411,6 +405,9 @@
     </div>
 
 </div>
+</main>
+</div>
+@include('custom-layouts.footer')
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -457,7 +454,7 @@
 
     document.getElementById("searchInput").addEventListener('keyup',function (e) {
         const rows = document.querySelectorAll("table tbody tr");
-        serverRequest.url = `http://localhost:8000/invoice/search?search=${this.value}`;
+        serverRequest.url = `${host}/invoice/search?search=${this.value}`;
         serverRequest.xGet().then((response) => {
             console.log(response)
         })
@@ -488,7 +485,7 @@
                 loading:false,
                 searchBtn:"Search",
                 ready:false,
-                url:'http://localhost:8000/dashboard/customers/search?search='
+                url:`${host}/dashboard/customers/search?search=`
             }
         },
         mounted() {
@@ -576,7 +573,7 @@
 
         },
 
-    }).mount('#app');
+    }).mount('#customer');
 </script>
 
 @if (session('response'))
