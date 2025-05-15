@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Customers;
 use App\Models\User;
+use App\Services\CustomerService;
+use App\Services\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class CustomersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth','verified']); // Only authenticated users can access this controller
+    }
     public function customers()
     {
        return  User::find(Auth::id())->customers;
@@ -45,4 +51,16 @@ class CustomersController extends Controller
             'number' => $number,
         ]);
     }
+    public function delete_customer($uid)
+    {
+
+        $deleted = CustomerService::delete_customer($uid);
+
+        if ($deleted) {
+            return redirect()->back()->with(['message' => 'Client Delete Successfully.', 'response' => 'success']);
+        } else {
+            return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
+        }
+    }
+
 }

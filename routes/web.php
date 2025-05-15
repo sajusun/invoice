@@ -50,8 +50,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 Route::middleware(['auth','verified'])->group(function () {
-    Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice'])->name('invoice.delete');
-    Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
+    Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice']);
+    Route::post('/customer/{id}/delete', [CustomersController::class, 'delete_customer']);
+
+    //Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
 });
 
 require __DIR__.'/auth.php';

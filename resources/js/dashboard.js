@@ -1,6 +1,6 @@
 import global from './global_var.js';
 
-const url=`${global.host}/invoice/search?search=`;
+let url=`${global.host}/invoice/search?search=`;
 const {createApp} = Vue;
 
     createApp({
@@ -59,8 +59,8 @@ const {createApp} = Vue;
             goto(invoice_number) {
                 return `${host}/invoice/${invoice_number}/preview`
             },
-            confirmDelete(url) {
-                url = `${host}/invoice/${url}/delete`
+            confirmDelete(uid) {
+             let   url = `${host}/invoice/${uid}/delete`
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "This action will permanently delete the invoice.",
@@ -71,6 +71,8 @@ const {createApp} = Vue;
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
                         // Create and submit a form dynamically
                         const form = document.createElement('form');
                         form.method = 'POST';
@@ -79,7 +81,7 @@ const {createApp} = Vue;
                         const token = document.createElement('input');
                         token.type = 'hidden';
                         token.name = '_token';
-                        token.value = '{{ csrf_token() }}';
+                        token.value = csrfToken
                         form.appendChild(token);
 
                         const method = document.createElement('input');

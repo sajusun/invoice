@@ -42,9 +42,29 @@
       }
     }
 </script>
-<body>
-@include('custom-layouts.navbar')
+<body class="h-full">
+<!-- Navbar -->
+<nav class="navbar-light bg-light shadow-sm px-4 py-1 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <!-- Toggle Sidebar -->
+{{--        <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-700 focus:outline-none">--}}
+{{--            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">--}}
+{{--                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>--}}
+{{--            </svg>--}}
+{{--        </button>--}}
+        {{--        <span class="text-xl font-semibold text-gray-800">Invozen</span>--}}
+        <a class="navbar-brand fw-bold" style="font-size: 2rem;padding-top: .1rem; font-family: 'Roboto Thin',math;font-variant: small-caps;" href="/">
+            <img
+                src="https://thumbs.dreamstime.com/b/invoice-icon-linear-logo-mark-set-collection-black-white-web-invoice-icon-linear-logo-mark-black-white-330206480.jpg"
+                alt="logo" width="40" height="40" class="d-inline-block align-text-top">
+            InvoZen
+        </a>
+    </div>
 
+    <div>
+        @include('custom-layouts.auth-or-dashboard')
+    </div>
+</nav>
 <!-- Hero Section -->
 <header class="text-white text-center py-5 shadow-sm">
     <div class="container">
@@ -54,7 +74,8 @@
     </div>
 </header>
 
-<section class="guide-card">
+<div class="flex"></div>
+<section class="lg:px-6 sm:px-2">
     @include('custom-layouts.features_card')
 </section>
 

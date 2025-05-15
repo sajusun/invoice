@@ -1,6 +1,7 @@
 
 const global= {
      host : 'http://localhost:8000',
+    //   host : 'https://www.invozen.com',
      appName : "invozen",
 // all month in array
      monthsInArray : ['January', "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
