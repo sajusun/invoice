@@ -1,6 +1,7 @@
 import global from './global_var.js';
+import server from "./server.js";
 
-let url=`${global.host}/invoice/search?search=`;
+// let url=`/invoice/search?search=`;
 const {createApp} = Vue;
 
     createApp({
@@ -13,7 +14,7 @@ const {createApp} = Vue;
                 loading: false,
                 searchBtn: "Search",
                 ready: false,
-                url: url,
+                url: '/invoice/search?search=',
             }
         },
         mounted() {
@@ -23,7 +24,7 @@ const {createApp} = Vue;
             fetchInvoices(url) {
                 this.searchBtn = "searching";
                 this.loading = true;
-                axios.get(`${url}${this.search}`)
+                server.get(`${url}${this.search}`)
                     .then(response => {
                         this.searchBtn = "Search";
                         console.log(response)

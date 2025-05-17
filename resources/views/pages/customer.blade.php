@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" x-data="{ sidebarOpen: false, isLoggedIn: true }" class="h-full">
 <head>
+    @vite('resources/js/customer.js')
+
     @include('custom-layouts.headTagContent')
     <title>Invozen Dashboard - Manage Your Invoices</title>
     <meta name="description"
@@ -13,34 +15,34 @@
 {{--navbar--}}
 @include('custom-layouts.navbar')
 <!-- Sidebar -->
-<div class="flex">
+<div class="flex h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
     @include('custom-layouts.sidebar_dashboard')
 
-    <main class="flex-1 p-6">
+    <main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
         <div id="customer">
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <!-- Total Invoices -->
                 <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-                    <h3 class="text-gray-500 text-sm">Total Invoices</h3>
-                    <p class="text-2xl font-bold text-blue-600 mt-2">@{{ sum_of_invoices }}</p>
+                    <p class="text-gray-500 text-sm">Total Invoices</p>
+                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{ sum_of_invoices }}</p>
                 </div>
 
                 <!-- Pending Invoices -->
                 <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-                    <h3 class="text-gray-500 text-sm">Pending Invoices</h3>
-                    <p class="text-2xl font-bold text-yellow-500 mt-2">@{{status}}</p>
+                    <p class="text-gray-500 text-sm">Pending Invoices</p>
+                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{status}}</p>
                 </div>
 
                 <!-- Total Revenue -->
                 <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-                    <h3 class="text-gray-500 text-sm">Total Revenue</h3>
-                    <p class="text-2xl font-bold text-green-600 mt-2">@{{total}}</p>
+                    <p class="text-gray-500 text-sm">Total Revenue</p>
+                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{total}}</p>
                 </div>
             </div>
             <div class="mt-4 list-view">
                 <div class="flex py-1">
-                    <h4 class="w-2/5">Customers List </h4>
-                    <span class="flex w-3/5 mr-1">
+                    <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">Customers List </h4>
+                    <span class="flex w-4/5 md:w-3/5 mr-1 text-xs sm:text-sm md:text-base h-8 md:h-10">
                 <input v-model="search" @input="key_Searching()" @keydown.enter="onTabSearch"
                        type="text"
                        id="searchInput"
@@ -55,7 +57,7 @@
                 <div v-if="loading" class="flex justify-center items-center h-32">
                     <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
                 </div>
-                <table v-else class="table" id="recentInvoice">
+                <table v-else class="table text-xs md:text-sm lg:text-md" id="customersList">
                     <thead>
                     <tr>
                         <th>#</th>
@@ -80,13 +82,13 @@
                         <tr class="details-row hidden bg-gray-50">
                             <td colspan="6" class="px-3 py-2">
                                 <div class="flex justify-around">
-                                    <div class="text-sm align-content-start text-left">
+                                    <div class="text-xs sm:text-sm align-content-start text-left">
                                         <div><b>Name:</b> @{{customer.name}}</div>
                                         <div><b>Phone:</b> @{{customer.phone}}</div>
                                         <div><b>Email:</b> @{{customer.email}}</div>
 
                                     </div>
-                                    <div class="text-sm align-content-start text-left">
+                                    <div class="text-xs sm:text-sm align-content-start text-left">
                                         <div><b>Address:</b> @{{customer.address}}</div>
                                         <div><b>Date:</b> @{{customer.created_at}}</div>
                                         {{--                                <div><strong>Due:</strong> @{{invoice.total_amount - invoice.paid_amount}}</div>--}}
@@ -151,111 +153,6 @@
             nextRow.classList.toggle("hidden");
         }
     }
-</script>
-<script>
-    const {createApp} = Vue;
-
-    createApp({
-        data() {
-            return {
-                customers: [],
-                pagination: {},
-                search: '',
-                sum_of_invoices: '',
-                status: '',
-                total: '',
-                loading: false,
-                searchBtn: "Search",
-                ready: false,
-                url: `${host}/dashboard/customers/search?search=`
-            }
-        },
-        mounted() {
-            this.fetchCustomers(this.url);
-        },
-        methods: {
-            fetchCustomers(url) {
-                this.searchBtn = "searching";
-                this.loading = true;
-                axios.get(`${url}${this.search}`)
-                    .then(response => {
-                        this.searchBtn = "Search";
-
-                        console.log(response.data)
-                        this.customers = response.data['customers'].data;
-                        this.status = response.data['status'];
-                        this.sum_of_invoices = response.data['sum_of_invoices'];
-                        this.total = response.data['total'];
-
-                        let data = response.data['customers'];
-                        this.loading = false;
-                        this.searchBtn = "Search";
-                        this.pagination = {
-                            current_page: data.current_page,
-                            last_page: data.last_page,
-                            next_page_url: data.next_page_url,
-                            prev_page_url: data.prev_page_url
-                        };
-
-                    });
-            },
-            key_Searching() {
-                if (this.search.trim() === '' && this.ready) {
-                    this.ready = false;
-                    this.fetchCustomers(this.url);
-                }
-
-            },
-            onTabSearch() {
-                if (this.search.trim() === '') {
-                    return
-                }
-                this.fetchCustomers(this.url);
-                this.ready = true;
-            },
-            goto(customer_id) {
-                return `${host}/dashboard/customers/${customer_id}/preview`
-            },
-            confirmDelete(uid) {
-                let url = `${host}/customer/${uid}/delete`
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This action will permanently delete the Client.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                        // Create and submit a form dynamically
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = url;
-
-                        const token = document.createElement('input');
-                        token.type = 'text';
-                        token.name = '_token';
-                        token.value = '{{ csrf_token() }}';
-                        form.appendChild(token);
-
-                        const method = document.createElement('input');
-                        method.type = 'text';
-                        method.name = '_method';
-                        method.value = 'POST';
-                        form.appendChild(method);
-
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                });
-            }
-        },
-
-    }).mount('#customer');
-
 </script>
 
 @if (session('response'))

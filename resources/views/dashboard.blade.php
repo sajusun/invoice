@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" x-data="{ sidebarOpen: false, isLoggedIn: true }" class="h-full">
 <head>
+    @vite('resources/js/dashboard.js')
     @include('custom-layouts.headTagContent')
     <title>Invozen Dashboard - Manage Your Invoices</title>
     <meta name="description"
@@ -13,10 +14,10 @@
 {{--navbar--}}
 @include('custom-layouts.navbar')
 <!-- Sidebar -->
-<div class="flex">
+<div class="flex h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
     @include('custom-layouts.sidebar_dashboard')
 
-<main class="flex-1 p-6">
+<main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
     @if (session('welcome_message'))
         <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
         <span>
@@ -32,7 +33,7 @@
 @include('custom-layouts.footer')
 
 </body>
-
+{{--@vite('resources/js/dashboard.js')--}}
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

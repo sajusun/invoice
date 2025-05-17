@@ -1,5 +1,4 @@
-import './bootstrap';
-import './dashboard.js'
+// import './bootstrap';
 
 import Alpine from 'alpinejs';
 

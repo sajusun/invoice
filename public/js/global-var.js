@@ -1,8 +1,9 @@
+
 // all month in array
 const monthsInArray = ['January', "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 // page link var
-const host = 'http://localhost:8000';
+const host = document.querySelector('meta[name="base-url"]')?.content || '';
 const appName = "invozen";
 
 // all kind of app global methods here

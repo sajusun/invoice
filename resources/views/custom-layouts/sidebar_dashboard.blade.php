@@ -1,4 +1,4 @@
-<aside :class="sidebarOpen ? 'block fixed' : 'hidden lg:block relative'" class="w-64 min-h-screen p-4 border-r shadow-md bg-white">
+<aside :class="sidebarOpen ? 'block fixed' : 'hidden lg:block relative'" class=" text-sm md:text-base w-[14rem] md:w-64 p-4 h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)] border-r shadow-md bg-white">
     <nav class="space-y-2 [a]:no-underline">
 <h2><a href="/dashboard" class="block py-2 px-3 rounded hover:bg-gray-100 text-gray-700">
         <i class="fas fa-home w-4 mr-2"> </i> Dashboard</a></h2>

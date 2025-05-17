@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="navbar-light bg-light shadow-sm px-4 py-1 flex justify-between items-center">
+<nav class="navbar-light h-16 bg-light shadow-sm px-4 py-1 flex justify-between items-center">
     <div class="flex items-center gap-4">
         <!-- Toggle Sidebar -->
         <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-700 focus:outline-none">

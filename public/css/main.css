@@ -60,9 +60,9 @@ body {
         font-size: var(--font1x)!important;
     }
     /*footer text*/
-    footer{
-        font-size: var(--font0x)!important;
-    }
+    /*footer{*/
+    /*    font-size: var(--font0x)!important;*/
+    /*}*/
 /*    login page*/
     .center-div{
         font-size: .725rem!important;
