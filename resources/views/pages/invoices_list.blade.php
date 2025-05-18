@@ -2,13 +2,13 @@
     <!-- Total Invoices -->
     <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
         <p class="text-gray-500 text-sm">Total Invoices</p>
-        <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600">{{$num_of_invoices}}</p>
+        <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50">{{$num_of_invoices}}</p>
     </div>
 
     <!-- Pending Invoices -->
     <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
         <p class="text-gray-500 text-sm">Pending Invoices</p>
-        <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600">{{$status}}</p>
+        <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50">{{$status}}</p>
     </div>
 
     <!-- Total Revenue -->
@@ -35,7 +35,7 @@
     <div v-if="loading" class="flex justify-center items-center h-32">
         <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
     </div>
-    <table v-else class="table text-xs md:text-sm lg:text-md" id="recentInvoice">
+    <table v-else class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md" id="recentInvoice">
         <thead>
         <tr>
             <th>#</th>
@@ -45,7 +45,7 @@
             <th>Status</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-gray-400 text-sm text-gray-800">
         <template v-for="(invoice, index) in invoices" :key="invoice.id">
             <tr :href="invoice.invoice_number" class="list" onclick="toggleDetails(this)">
                 <td class="w-4">@{{++index}}</td>
@@ -60,19 +60,19 @@
 
             <tr class="details-row hidden bg-gray-50">
                 <td colspan="6" class="px-1 py-2">
-                    <div class="flex justify-around">
-                        <div class="text-xs sm:text-sm align-content-start text-left">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
                             <div><b>Name:</b> @{{invoice.customer.name}}</div>
                             <div><b>Phone:</b> @{{invoice.customer.phone}}</div>
                             <div><b>Email:</b> @{{invoice.customer.email}}</div>
 
                         </div>
-                        <div class="text-xs sm:text-sm align-content-start text-left">
+                        <div class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
                             <div><b>Address:</b> @{{invoice.customer.address}}</div>
                             <div><b>Date:</b> @{{invoice.invoice_date}}</div>
                             <div><strong>Due:</strong> @{{invoice.total_amount - invoice.paid_amount}}</div>
                         </div>
-                        <div class="flex items-center">
+                        <div class="col-span-2 lg:col-span-1 justify-center items-center">
                             <a :href="goto(invoice.invoice_number)"
                                class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
                                 <i class="fa fa-eye"></i> View</a>

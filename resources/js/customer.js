@@ -60,10 +60,10 @@ createApp({
             this.ready = true;
         },
         goto(customer_id) {
-            return `${host}/dashboard/customers/${customer_id}/preview`
+            return `/customers/${customer_id}/preview`
         },
         confirmDelete(uid) {
-            let url = `${host}/customer/${uid}/delete`
+            let url = `/customer/${uid}/delete`
             Swal.fire({
                 title: 'Are you sure?',
                 text: "This action will permanently delete the Client.",
@@ -74,7 +74,7 @@ createApp({
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
                     // Create and submit a form dynamically
                     const form = document.createElement('form');
@@ -84,7 +84,7 @@ createApp({
                     const token = document.createElement('input');
                     token.type = 'text';
                     token.name = '_token';
-                    token.value = '{{ csrf_token() }}';
+                    token.value = csrfToken;
                     form.appendChild(token);
 
                     const method = document.createElement('input');

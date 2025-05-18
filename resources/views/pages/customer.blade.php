@@ -24,13 +24,14 @@
                 <!-- Total Invoices -->
                 <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
                     <p class="text-gray-500 text-sm">Total Invoices</p>
-                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{ sum_of_invoices }}</p>
+                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{ sum_of_invoices
+                        }}</p>
                 </div>
 
                 <!-- Pending Invoices -->
                 <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
                     <p class="text-gray-500 text-sm">Pending Invoices</p>
-                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{status}}</p>
+                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{status}}</p>
                 </div>
 
                 <!-- Total Revenue -->
@@ -43,35 +44,39 @@
                 <div class="flex py-1">
                     <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">Customers List </h4>
                     <span class="flex w-4/5 md:w-3/5 mr-1 text-xs sm:text-sm md:text-base h-8 md:h-10">
-                <input v-model="search" @input="key_Searching()" @keydown.enter="onTabSearch"
-                       type="text"
-                       id="searchInput"
-                       placeholder="Search Client..."
-                       class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring"
-                />
-                <button :disabled="search.trim()===''"
-                        class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm" @click="onTabSearch">@{{ searchBtn }}</button>
-            </span>
-
+                         <input v-model="search"
+                                @input="key_Searching()"
+                                @keydown.enter="onTabSearch"
+                                type="text"
+                                id="searchInput"
+                                placeholder="Search Client..."
+                                class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                         />
+                        <button :disabled="search.trim()===''"
+                                class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm"
+                                @click="onTabSearch">@{{ searchBtn }}
+                        </button>
+                     </span>
                 </div>
                 <div v-if="loading" class="flex justify-center items-center h-32">
                     <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
                 </div>
-                <table v-else class="table text-xs md:text-sm lg:text-md" id="customersList">
+                <table v-else class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md"
+                       id="customersList">
                     <thead>
                     <tr>
                         <th>#</th>
                         <th>Id</th>
-                        <th>Customer Name</th>
+                        <th>Client Name</th>
                         <th>Phone</th>
                         <th>Email</th>
                         {{--                <th>&nbsp;</th>--}}
                     </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody class="divide-y divide-gray-400 text-sm text-gray-800">
                     <template v-for="(customer, index) in customers" :key="customer.id">
-                        <tr class="list" onclick="toggleDetails(this)">
+                        <tr class="list hover:bg-gray-50 focus-within:bg-blue-100" onclick="toggleDetails(this)">
                             <td class="w-4">@{{++index}}</td>
                             <td class="left-1">@{{customer.id}}</td>
                             <td>@{{customer.name}}</td>
@@ -81,19 +86,21 @@
 
                         <tr class="details-row hidden bg-gray-50">
                             <td colspan="6" class="px-3 py-2">
-                                <div class="flex justify-around">
-                                    <div class="text-xs sm:text-sm align-content-start text-left">
+                                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div
+                                        class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
                                         <div><b>Name:</b> @{{customer.name}}</div>
                                         <div><b>Phone:</b> @{{customer.phone}}</div>
                                         <div><b>Email:</b> @{{customer.email}}</div>
-
                                     </div>
-                                    <div class="text-xs sm:text-sm align-content-start text-left">
+
+                                    <div
+                                        class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
                                         <div><b>Address:</b> @{{customer.address}}</div>
                                         <div><b>Date:</b> @{{customer.created_at}}</div>
                                         {{--                                <div><strong>Due:</strong> @{{invoice.total_amount - invoice.paid_amount}}</div>--}}
                                     </div>
-                                    <div class="flex items-center">
+                                    <div class="col-span-2 lg:col-span-1 justify-center items-center">
                                         <a :href="goto(customer.id)"
                                            class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
                                             <i class="fa fa-eye"></i> View</a>
@@ -137,15 +144,18 @@
 </html>
 <script>
 
-    document.querySelectorAll(".list").forEach(item => {
-        item.addEventListener("click", function () {
-            document.querySelectorAll(".list td").forEach(el => el.classList.remove("active"));
-            this.querySelectorAll("td").forEach(th => th.classList.add("active"));
-        });
-    });
+    // document.querySelectorAll(".list").forEach(item => {
+    //     item.addEventListener("click", function (item) {
+    //         console.log(item)
+    //         // item.classList.remove("active");
+    //         // this.querySelectorAll("tr").forEach(th => th.classList.add("active"));
+    //     });
+    // });
 
     function toggleDetails(row) {
         // Hide all other detail rows first
+        document.querySelectorAll("tr").forEach(th => th.classList.remove("active"));
+        row.classList.add("active")
         document.querySelectorAll(".details-row").forEach(r => r.classList.add("hidden"));
         const nextRow = row.nextElementSibling;
         if (nextRow && nextRow.classList.contains("details-row")) {

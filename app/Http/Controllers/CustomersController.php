@@ -51,10 +51,10 @@ class CustomersController extends Controller
             'number' => $number,
         ]);
     }
-    public function delete_customer($uid)
+    public function delete_customer($id)
     {
 
-        $deleted = CustomerService::delete_customer($uid);
+        $deleted = CustomerService::delete_customer($id);
 
         if ($deleted) {
             return redirect()->back()->with(['message' => 'Client Delete Successfully.', 'response' => 'success']);

@@ -16,11 +16,6 @@
                             <p class="company-name" id="company_name" contenteditable="true">Company Name</p>
                         @endauth
                     </div>
-                    {{--                                <div class="logo-container">--}}
-                    {{--                                    <img id="logoPreview" src="." alt="" class="hide"--}}
-                    {{--                                         onclick="document.getElementById('logoHolder').click()"/>--}}
-                    {{--                                    <input type="file" id="logoHolder" accept="image/*" class="form-control">--}}
-                    {{--                                </div>--}}
                     <div>
                         <h2>INVOICE</h2>
                         <input type="text" class="form-control" placeholder="InvoiceID"
@@ -85,30 +80,6 @@
         <div class="col-3 side-panel">
             <div class="mt-3">
                 <div class="edit-section">
-                    {{--                <div class="form-switch">--}}
-                    {{--                    <input class="form-check-input" type="checkbox" role="switch" value="" id="logoCheck">--}}
-                    {{--                    <label class="form-check-label" for="logoCheck">--}}
-                    {{--                        add logo in top--}}
-                    {{--                    </label>--}}
-                    {{--                </div>--}}
-                    {{--                <div id="logoSettings" class=" py-2 hide">--}}
-                    {{--                    <div class="form-check">--}}
-                    {{--                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="nonCircleLogo" checked>--}}
-                    {{--                        <label class="form-check-label" for="nonCircleLogo">--}}
-                    {{--                            non circle logo--}}
-                    {{--                        </label>--}}
-                    {{--                    </div>--}}
-                    {{--                    <div class="form-check">--}}
-                    {{--                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="circleLogo">--}}
-                    {{--                        <label class="form-check-label" for="circleLogo">--}}
-                    {{--                            circle logo--}}
-                    {{--                        </label>--}}
-                    {{--                    </div>--}}
-                    {{--                    <button id="logoUpBtn" class="py-1 btn btn-light hide"--}}
-                    {{--                            onclick="document.getElementById('logoHolder').click()">+ Upload +--}}
-                    {{--                    </button>--}}
-                    {{--                </div>--}}
-                    {{--                <hr>--}}
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="emailInputCheck">
                         <label class="form-check-label" for="emailInputCheck">
@@ -145,6 +116,7 @@
     </div>
 </form>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     flatpickr(".datepicker", {});
 
