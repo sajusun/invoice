@@ -3,6 +3,20 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Invoice Generator</title>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
 </head>
 <body>
 @include('custom-layouts.navbar')

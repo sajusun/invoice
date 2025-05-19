@@ -38,7 +38,7 @@
     <table v-else class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md" id="recentInvoice">
         <thead>
         <tr>
-            <th>#</th>
+            <th class="p-1.5">#</th>
             <th>Invoice Number</th>
             <th>Customer Name</th>
             <th>Amount</th>
@@ -47,9 +47,9 @@
         </thead>
         <tbody class="divide-y divide-gray-400 text-sm text-gray-800">
         <template v-for="(invoice, index) in invoices" :key="invoice.id">
-            <tr :href="invoice.invoice_number" class="list" onclick="toggleDetails(this)">
-                <td class="w-4">@{{++index}}</td>
-                <td class="left-1">@{{invoice.invoice_number}}</td>
+            <tr :href="invoice.invoice_number" class="list text-center" onclick="toggleDetails(this)">
+                <td class="w-4 p-1.5">@{{++index}}</td>
+                <td class="">@{{invoice.invoice_number}}</td>
                 <td>@{{invoice.customer.name}}</td>
                 <td>@{{invoice.total_amount}}</td>
                 <td>
@@ -62,7 +62,7 @@
                 <td colspan="6" class="px-1 py-2">
                     <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                         <div class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
-                            <div><b>Name:</b> @{{invoice.customer.name}}</div>
+                            <div><b>Name:</b> @{{invoice.customer.name }} <i class="fa fa-angle-right"></i> <span class="font-semibold"> UID : </span>@{{  invoice.customer.id}}</div>
                             <div><b>Phone:</b> @{{invoice.customer.phone}}</div>
                             <div><b>Email:</b> @{{invoice.customer.email}}</div>
 

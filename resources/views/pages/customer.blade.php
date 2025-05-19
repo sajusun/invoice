@@ -65,8 +65,7 @@
                        id="customersList">
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Id</th>
+                        <th class="p-1.5">#</th>
                         <th>Client Name</th>
                         <th>Phone</th>
                         <th>Email</th>
@@ -76,9 +75,8 @@
 
                     <tbody class="divide-y divide-gray-400 text-sm text-gray-800">
                     <template v-for="(customer, index) in customers" :key="customer.id">
-                        <tr class="list hover:bg-gray-50 focus-within:bg-blue-100" onclick="toggleDetails(this)">
-                            <td class="w-4">@{{++index}}</td>
-                            <td class="left-1">@{{customer.id}}</td>
+                        <tr class="list hover:bg-gray-50 text-center" onclick="toggleDetails(this)">
+                            <td class="w-4 p-1.5">@{{++index}}</td>
                             <td>@{{customer.name}}</td>
                             <td>@{{customer.phone}}</td>
                             <td>@{{customer.email}}</td>
@@ -89,7 +87,7 @@
                                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div
                                         class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
-                                        <div><b>Name:</b> @{{customer.name}}</div>
+                                        <div><b>Name:</b> @{{customer.name}} <i class="fa fa-angle-right"></i><span class="font-semibold">UID : @{{  customer.id}}</span></div>
                                         <div><b>Phone:</b> @{{customer.phone}}</div>
                                         <div><b>Email:</b> @{{customer.email}}</div>
                                     </div>

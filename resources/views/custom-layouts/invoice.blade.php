@@ -4,11 +4,10 @@
         {{ session('message') }}
     </div>
 @endif
-    <div class="row">
-        <div class="col">
+    <div class="grid grid-cols-4">
+        <div class="col-span-3">
             <div class="invoice-container">
                 <div class="invoice-header">
-
                     <div class="company-name" id="company_name">
                         @auth()
                             <p>{{$settings->getCompanyName()}}</p>
@@ -23,9 +22,9 @@
                     </div>
                 </div>
 
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <input id="issueFrom" type="text" class="form-control" placeholder="Who is this from?">
+                <div class="flex  mt-3 w-full">
+                    <div class="px-4 w-[50vw]">
+                        <input id="issueFrom" type="text" class="w-fit" placeholder="Who is this from?">
                         <input id="issueTo" type="text" class="form-control mt-2" placeholder="Who is this to?">
                         <input id="ContactNumber" list="number_list" type="text" class="form-control mt-2"
                                placeholder="Contact Number">
@@ -36,24 +35,24 @@
                         </datalist>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="grid grid-cols-1 px-4 items-end">
                         <input id="date" type="text" class="form-control datepicker" placeholder="Date">
                         <input id="address" type="text" class="form-control mt-2" placeholder="address">
                         <input id="email" type="text" class="form-control mt-2 hide" placeholder="Email Address">
                     </div>
                 </div>
 
-                <table class="table mt-3">
-                    <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Amount</th>
-                        <th></th>
+                <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md my-4">
+                    <thead class="p-1.5">
+                    <tr class="bg-gray-100">
+                        <th class="p-1.5">Item</th>
+                        <th class="p-1.5">Quantity</th>
+                        <th class="p-1.5">Rate</th>
+                        <th class="p-1.5">Amount</th>
+                        <th class="p-1.5"></th>
                     </tr>
                     </thead>
-                    <tbody id="invoice-items">
+                    <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
                     </tbody>
                 </table>
 
@@ -61,7 +60,7 @@
 
                 <div class="mt-3">
                     <h5>Terms</h5>
-                    <textarea id="invoiceNotes" class="form-control" placeholder="Invoice Notes"></textarea>
+                    <textarea id="invoiceNotes" class="w-[60%]" placeholder="Invoice Notes"></textarea>
                 </div>
 
                 <div class="mt-3 text-end">
@@ -76,8 +75,9 @@
                 </div>
             </div>
         </div>
+
         {{--    side section--}}
-        <div class="col-3 side-panel">
+        <div class="col-span-1 side-panel">
             <div class="mt-3">
                 <div class="edit-section">
                     <div class="form-check">
@@ -128,11 +128,16 @@
         let tbody = document.getElementById("invoice-items");
         let tr = document.createElement("tr");
         tr.innerHTML = `
-                <td class="description"><input type="text" class="form-control" placeholder="Description of item/service..."></td>
-                <td class="item"><input type="text" class="form-control" value="1" onchange="calculateTotal()"></td>
-                <td class="quantity"><input type="text" class="form-control" value="0" onchange="calculateTotal()"></td>
-                <td class="amount total">${getCurrency()} 0.00</td>
-                <td style="position: relative"><span class="remove-btn" onclick="removeItem(this)">&#128465;</span></td>
+                <td class="p-1.5">
+                    <input class="min-w-full border-0 text-sm" type="text" placeholder="Description of item/service..."></td>
+                <td class="p-1.5">
+                    <input class="w-full border-0 text-sm text-center" type="text" value="1" onchange="calculateTotal()"></td>
+                <td class="p-1.5 text-center">
+                    <input class="min-w-full border-0 text-sm text-center" type="text" value="0" onchange="calculateTotal()"></td>
+                <td class="p-1.5 w-40 text-center text-sm">0.00</td>
+                <td style="position: relative">
+                    <i class="p-1.5 fa fa-trash text-red-600 cursor-pointer" onclick="removeItem(this)"></i>
+</td>
             `;
         tbody.appendChild(tr);
     }
