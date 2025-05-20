@@ -1,83 +1,108 @@
-
 @if(session('message'))
-    <div class="alert alert-success">
+    <div class="alert alert-success" xmlns="http://www.w3.org/1999/html">
         {{ session('message') }}
     </div>
 @endif
-    <div class="grid grid-cols-4">
-        <div class="col-span-3">
-            <div class="invoice-container">
-                <div class="invoice-header">
-                    <div class="company-name" id="company_name">
-                        @auth()
-                            <p>{{$settings->getCompanyName()}}</p>
-                        @else
-                            <p class="company-name" id="company_name" contenteditable="true">Company Name</p>
-                        @endauth
-                    </div>
-                    <div>
-                        <h2>INVOICE</h2>
-                        <input type="text" class="form-control" placeholder="InvoiceID"
-                               value="#{{$invoiceId}}">
-                    </div>
+<div class="grid grid-cols-4 py-5">
+    <div class=" col-span-4 md:col-span-3 p-4 md:px-1">
+        <div class="shadow-lg p-4 md:p-2 w-full max-w-2xl lg:w-10/12 m-auto ">
+            <div class="invoice-header">
+                <div class="company-name" id="company_name">
+                    @auth()
+                        <p>{{$settings->getCompanyName()}}</p>
+                    @else
+                        <p class="company-name" id="company_name" contenteditable="true">Company Name</p>
+                    @endauth
                 </div>
-
-                <div class="flex  mt-3 w-full">
-                    <div class="px-4 w-[50vw]">
-                        <input id="issueFrom" type="text" class="w-fit" placeholder="Who is this from?">
-                        <input id="issueTo" type="text" class="form-control mt-2" placeholder="Who is this to?">
-                        <input id="ContactNumber" list="number_list" type="text" class="form-control mt-2"
-                               placeholder="Contact Number">
-                        <datalist id="number_list">
-                            <option value="0170"></option>
-                            <option value="0171"></option>
-                            <option value="0181"></option>
-                        </datalist>
-                    </div>
-
-                    <div class="grid grid-cols-1 px-4 items-end">
-                        <input id="date" type="text" class="form-control datepicker" placeholder="Date">
-                        <input id="address" type="text" class="form-control mt-2" placeholder="address">
-                        <input id="email" type="text" class="form-control mt-2 hide" placeholder="Email Address">
-                    </div>
-                </div>
-
-                <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md my-4">
-                    <thead class="p-1.5">
-                    <tr class="bg-gray-100">
-                        <th class="p-1.5">Item</th>
-                        <th class="p-1.5">Quantity</th>
-                        <th class="p-1.5">Rate</th>
-                        <th class="p-1.5">Amount</th>
-                        <th class="p-1.5"></th>
-                    </tr>
-                    </thead>
-                    <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
-                    </tbody>
-                </table>
-
-                <button class="btn btn-add" onclick="addItem()">+ Line +</button>
-
-                <div class="mt-3">
-                    <h5>Terms</h5>
-                    <textarea id="invoiceNotes" class="w-[60%]" placeholder="Invoice Notes"></textarea>
-                </div>
-
-                <div class="mt-3 text-end">
-                    <p id="subtotalBox">Subtotal: <span id="subtotal">BDT 0.00</span></p>
-                    <p id="taxBox">Tax <input type="number" id="tax" value="0" class="form-control d-inline"
-                                              style="width: 70px;"
-                                              onchange="calculateTotal()"> %</p>
-                    <p>Total: <span id="total">BDT 0.00</span></p>
-                    <p>Amount Paid: <input type="number" id="paid" value="0" class="form-control d-inline"
-                                           style="width: 100px;" onchange="calculateTotal()"></p>
-                    <p>Balance Due: <span id="balance">BDT 0.00</span></p>
+                <div>
+                    <h2>INVOICE</h2>
+                    <input type="text" class="form-control" placeholder="InvoiceID"
+                           value="#{{$invoiceId}}">
                 </div>
             </div>
-        </div>
 
-        {{--    side section--}}
-        <div class="col-span-1 side-panel">
+            <div class="grid grid-cols-2  mt-3 w-full">
+                <div class="px-4 w-full">
+                    <input id="issueFrom" type="text" class="w-9/12" placeholder="Who is this from?">
+                    <input id="issueTo" type="text" class="w-9/12 mt-2" placeholder="Who is this to?">
+                    <input id="ContactNumber" list="number_list" type="text"
+                           class="w-9/12 mt-2" placeholder="Contact Number">
+                    <datalist id="number_list">
+                        <option value="0170"></option>
+                        <option value="0171"></option>
+                        <option value="0181"></option>
+                    </datalist>
+                </div>
+
+                <div class="px-4 flex flex-col items-end">
+                    <input id="date" type="text" class="w-80 datepicker" placeholder="Date">
+                    <input id="address" type="text" class="w-80 mt-2" placeholder="address">
+                    <input id="email" type="text" class="w-80 mt-2 hide" placeholder="Email Address">
+                </div>
+            </div>
+
+            <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md my-4">
+                <thead class="p-1.5">
+                <tr class="bg-gray-100">
+                    <th class="p-1.5">Item</th>
+                    <th class="p-1.5">Quantity</th>
+                    <th class="p-1.5">Rate</th>
+                    <th class="p-1.5 text-right">Amount</th>
+                    <th class="p-1.5"></th>
+                </tr>
+                </thead>
+                <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
+                </tbody>
+            </table>
+
+            <button class="btn btn-add" onclick="addItem()">+ Line +</button>
+
+            <div class="mt-3">
+                <h5>Terms</h5>
+                <textarea id="invoiceNotes" class="w-[60%]" placeholder="Invoice Notes"></textarea>
+            </div>
+
+            <div class="mt-3 flex justify-end">
+                <div class="w-full max-w-80 divide-y divide-gray-200">
+                    <div id="subtotalBox" class="flex justify-between py-0.5">
+                        <span >Subtotal :</span> <span id="subtotal">0.00</span>
+                    </div>
+                    <div id="taxBox" class="flex justify-between py-0.5">
+                        <p>Tax(%) : </p>
+                        <input type="number" id="tax" value="0"
+                               class="h-8 w-16 text-center" onchange="calculateTotal()">
+                    </div>
+                    <div class="flex justify-between py-0.5">
+                        <span>Total :</span> <span id="total">0.00</span>
+                    </div>
+                    <div class="flex justify-between py-0.5">
+                        <p>Amount Paid :</p>
+                        <input type="number" id="paid" value="0"
+                               class="h-8 w-[calc(8rem)] max-w-48" onchange="calculateTotal()">
+                    </div>
+                    <div class="flex justify-between py-0.5">
+                        <p>Balance Due :</p> <span id="balance">0.00</span>
+                    </div>
+                </div>
+
+
+                {{--                                                                    <div class="mt-3 text-end">--}}
+                {{--                                                                <p id="subtotalBox">Subtotal: <span id="subtotal">BDT 0.00</span></p>--}}
+                {{--                                                                <p id="taxBox">Tax <input type="number" id="tax" value="0"--}}
+                {{--                                                                                          class="h-8 w-16 text-center" onchange="calculateTotal()"> %</p>--}}
+                {{--                                                                <p>Total: <span id="total">BDT 0.00</span></p>--}}
+                {{--                                                                <p>Amount Paid: <input type="number" id="paid" value="0"--}}
+                {{--                                                                                       class="h-8 w-[calc(8rem)] max-w-48" onchange="calculateTotal()"></p>--}}
+                {{--                                                                <p>Balance Due: <span id="balance">BDT 0.00</span></p>--}}
+                {{--                                                            </div>--}}
+            </div>
+        </div>
+    </div>
+
+
+    {{--    side section--}}
+    <div class="col-span-1">
+        <div class="w-full lg:w-4/5 lg:mx-auto side-panel">
             <div class="mt-3">
                 <div class="edit-section">
                     <div class="form-check">
@@ -98,7 +123,7 @@
 
             <div class="mt-3">
                 <label for="currency">Currency:</label>
-                <select id="currency" class="form-select" onchange="calculateTotal()">
+                <select id="currency" class="w-full" onchange="calculateTotal()">
                     <option value="BDT">BDT</option>
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
@@ -114,7 +139,8 @@
             </div>
         </div>
     </div>
-</form>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
@@ -130,14 +156,14 @@
         tr.innerHTML = `
                 <td class="p-1.5">
                     <input class="min-w-full border-0 text-sm" type="text" placeholder="Description of item/service..."></td>
-                <td class="p-1.5">
+                <td class="p-1.5 w-40 text-center">
                     <input class="w-full border-0 text-sm text-center" type="text" value="1" onchange="calculateTotal()"></td>
-                <td class="p-1.5 text-center">
-                    <input class="min-w-full border-0 text-sm text-center" type="text" value="0" onchange="calculateTotal()"></td>
-                <td class="p-1.5 w-40 text-center text-sm">0.00</td>
-                <td style="position: relative">
-                    <i class="p-1.5 fa fa-trash text-red-600 cursor-pointer" onclick="removeItem(this)"></i>
-</td>
+                <td class="p-1.5 w-40 text-center">
+                    <input class="w-full border-0 text-sm text-center" type="text" value="0" onchange="calculateTotal()"></td>
+                <td class="p-1.5 w-40 text-right text-sm">0.00</td>
+                <td class="w-10 py-1.5 flex justify-end items-center text-base">
+                    <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700" onclick="removeItem(this)"></i>
+                </td>
             `;
         tbody.appendChild(tr);
     }
@@ -188,7 +214,7 @@
             let qty = row.children[1].querySelector("input").value;
             let rate = row.children[2].querySelector("input").value;
             let amount = qty * rate;
-            row.children[3].innerText = `${currency} ${amount.toFixed(2)}`;
+            row.children[3].innerText = `${amount.toFixed(2)}`;
             subtotal += amount;
             console.log(item + "/" + qty + "/" + rate + '/' + amount)
             data[count] = {name: item, qty: qty, rate: rate}

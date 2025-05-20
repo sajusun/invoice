@@ -14,6 +14,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 
 class InvoicesController extends Controller
@@ -27,6 +28,11 @@ class InvoicesController extends Controller
         $invoiceId = InvoiceService::invoiceIdGenerator();
         $settings = new SettingsController();
         return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
+    }
+
+    public function theme()
+    {
+       return View('invoice-theme.theme-1');
     }
 
     public function previewInvoice($id = '')

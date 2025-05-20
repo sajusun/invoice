@@ -20,7 +20,7 @@
 </head>
 <body>
 @include('custom-layouts.navbar')
-<div style="padding:2.5rem 1rem 2rem">
+<div class="p-4 md:p-1">
     @include('custom-layouts.invoice')
 </div>
 @include('custom-layouts.footer')
