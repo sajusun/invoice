@@ -16,21 +16,18 @@
 <!-- Sidebar -->
 <div class="flex h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
     @include('custom-layouts.sidebar_dashboard')
-
-<main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
-    @if (session('welcome_message'))
-        <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
+    <main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
+        @if (session('welcome_message'))
+            <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
         <span>
             {{ session('welcome_message') }} <strong>{{ Auth::user()->name }}</strong>
         </span>
-        </nav>
-    @endif
-
-@include('pages.invoices_list')
-
-</main>
+            </nav>
+        @endif
+        @include('pages.invoices_list')
+    </main>
 </div>
-@include('custom-layouts.footer')
+{{--@include('custom-layouts.footer')--}}
 
 </body>
 {{--@vite('resources/js/dashboard.js')--}}
@@ -57,7 +54,7 @@
         row.classList.toggle("active");
 
         const nextRow = row.nextElementSibling;
-        if (nextRow  && nextRow.classList.contains("details-row")) {
+        if (nextRow && nextRow.classList.contains("details-row")) {
             // Toggle only the one after the clicked row
             nextRow.classList.toggle("hidden");
         }

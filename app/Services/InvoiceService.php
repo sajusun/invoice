@@ -14,7 +14,7 @@ class InvoiceService
         $randomNumber = str_pad(mt_rand(0, 9999), 4, "0", STR_PAD_LEFT); // 4-digit random number
         return $year . $month . $day . $randomNumber;
     }
-//    Find a invoice by invoice_number
+//    Find an invoice by invoice_number
     public static function find_invoice($invoiceNumber)
     {
         return Auth::user()->invoices()->with(['customer:id,name,phone,email,address'])->where('invoice_number', $invoiceNumber)->first();

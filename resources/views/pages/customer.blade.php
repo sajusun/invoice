@@ -19,7 +19,7 @@
     @include('custom-layouts.sidebar_dashboard')
 
     <main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
-        <div id="customer">
+        <div id="customer" class="w-full xl:max-w-5xl py-1 px-1  xl:pl-10">
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <!-- Total Invoices -->
                 <div class="bg-white shadow rounded-xl p-2 border border-gray-100">

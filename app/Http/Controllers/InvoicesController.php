@@ -32,7 +32,7 @@ class InvoicesController extends Controller
 
     public function theme()
     {
-       return View('invoice-theme.theme-1');
+        return View('invoice-theme.theme-1');
     }
 
     public function previewInvoice($id = '')
@@ -51,20 +51,20 @@ class InvoicesController extends Controller
     {
 
         $validated = validator($request->all(), [
-            'issue_to' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone' => 'required|numeric',
             'email' => 'nullable|email',
-//            'status' => 'nullable|string',
-            'date' => 'required|date',
+            'status' => 'nullable|string',
+            'invoice_date' => 'required|date',
             'currency' => 'required|string',
             'company_name' => 'required|string',
-            'tax' => 'nullable|numeric',
+            'tax_amount' => 'nullable|numeric',
             'need_tax' => 'nullable|boolean',
-            'invoiceNotes' => 'nullable|string',
+            'notes' => 'nullable|string',
             'invoice_number' => 'required|string|max:255',
-            'amount_paid' => 'nullable|numeric',
-            'amount_total' => 'required|numeric|min:0',
+            'paid_amount' => 'nullable|numeric',
+            'total_amount' => 'required|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.name' => 'required|string|max:255',
             'items.*.qty' => 'required|numeric|min:1',
@@ -85,7 +85,6 @@ class InvoicesController extends Controller
 
         if (auth()->check()) {
             DB::beginTransaction();
-
             try {
                 //find  any existing customer else add as new
                 $user = User::find(Auth::id());
@@ -95,13 +94,13 @@ class InvoicesController extends Controller
                     //insert new customer
                     $customer = Customers::create([
                         'user_id' => Auth::id(),
-                        'name' => $validatedData['issue_to'],
+                        'name' => $validatedData['name'],
                         'phone' => $validatedData['phone'],
                         'email' => $validatedData['email'],
                         'address' => $validatedData['address'],
                     ]);
                 }
-                $status = $validatedData['amount_paid'] >= $validatedData['amount_total'] ? 'Paid' : 'Pending';
+                $status = $validatedData['paid_amount'] >= $validatedData['total_amount'] ? 'Paid' : 'Pending';
 
 
                 //inset invoice for the user
@@ -109,27 +108,18 @@ class InvoicesController extends Controller
                     'user_id' => Auth::id(),
                     'customer_id' => $customer->id,
                     'invoice_number' => $validatedData['invoice_number'],
-                    'invoice_date' => $validatedData['date'],
+                    'invoice_date' => $validatedData['invoice_date'],
                     'items' => json_encode($validatedData['items']),
-                    'tax_amount' => $validatedData['tax'],
+                    'tax_amount' => $validatedData['tax_amount'],
                     'need_tax' => $validatedData['need_tax'],
-                    'notes' => $validatedData['invoiceNotes'],
+                    'notes' => $validatedData['notes'],
                     'currency' => $validatedData['currency'],
-                    'paid_amount' => $validatedData['amount_paid'],
-                    'total_amount' => $validatedData['amount_total'],
+                    'paid_amount' => $validatedData['paid_amount'],
+                    'total_amount' => $validatedData['total_amount'],
                     'status' => $status,
                 ]);
-
                 //commited the state...
                 DB::commit();
-
-//            return response()->json([
-//                "success" => true,
-//                'message' => 'Invoice Created Success',
-//                "invoice" => $invoice,
-//                'customer'=>$customer
-//            ]);
-
                 //after all success
                 //return view('pages/invoice_preview');
                 return response()->json([
@@ -149,12 +139,12 @@ class InvoicesController extends Controller
                 return back()->with([
                     'success' => false,
                     'message' => "Input All Required Fields",
-                    'error' => $validated->errors()
+                    'error' => $e->getMessage()
                 ]);
             }
         } else {
             //return redirect()->route('previewInvoice')->with(['message'=>'generate success','data'=>$request->all()]);
-            session([$request->invoice_number => $validatedData]);
+            session([$validatedData['invoice_number'] => $validatedData]);
             return response()->json([
                 'success' => true,
                 'message' => 'redirect to preview page with data',

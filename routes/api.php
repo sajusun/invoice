@@ -11,5 +11,3 @@ Route::get('/user', function (Request $request) {
 
 
 
-//meal app api below
-require __DIR__.'/meal_app.php';

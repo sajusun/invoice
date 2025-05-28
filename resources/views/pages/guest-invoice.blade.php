@@ -77,9 +77,6 @@
                 <input name="Phone" placeholder="Phone">
             </div>
         </div>
-        {{--        <div><input name="name" placeholder="Client Address"></div>--}}
-        {{--        <div><input name="name" placeholder="Client Email"></div>--}}
-        {{--        <div><input name="name" placeholder="Client Phone"></div>--}}
         <button class="btn btn-info" id="saveBtn">save & continue</button>
 
     </div>

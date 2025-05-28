@@ -360,7 +360,7 @@ header .container .btn:hover {
     border-color: var(--color1);
     border-width: .1rem;
     border-style: solid;
-    min-height: 280px;
+    height: min-content;
 }
 
 .feature-card:hover {

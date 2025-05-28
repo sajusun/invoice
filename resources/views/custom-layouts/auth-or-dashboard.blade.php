@@ -70,12 +70,12 @@
     @else
         <div>
             <a href="/login"
-               class="px-3 py-2 text-xs mx-1.5 md:px-4 md:py-2 md:text-sm bg-color-main
-               text-white rounded-md md:mx-2">Sigh In</a>
+               class="px-3 py-2 text-xs mx-1.5 md:px-4 md:py-2 md:text-sm font-bold
+               color-main rounded-md md:mx-2">Sigh In</a>
 
             <a href="/register"
                class="px-3 py-2 mx-1.5 text-xs md:px-4 md:py-2
-               md:text-sm bg-blue-400 text-white rounded-md md:mx-2 ">Sigh Up</a>
+               md:text-sm bg-color-main font-semibold text-white rounded-md md:mx-2 ">Sigh Up</a>
         </div>
     @endauth
 </div>
