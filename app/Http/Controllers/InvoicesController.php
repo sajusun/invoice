@@ -35,14 +35,21 @@ class InvoicesController extends Controller
 
     public function previewInvoice($id = '')
     {
-        if (Auth::check())
-            $data = InvoiceService::find_invoice($id);
-        elseif (session($id))
-            $data = session($id);
-        else
-            return Redirect()->route('invoiceBuilder');
+        if (Auth::check()) {
+            $settings = new SettingsController();
+            $companyData = ['name' => $settings->companyName(),
+                'address' => $settings->companyAddress(),
+                'phone' => $settings->companyPhone(),
+                'email' => $settings->companyEmail(),
+            ];
 
-        return view('pages/invoice_preview', ['invoice_data' => $data]);
+            $data = InvoiceService::find_invoice($id);
+        } elseif (session($id)) {
+            $data = session($id);
+        } else {
+            return Redirect()->route('invoiceBuilder');
+        }
+        return view('pages/invoice_preview', ['invoice_data' => $data,'company_data'=>$companyData]);
     }
 
     public function makeInvoice(Request $request)
@@ -227,7 +234,7 @@ class InvoicesController extends Controller
         $deleted = InvoiceService::delete_invoice($invoiceNumber);
 
         if ($deleted) {
-            return redirect()->back()->with(['message' => 'Invoice Delete Successfully.', 'response' => 'success']);
+            return redirect()->back()->with(['message' => 'Delete Successfully.', 'response' => 'success']);
         } else {
             return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
         }

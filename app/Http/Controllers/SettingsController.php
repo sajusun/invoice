@@ -32,7 +32,6 @@ class SettingsController extends Controller
             'show_tax_column' => 'boolean',
             'show_email_column' => 'boolean'
         ]);
-//        dd($request->all());
 
         $user = Auth::user();
         $user->settings()->updateOrCreate(
@@ -43,10 +42,25 @@ class SettingsController extends Controller
         return back()->with('success', 'Settings updated successfully!');
     }
 
-    public function getCompanyName()
+    public function companyName()
     {
         $user = Auth::user();
         return $user->settings->company_name;
+    }
+
+    public function companyEmail()
+    {
+        $user = Auth::user();
+        return $user->settings->company_email;
+    }
+    public function companyAddress()
+    {
+        $user = Auth::user();
+        return $user->settings->company_address;
+    }  public function companyPhone()
+    {
+        $user = Auth::user();
+        return $user->settings->company_phone;
     }
 }
 
