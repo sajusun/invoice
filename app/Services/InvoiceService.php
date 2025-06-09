@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class InvoiceService
 {
     public static function invoiceIdGenerator(): string
@@ -26,4 +27,6 @@ class InvoiceService
         return Auth::user()->invoices()->where('invoice_number', $invoiceNumber)->delete();
 
     }
+
+
 }

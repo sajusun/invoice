@@ -127,7 +127,7 @@
                     </div>
 
                     <div class="px-4 flex flex-col items-end">
-                        <input v-model="invoiceDate" id="date" type="date" class="w-9/12" placeholder="Date">
+                        <input v-model="invoiceDate" id="date" type="text" class="w-9/12 datepicker" placeholder="Date">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
                                class="w-9/12 mt-2" placeholder="Contact Number">
                         <datalist id="number_list">
@@ -432,9 +432,10 @@
 </script>
 
 <script>
+
     flatpickr(".datepicker", {});
 
-    const { createApp, ref, computed } = Vue;
+    const { createApp, ref, computed, onMounted, } = Vue;
 
     createApp({
         setup() {
@@ -448,6 +449,7 @@
             const email = ref('');
             const showEmail = ref(false);
             const showTax = ref(false);
+            let datePicker=null;
 
             const tax = ref(0);
             const paid = ref(0);
@@ -465,6 +467,13 @@
 
             const addItem = () => items.value.push({ name: '', qty: 1, rate: 0 });
             const removeItem = (index) => items.value.splice(index, 1);
+            onMounted(() => {
+                datePicker = flatpickr('.datepicker', {
+                    dateFormat: "d-m-Y",
+                    defaultDate: new Date(),
+                    allowInput: true
+                });
+            });
 
             const saveInvoice = () => {
                 const data = {
