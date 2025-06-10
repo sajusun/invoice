@@ -107,7 +107,7 @@
                 <div class="invoice-header flex-row justify-between px-4">
                     <div class="company-name text-2xl" id="company_name">
                         @auth()
-                            <p class="company-name" id="company_name">{{$settings->getCompanyName()}}</p>
+                            <p class="company-name" id="company_name">{{$settings->companyName()}}</p>
                         @else
                             <p class="company-name" id="company_name" contenteditable="true">@{{ companyName }}</p>
                         @endauth
@@ -154,9 +154,9 @@
                         <td class="py-1.5">
                             <input v-model="item.name" class="min-w-full border-0 text-sm" type="text" placeholder="Description of item/service..."></td>
                         <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.qty" class="w-full border-0 text-sm text-center" type="text" value="1" onchange="calculateTotal()"></td>
+                            <input v-model.number="item.qty" class="w-full border-0 text-sm text-center" type="text" value="1"></td>
                         <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.rate" class="w-full border-0 text-sm text-center" type="text" value="0" onchange="calculateTotal()"></td>
+                            <input v-model.number="item.rate" class="w-full border-0 text-sm text-center" type="text" value="0"></td>
                         <td class="p-1.5 w-40 text-right text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
                         <td class="w-10 py-1.5 flex justify-end items-center text-base">
                             <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700" @click="removeItem(index)"></i>
@@ -229,9 +229,8 @@
                     </select>
                 </div>
                 <div class="mt-3">
-
                     @auth()
-                        <button id="save_btn" class="dl-btn" onclick="save()">Save & preview</button>
+                        <button id="save_btn" class="dl-btn" @click="saveInvoice">Save & preview</button>
                     @else
                         <button id="dl_btn" class="dl-btn" onclick="save()">Preview</button>
                     @endauth

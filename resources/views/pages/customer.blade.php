@@ -136,7 +136,7 @@
         </div>
     </main>
 </div>
-@include('custom-layouts.footer')
+{{--@include('custom-layouts.footer')--}}
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>

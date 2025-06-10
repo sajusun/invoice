@@ -1,6 +1,4 @@
-@php
- use App\Services\UserService;
-@endphp
+
 
 <!-- Right side -->
 <div class="flex items-center space-x-4">
@@ -15,15 +13,10 @@
                  :aria-expanded="open">
                 <!-- User avatar -->
                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600"
-                         fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
+                    <img src="{{ Auth::user()->profile_pic ? asset('storage/profile_pics/' . Auth::user()->profile_pic) : asset('storage/' . 'profile_pics/profile.png')}}" alt="Thumbnail">
                 </div>
                 <!-- User name (hidden on mobile) -->
-                <span class="hidden md:inline text-sm font-medium">{{ UserService::userName() }}</span>
+                <span class="hidden md:inline text-sm font-medium">{{ Auth::user()->name}}</span>
                 <!-- Chevron icon -->
                 <i class="fas fa-angle-down w-4 mr-2" :class="{'transform rotate-180': open}"> </i>
             </div>
@@ -37,8 +30,8 @@
             >
                 <!-- User info -->
                 <div class="px-4 py-2 border-b border-gray-100">
-                    <p class="text-sm font-medium text-gray-800">{{ UserService::userName() }}</p>
-                    <p class="text-xs text-gray-500 truncate">{{UserService::email()}}</p>
+                    <p class="text-sm font-medium text-gray-800">{{ Auth::user()->name}}</p>
+                    <p class="text-xs text-gray-500 truncate">{{Auth::user()->email}}</p>
                 </div>
                 <!-- Dropdown items -->
                 <a href="{{ route('dashboard') }}"

@@ -14,7 +14,7 @@
 {{--navbar--}}
 @include('custom-layouts.navbar')
 <!-- Sidebar -->
-<div class="flex h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
+<div class="flex h-[calc(100vh-4rem)] md:h-[calc(100vh-4rem)]">
     @include('custom-layouts.sidebar_dashboard')
     <main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
         @if (session('welcome_message'))
