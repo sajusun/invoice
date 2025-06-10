@@ -4,102 +4,6 @@
     </div>
 @endif
 
-
-{{--<div id="app" class="w-full max-w-6xl mx-auto bg-white p-5 shadow-lg rounded">--}}
-
-{{--    <div class="flex justify-between items-center mb-5">--}}
-{{--        <h1 class="text-2xl font-bold" contenteditable="true">@{{ companyName }}</h1>--}}
-{{--        <div class="text-right">--}}
-{{--            <h2 class="text-xl font-bold">INVOICE</h2>--}}
-{{--            <input v-model="invoiceId" type="text" class="border p-1 text-sm mt-1" placeholder="Invoice ID">--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <div class="grid grid-cols-2 gap-4 mb-5">--}}
-{{--        <div>--}}
-{{--            <h3 class="font-semibold mb-1">From:</h3>--}}
-{{--            <input v-model="from" type="text" class="border w-full p-1 mb-2" placeholder="Sender name">--}}
-{{--            <input v-model="address" type="text" class="border w-full p-1 mb-2" placeholder="Sender address">--}}
-{{--            <input v-model="contactNumber" type="text" class="border w-full p-1 mb-2" placeholder="Contact number">--}}
-{{--            <input v-if="showEmail" v-model="email" type="text" class="border w-full p-1 mb-2" placeholder="Email">--}}
-{{--        </div>--}}
-{{--        <div>--}}
-{{--            <h3 class="font-semibold mb-1">Bill To:</h3>--}}
-{{--            <input v-model="to" type="text" class="border w-full p-1 mb-2" placeholder="Customer name">--}}
-{{--            <input v-model="invoiceDate" type="text" class="border w-full p-1 mb-2" placeholder="Invoice date">--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <table class="w-full text-left border mb-5">--}}
-{{--        <thead class="bg-gray-100">--}}
-{{--        <tr>--}}
-{{--            <th class="p-2 border">Item</th>--}}
-{{--            <th class="p-2 border">Qty</th>--}}
-{{--            <th class="p-2 border">Rate</th>--}}
-{{--            <th class="p-2 border text-right">Amount</th>--}}
-{{--            <th class="p-2 border"></th>--}}
-{{--        </tr>--}}
-{{--        </thead>--}}
-{{--        <tbody>--}}
-{{--        <tr v-for="(item, index) in items" :key="index" class="border-b">--}}
-{{--            <td class="p-2 border"><input v-model="item.name" type="text" class="border p-1 w-full"></td>--}}
-{{--            <td class="p-2 border"><input v-model.number="item.qty" type="number" class="border p-1 w-16"></td>--}}
-{{--            <td class="p-2 border"><input v-model.number="item.rate" type="number" class="border p-1 w-24"></td>--}}
-{{--            <td class="p-2 border text-right">@{{ (item.qty * item.rate).toFixed(2) }}</td>--}}
-{{--            <td class="p-2 border text-center">--}}
-{{--                <button @click="removeItem(index)" class="text-red-600">×</button>--}}
-{{--            </td>--}}
-{{--        </tr>--}}
-{{--        </tbody>--}}
-{{--    </table>--}}
-
-{{--    <button @click="addItem()" class="bg-blue-500 text-white px-4 py-1 rounded mb-5">+ Item</button>--}}
-
-{{--    <div class="grid grid-cols-2 gap-4 mb-5">--}}
-{{--        <div>--}}
-{{--            <h3 class="font-semibold">Notes:</h3>--}}
-{{--            <textarea v-model="notes" class="border w-full p-2" placeholder="Invoice notes..."></textarea>--}}
-{{--        </div>--}}
-{{--        <div class="space-y-2">--}}
-{{--            <div class="flex justify-between">--}}
-{{--                <span>Subtotal:</span>--}}
-{{--                <span>@{{ subtotal.toFixed(2) }} @{{ currency }}</span>--}}
-{{--            </div>--}}
-{{--            <div class="flex justify-between">--}}
-{{--                <span>Tax (%)</span>--}}
-{{--                <input v-model.number="tax" type="number" class="border p-1 w-20 text-center">--}}
-{{--            </div>--}}
-{{--            <div class="flex justify-between">--}}
-{{--                <span>Tax Amount:</span>--}}
-{{--                <span>@{{ taxAmount.toFixed(2) }} @{{ currency }}</span>--}}
-{{--            </div>--}}
-{{--            <div class="flex justify-between font-semibold">--}}
-{{--                <span>Total:</span>--}}
-{{--                <span>@{{ total.toFixed(2) }} @{{ currency }}</span>--}}
-{{--            </div>--}}
-{{--            <div class="flex justify-between">--}}
-{{--                <span>Paid:</span>--}}
-{{--                <input v-model.number="paid" type="number" class="border p-1 w-24 text-center">--}}
-{{--            </div>--}}
-{{--            <div class="flex justify-between font-semibold">--}}
-{{--                <span>Balance:</span>--}}
-{{--                <span>@{{ balance.toFixed(2) }} @{{ currency }}</span>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--    <div class="flex items-center space-x-2">--}}
-{{--        <label><input type="checkbox" v-model="showEmail"> Show Email Input</label>--}}
-{{--        <select v-model="currency" class="border p-1">--}}
-{{--            <option value="BDT">BDT</option>--}}
-{{--            <option value="USD">USD</option>--}}
-{{--            <option value="EUR">EUR</option>--}}
-{{--        </select>--}}
-{{--        <button @click="saveInvoice()" class="bg-green-600 text-white px-4 py-1 rounded">Save & Preview</button>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-
 <div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto">
     <div class="grid grid-cols-4 py-5">
         <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
@@ -121,9 +25,12 @@
 
                 <div class="grid grid-cols-2  mt-3 w-full">
                     <div class="px-4 w-full">
-                        <input v-model="from" id="issueFrom" type="text" class="w-9/12 lg:w-72" placeholder="Who is this from?">
-                        <input v-model="to" id="issueTo" type="text" class="w-9/12 lg:w-72 mt-2" placeholder="Who is this to?">
-                        <input v-model="address" id="address" type="text" class="w-9/12 lg:w-72  mt-2" placeholder="address">
+                        <input v-model="from" id="issueFrom" type="text" class="w-9/12 lg:w-72"
+                               placeholder="Who is this from?">
+                        <input v-model="to" id="issueTo" type="text" class="w-9/12 lg:w-72 mt-2"
+                               placeholder="Who is this to?">
+                        <input v-model="address" id="address" type="text" class="w-9/12 lg:w-72  mt-2"
+                               placeholder="address">
                     </div>
 
                     <div class="px-4 flex flex-col items-end">
@@ -135,7 +42,8 @@
                             <option value="0171"></option>
                             <option value="0181"></option>
                         </datalist>
-                        <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 mt-2" placeholder="Email Address">
+                        <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 mt-2"
+                               placeholder="Email Address">
                     </div>
                 </div>
 
@@ -152,14 +60,18 @@
                     <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
                     <tr v-for="(item, index) in items" :key="index">
                         <td class="py-1.5">
-                            <input v-model="item.name" class="min-w-full border-0 text-sm" type="text" placeholder="Description of item/service..."></td>
+                            <input v-model="item.name" class="min-w-full border-0 text-sm" type="text"
+                                   placeholder="Description of item/service..."></td>
                         <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.qty" class="w-full border-0 text-sm text-center" type="text" value="1"></td>
+                            <input v-model.number="item.qty" class="w-full border-0 text-sm text-center" type="text"
+                                   value="1"></td>
                         <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.rate" class="w-full border-0 text-sm text-center" type="text" value="0"></td>
+                            <input v-model.number="item.rate" class="w-full border-0 text-sm text-center" type="text"
+                                   value="0"></td>
                         <td class="p-1.5 w-40 text-right text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
                         <td class="w-10 py-1.5 flex justify-end items-center text-base">
-                            <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700" @click="removeItem(index)"></i>
+                            <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700"
+                               @click="removeItem(index)"></i>
                         </td>
                     </tr>
                     </tbody>
@@ -175,12 +87,13 @@
                 <div class="mt-3 flex justify-end">
                     <div class="w-full max-w-80 divide-y divide-gray-200">
                         <div v-show="showTax" id="subtotalBox" class="flex justify-between py-0.5">
-                            <span>Subtotal :</span> <span id="subtotal">@{{ subtotal.toFixed(2) }} @{{ currency }}</span>
+                            <span>Subtotal :</span> <span
+                                id="subtotal">@{{ subtotal.toFixed(2) }} @{{ currency }}</span>
                         </div>
                         <div v-show="showTax" id="taxBox" class="flex justify-between py-0.5">
                             <p>Tax(%) : </p>
                             <input v-model.number="tax" type="number" id="tax" value="0"
-                                   class="h-8 w-16 text-center" >
+                                   class="h-8 w-16 text-center">
                         </div>
                         <div class="flex justify-between py-0.5">
                             <span>Total :</span> <span id="total">@{{ total.toFixed(2) }} @{{ currency }}</span>
@@ -199,13 +112,14 @@
         </div>
 
 
-{{--            side section--}}
+        {{--            side section--}}
         <div class="col-span-1">
             <div class="w-full xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm px-0.5 lg:px-4">
                 <div class="mt-3">
                     <div class="edit-section">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="emailInputCheck" v-model="showEmail">
+                            <input class="form-check-input" type="checkbox" value="" id="emailInputCheck"
+                                   v-model="showEmail">
                             <label class="form-check-label" for="emailInputCheck">
                                 add email input
                             </label>
@@ -368,13 +282,13 @@
     {{--    console.log(server_data)--}}
     {{--    serverRequest.url = '/invoice/create';--}}
     {{--    serverRequest.data = server_data;--}}
-    {{--    serverRequest.xPost().then((res) => {--}}
-    {{--        console.log(res)--}}
-    {{--        if (res.success && res.redirect) {--}}
-    {{--            window.location.href = res.redirect;--}}
-    {{--        }--}}
-
-    {{--    })--}}
+    //     serverRequest.xPost().then((res) => {
+    //         console.log(res)
+    //         if (res.success && res.redirect) {
+    //             window.location.href = res.redirect;
+    //         }
+    //
+    //     })
     {{--}--}}
 
     {{--// logo add and change function--}}
@@ -434,7 +348,7 @@
 
     flatpickr(".datepicker", {});
 
-    const { createApp, ref, computed, onMounted, } = Vue;
+    const {createApp, ref, computed, onMounted,} = Vue;
 
     createApp({
         setup() {
@@ -448,14 +362,14 @@
             const email = ref('');
             const showEmail = ref(false);
             const showTax = ref(false);
-            let datePicker=null;
+            let datePicker = null;
 
             const tax = ref(0);
             const paid = ref(0);
             const currency = ref('BDT');
             const notes = ref('');
 
-            const items = ref([{ name: '', qty: 1, rate: 0 }]);
+            const items = ref([{name: '', qty: 1, rate: 0}]);
 
             const subtotal = computed(() =>
                 items.value.reduce((acc, item) => acc + (item.qty * item.rate), 0)
@@ -464,11 +378,11 @@
             const total = computed(() => subtotal.value + taxAmount.value);
             const balance = computed(() => total.value - paid.value);
 
-            const addItem = () => items.value.push({ name: '', qty: 1, rate: 0 });
+            const addItem = () => items.value.push({name: '', qty: 1, rate: 0});
             const removeItem = (index) => items.value.splice(index, 1);
             onMounted(() => {
                 datePicker = flatpickr('.datepicker', {
-                    dateFormat: "d-m-Y",
+                    dateFormat: "Y-m-d",
                     defaultDate: new Date(),
                     allowInput: true
                 });
@@ -476,30 +390,41 @@
 
             const saveInvoice = () => {
                 const data = {
-                    companyName: companyName.value,
-                    invoiceId: invoiceId.value,
-                    invoiceDate: invoiceDate.value,
+                    company_name: companyName.value,
+                    invoice_number: invoiceId.value,
+                    invoice_date: invoiceDate.value,
                     from: from.value,
-                    to: to.value,
+                    name: to.value,
                     address: address.value,
-                    contactNumber: contactNumber.value,
+                    phone: contactNumber.value,
                     email: email.value,
                     currency: currency.value,
                     notes: notes.value,
                     items: items.value,
-                    tax: tax.value,
+                    tax_amount: tax.value,
                     subtotal: subtotal.value,
-                    total: total.value,
-                    paid: paid.value,
-                    balance: balance.value
+                    total_amount: total.value,
+                    paid_amount: paid.value,
+                    balance: balance.value,
+                    need_tax:showTax.value
                 };
+                let server = new serverRequest();
+                server.url = '/invoice/create';
+                server.data = data;
+                server.xPost().then((res)=>{
+                    if (res.success && res.redirect) {
+                        window.location.href = res.redirect;
+                    }
+                    console.log(res)
+                })
+
                 console.log('Invoice data:', data);
-                alert('Invoice saved (see console)');
+                //alert('Invoice saved (see console)');
             };
 
             return {
                 companyName, invoiceId, invoiceDate, from, to, address, contactNumber, email, showEmail,
-                tax, paid, currency, notes, items, subtotal, taxAmount, total, balance,showTax,
+                tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax,
                 addItem, removeItem, saveInvoice
             };
         }

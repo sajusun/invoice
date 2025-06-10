@@ -1,7 +1,6 @@
 import global from './global_var.js';
 import server from "./server.js";
 
-// let url=`/invoice/search?search=`;
 const {createApp} = Vue;
 
     createApp({

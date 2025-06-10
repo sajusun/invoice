@@ -42,15 +42,5 @@ class Invoices extends Model
         return $this->belongsTo(User::class);
     }
 
-//    protected static function booted(): void
-//    {
-//        static::creating(function ($invoice) {
-//            $invoice->payment_status = $invoice->paid_amount >= $invoice->total_amount ? 'Paid' : 'Pending';
-//        });
-//
-//        static::updating(function ($invoice) {
-//            $invoice->payment_status = $invoice->paid_amount >= $invoice->total_amount ? 'Paid' : 'Pending';
-//        });
-//    }
 }
 

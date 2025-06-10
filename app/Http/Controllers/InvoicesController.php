@@ -121,30 +121,23 @@ class InvoicesController extends Controller
                     'currency' => $validatedData['currency'],
                     'paid_amount' => $validatedData['paid_amount'],
                     'total_amount' => $validatedData['total_amount'],
-                    'status' => $status,
+                    'status' => $status
                 ]);
-                //commited the state...
                 DB::commit();
-                //after all success
-                //return view('pages/invoice_preview');
                 return response()->json([
                     'success' => true,
+                    'dd' => $validatedData,
                     'message' => 'Invoice Created Success',
-                    'redirect' => route('previewInvoice', $invoice['invoice_number'])// or your target route
+                    'redirect' => route('previewInvoice', $validatedData['invoice_number'])// or your target route
                 ]);
 
             } catch (Exception $e) {
                 //back if any errors in transactions
                 DB::rollBack();
-//                return response()->json([
-//                    'success' => false,
-//                    'message' => 'Something Went Wrong',
-//                    'error' => $e->getMessage()
-//                ]);
                 return back()->with([
                     'success' => false,
-                    'message' => "Input All Required Fields",
-                    'error' => $e->getMessage()
+                    'message' => $e->getMessage(),
+                    'redirect' => route('invoiceBuilder')
                 ]);
             }
         } else {
