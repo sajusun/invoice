@@ -5,13 +5,13 @@
 @endif
 
 <div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto">
-    <div class="grid grid-cols-4 py-5">
+    <div class="grid grid-cols-4 py-1">
         <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
             <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
                 <div class="invoice-header flex-row justify-between px-4">
                     <div class="company-name text-2xl" id="company_name">
                         @auth()
-                            <p class="company-name" id="company_name">{{$settings->companyName()}}</p>
+                            <p class="company-name" id="company_name">{{$settings->company_name}}</p>
                         @else
                             <p class="company-name" id="company_name" contenteditable="true">@{{ companyName }}</p>
                         @endauth
@@ -19,7 +19,7 @@
                     <div>
                         <h2>INVOICE</h2>
                         <input v-model="invoiceId" type="text" class="w-75 text-sm "
-                               placeholder="InvoiceID" value="#{{$invoiceId}}">
+                               placeholder="InvoiceID" value="">
                     </div>
                 </div>
 
@@ -34,13 +34,16 @@
                     </div>
 
                     <div class="px-4 flex flex-col items-end">
-                        <input v-model="invoiceDate" id="date" type="text" class="w-9/12 datepicker" placeholder="Date">
+                        <input v-model:="invoiceDate" id="date" type="text" class="w-9/12 datepicker" placeholder="Date">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
                                class="w-9/12 mt-2" placeholder="Contact Number">
                         <datalist id="number_list">
-                            <option value="0170"></option>
-                            <option value="0171"></option>
-                            <option value="0181"></option>
+                            <option value="01707947753"></option>
+                            <option value="017198940397"></option>
+                            <option value="018875987661"></option>
+                            <option value="018875987661"></option>
+                            <option value="018875987361"></option>
+                            <option value="018875987161"></option>
                         </datalist>
                         <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 mt-2"
                                placeholder="Email Address">
@@ -80,31 +83,33 @@
                 <button class="text-sm bg-color-main px-3 py-2 shadow-sm text-white rounded-md" @click="addItem">+
                     Item +
                 </button>
-                <div class="mt-3">
-                    <h5>Terms</h5>
-                    <textarea id="invoiceNotes" v-model="notes" class="w-[60%]" placeholder="Invoice Notes"></textarea>
-                </div>
-                <div class="mt-3 flex justify-end">
-                    <div class="w-full max-w-80 divide-y divide-gray-200">
-                        <div v-show="showTax" id="subtotalBox" class="flex justify-between py-0.5">
-                            <span>Subtotal :</span> <span
-                                id="subtotal">@{{ subtotal.toFixed(2) }} @{{ currency }}</span>
-                        </div>
-                        <div v-show="showTax" id="taxBox" class="flex justify-between py-0.5">
-                            <p>Tax(%) : </p>
-                            <input v-model.number="tax" type="number" id="tax" value="0"
-                                   class="h-8 w-16 text-center">
-                        </div>
-                        <div class="flex justify-between py-0.5">
-                            <span>Total :</span> <span id="total">@{{ total.toFixed(2) }} @{{ currency }}</span>
-                        </div>
-                        <div class="flex justify-between py-0.5">
-                            <p>Amount Paid :</p>
-                            <input v-model.number="paid" type="number" id="paid" value="0"
-                                   class="h-8 w-[calc(8rem)] max-w-48">
-                        </div>
-                        <div class="flex justify-between py-0.5">
-                            <p>Balance Due :</p> <span id="balance">@{{ balance.toFixed(2) }} @{{ currency }}</span>
+                <div class="flex justify-between">
+                    <div class="mt-3 w-full px-2">
+                        {{--                    <p class="text-base text-gray-600">Remarks :</p>--}}
+                        <textarea id="invoiceNotes" rows="2" v-model="notes" class="w-full text-base text-gray-400" placeholder="Write any notes about this invoice"></textarea>
+                    </div>
+                    <div class="mt-3 flex justify-end w-full px-2">
+                        <div class="w-full max-w-80 divide-y divide-gray-200">
+                            <div v-show="showTax" id="subtotalBox" class="flex justify-between py-0.5">
+                                <span>Subtotal :</span> <span
+                                    id="subtotal">@{{ subtotal.toFixed(2) }} @{{ currency }}</span>
+                            </div>
+                            <div v-show="showTax" id="taxBox" class="flex justify-between py-0.5">
+                                <p>Tax(%) : </p>
+                                <input v-model.number="tax_amount" type="number" id="tax" value="0"
+                                       class="h-8 w-16 text-center">
+                            </div>
+                            <div class="flex justify-between py-0.5">
+                                <span>Total :</span> <span id="total">@{{ total.toFixed(2) }} @{{ currency }}</span>
+                            </div>
+                            <div class="flex justify-between py-0.5">
+                                <p>Amount Paid :</p>
+                                <input v-model.number="paid" type="number" id="paid" value="0"
+                                       class="h-8 w-[calc(8rem)] max-w-48">
+                            </div>
+                            <div class="flex justify-between py-0.5">
+                                <p>Balance Due :</p> <span id="balance">@{{ balance.toFixed(2) }} @{{ currency }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,7 +149,7 @@
                 </div>
                 <div class="mt-3">
                     @auth()
-                        <button id="save_btn" class="dl-btn" @click="saveInvoice">Save & preview</button>
+                        <button id="save_btn" class="dl-btn" :class="{'opacity-50 cursor-not-allowed': isDisabled}" @click="saveInvoice">Save & preview</button>
                     @else
                         <button id="dl_btn" class="dl-btn" onclick="save()">Preview</button>
                     @endauth
@@ -353,23 +358,23 @@
     createApp({
         setup() {
             const companyName = ref('Company Name');
-            const invoiceId = ref('#INV001');
+            const invoiceId = ref('{{$invoiceId}}');
             const invoiceDate = ref('');
             const from = ref('');
             const to = ref('');
             const address = ref('');
             const contactNumber = ref('');
             const email = ref('');
-            const showEmail = ref(false);
-            const showTax = ref(false);
-            let datePicker = null;
+            const showEmail = ref(Boolean({{$settings->show_email_column}}));
+            const showTax = ref(Boolean({{$settings->show_tax_column}}));
 
-            const tax = ref(0);
+            const tax_amount = ref({{$settings->default_tax_rate}});
+            const tax = computed(()=>showTax.value ? tax_amount.value:0);
             const paid = ref(0);
-            const currency = ref('BDT');
+            const currency = ref('{{$settings->default_currency}}');
             const notes = ref('');
-
             const items = ref([{name: '', qty: 1, rate: 0}]);
+            const isDisabled = ref(false);
 
             const subtotal = computed(() =>
                 items.value.reduce((acc, item) => acc + (item.qty * item.rate), 0)
@@ -381,10 +386,10 @@
             const addItem = () => items.value.push({name: '', qty: 1, rate: 0});
             const removeItem = (index) => items.value.splice(index, 1);
             onMounted(() => {
-                datePicker = flatpickr('.datepicker', {
+               flatpickr('.datepicker', {
                     dateFormat: "Y-m-d",
                     defaultDate: new Date(),
-                    allowInput: true
+                    allowInput: true,
                 });
             });
 
@@ -411,20 +416,24 @@
                 let server = new serverRequest();
                 server.url = '/invoice/create';
                 server.data = data;
+                isDisabled.value=true;
                 server.xPost().then((res)=>{
                     if (res.success && res.redirect) {
                         window.location.href = res.redirect;
                     }
-                    console.log(res)
-                })
+                    if (!res.success){alert(res.message);}
+                    isDisabled.value=false;
+                    // console.log(res)
+                });
 
-                console.log('Invoice data:', data);
+              //  console.log('Invoice data:', data);
                 //alert('Invoice saved (see console)');
             };
 
             return {
                 companyName, invoiceId, invoiceDate, from, to, address, contactNumber, email, showEmail,
-                tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax,
+                tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax,isDisabled,
+                tax_amount,
                 addItem, removeItem, saveInvoice
             };
         }

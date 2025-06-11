@@ -24,7 +24,7 @@ class InvoicesController extends Controller
     public function view()
     {
         $invoiceId = InvoiceService::invoiceIdGenerator();
-        $settings = new SettingsController();
+        $settings = Auth::user()->settings;
         return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
     }
 
