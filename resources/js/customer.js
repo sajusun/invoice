@@ -60,7 +60,7 @@ createApp({
             this.ready = true;
         },
         goto(customer_id) {
-            return `/customers/${customer_id}/preview`
+            return `customers/${customer_id}/view`
         },
         confirmDelete(uid) {
             let url = `/customer/${uid}/delete`

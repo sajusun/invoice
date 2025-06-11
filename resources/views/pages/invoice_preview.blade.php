@@ -3,10 +3,9 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Invoice Preview - {{$invoice_data['invoice_number']}}</title>
-    <style>@media print { .page-tools {display: none;} }</style>
 </head>
-<body>
-<div class="page-tools flex">
+<body class="print:bg-white">
+<div class="flex print:hidden">
     <div class="action-buttons p-3 flex items-end">
         <button class="bg-blue-400 hover:bg-blue-500 text-white text-sm py-2.5 px-5 mr-2 mb-2 rounded-sm transition duration-300"
            href="#" data-title="Print" onclick="window.print()">
@@ -20,11 +19,11 @@
         </button>
     </div>
 </div>
-<div class="max-w-3xl mx-auto bg-white p-4 shadow-lg rounded-md mt-1" id="printable">
-    <div class="flex justify-between items-center border-b pb-3">
+<div class="max-w-3xl mx-auto bg-white p-4 shadow-lg rounded-md mt-1 print:shadow-none print:p-0" id="printable">
+    <div class="flex justify-between items-center border-b pb-1">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Invoice</h1>
-            <p class="text-sm text-gray-500">{{$invoice_data['invoice_number']}}</p>
+            <h1 class="text-xl font-bold text-gray-600">Invoice</h1>
+            <p class="text-sm text-gray-600">{{$invoice_data['invoice_number']}}</p>
         </div>
         <div class="text-right">
             <p class="text-sm text-gray-600">Date : {{$invoice_data['invoice_date']}}</p>
@@ -35,40 +34,38 @@
                 </div>
             @else
                 <div
-                    class="center relative inline-block select-none whitespace-nowrap rounded-lg bg-amber-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-black">
+                    class="center relative inline-block select-none whitespace-nowrap rounded-lg bg-amber-500 py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-gray-600">
                     <div class="mt-px">{{$invoice_data['status']}}</div>
                 </div>
             @endif
 
         </div>
     </div>
-
-    <div class="mt-4">
+    <div class="mt-1">
         <div class="flex justify-between">
             <div class="ml-2">
-                <p class="text-base font-semibold text-gray-700">Invoice To :</p>
+                <p class="text-base font-semibold text-gray-500">Invoice To :</p>
                 <p class="text-sm text-gray-600">{{$invoice_data->customer['name']}}</p>
                 <p class="text-sm text-gray-600">{{$invoice_data->customer['address']}}</p>
                 <p class="text-sm text-gray-600">{{$invoice_data->customer['phone']}}</p>
             </div>
             <div class="text-right mr-2">
-                <p class="text-base font-semibold text-gray-700">Issue From :</p>
+                <p class="text-base font-semibold text-gray-500">Issue From :</p>
                 <p class="text-sm text-gray-600">{{$company_data['name']}}</p>
                 <p class="text-sm text-gray-600">{{$company_data['address']}}</p>
                 <p class="text-sm text-gray-600">{{$company_data['email']}}</p>
                 <p class="text-sm text-gray-600">{{$company_data['phone']}}</p>
-{{--                <p class="text-sm text-gray-600">support@invozen.com</p>--}}
             </div>
         </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-1">
         <table class="w-full table-auto border-t border-gray-200">
             <thead>
-            <tr class="text-left text-sm text-gray-600 bg-gray-100">
+            <tr class="text-left text-sm text-gray-500 bg-gray-100">
                 <th class="p-2 text-center w-2">#</th>
-                <th class="p-2">Item</th>
-                <th class="p-2 text-right">Qty</th>
+                <th class="p-2">Product's Name</th>
+                <th class="p-2 text-right">Quantity</th>
                 <th class="p-2 text-right">Price</th>
                 <th class="p-2 text-right">Total</th>
             </tr>
@@ -78,7 +75,7 @@
                 $sn=0;
                  $items=json_decode($invoice_data->items) @endphp
             @foreach($items as $item)
-                <tr class="text-sm text-gray-700 border-b">
+                <tr class="text-sm text-gray-600 border-b">
                     <td class="p-2 text-center">{{++$sn}}</td>
                     <td class="p-2">{{$item->name}}</td>
                     <td class="p-2 text-right">{{$item->qty}}</td>
@@ -89,7 +86,7 @@
             </tbody>
         </table>
 
-        <div class="flex justify-end mt-4 text-sm text-gray-700">
+        <div class="flex justify-end mt-2 text-sm text-gray-500">
             <div class="w-full px-1 text-sm text-gray-400"><p>{{$invoice_data['notes']}}</p></div>
             <div class="w-full max-w-xs">
                 @if($invoice_data['need_tax'])
@@ -102,12 +99,12 @@
                         <span>{{(($invoice_data['total_amount']/(1+($invoice_data['tax_amount'] / 100))) / 100)*$invoice_data['tax_amount']}} {{$invoice_data->currency}}</span>
                     </div>
                 @endif
-                <div class="flex justify-between py-2 font-semibold border-t border-gray-300 mt-2">
+                <div class="flex justify-between py-1 text-base border-t border-gray-300 mt-0">
                     <span>Total     :</span>
                     <span>{{$invoice_data['total_amount']}} {{$invoice_data->currency}}</span>
                 </div>
                     @if($invoice_data['status']!='Paid')
-                    <div class="flex justify-between py-2 font-normal text-red-400 border-t border-gray-50 mt-0">
+                    <div class="flex justify-between py-0.5 font-normal text-red-400 border-t border-gray-50 mt-0">
                         <span>Due :</span>
                         <span>{{$invoice_data['total_amount']-$invoice_data['paid_amount']}} {{$invoice_data->currency}}</span>
                     </div>
@@ -117,7 +114,7 @@
         </div>
     </div>
 
-    <div class="mt-4 text-sm text-gray-500">
+    <div class="mt-1 text-sm text-gray-500">
         <p>Thank you for your business!</p>
     </div>
 </div>

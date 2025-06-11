@@ -39,9 +39,9 @@ class CustomersController extends Controller
       return Customers::with('invoices')->findOrFail($id);
     }
 
-    public function get_customer_by_invoiceId($invoice_id)
+    public function get_customer_by_invoiceId($customer_id)
     {
-        return Customers::with('invoices')->where('invoice_id', $invoice_id)->first();
+        return Customers::with('invoices')->where('id', $customer_id)->first();
 
     }
 
