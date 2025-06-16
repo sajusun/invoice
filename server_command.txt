@@ -1,0 +1,28 @@
+#in lightsail terminal command for symlink
+sudo ln -s /opt/bitnami/apache/htdocs/invozen/storage/app/public
+/profile_pics /opt/bitnami/apache/htdocs/storage/profile_pics
+
+#in local server terminal command for symlink
+php artisan storage:link
+
+/////////////////////////////////////////////
+✅ 1️⃣ SSH into your server
+
+ssh bitnami@your-server-ip
+
+✅ 2️⃣ Run this command to change the owner of those files to bitnami (or your login user)
+
+sudo chown -R bitnami:daemon /opt/bitnami/apache/htdocs/invozen/storage/app/public/profile_pics
+
+Adjust the path if necessary — you can check exact location from your storage path.
+✅ 3️⃣ Set proper permissions so your user can delete files
+
+sudo chmod -R 775 /opt/bitnami/apache/htdocs/invozen/storage/app/public/profile_pics
+
+Now:
+    Owner (bitnami) can read/write/delete
+
+    Group (daemon) can read/write
+
+    Others can read
+/////////////////////////////////////////////

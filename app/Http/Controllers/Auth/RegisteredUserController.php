@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
         ]);
         Settings::create([
             'user_id' => $user->id,
-            'company_name' => $user->name . "'s Company",
+            'company_name' => $user->name . "Invozen App",
         ]);
 
         event(new Registered($user));

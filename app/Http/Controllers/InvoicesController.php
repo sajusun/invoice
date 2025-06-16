@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\InvoiceService;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -220,6 +221,28 @@ class InvoicesController extends Controller
     public function invoice_status()
     {
         return Invoices::where('user_id', Auth::id())->where('status', 'pending')->get('status')->count();
+    }
+
+    public function change_status(Request $request): RedirectResponse
+    {
+        $user=Auth::user();
+        $invoice=$user->invoices->where('invoice_number',$request->id)->first();
+        //$invoice= Invoices::where('user_id', Auth::id())->where('invoice_number', $request->id)->first();
+
+        if ($request->paymentStatus==='Paid'){
+                $invoice->paid_amount=$invoice->total_amount;
+                $invoice->status=$request->paymentStatus;
+        }else{
+            $invoice->status=$request->paymentStatus;
+        }
+        $invoice->save();
+        return redirect()->back()->with('message', 'Updated');
+        //return Invoices::where('user_id', Auth::id())->where('status', 'pending')->get('status')->count();
+//        return response()->json([
+//            'message' => $request['paymentStatus'],
+//            'id' => $request['id'],
+//            'out'=>$invoice
+//        ]);
     }
 
     public function delete_invoice($invoiceNumber)

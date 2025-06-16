@@ -37,12 +37,12 @@ class ProfileController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
 
             // Store in public disk under profile_pics directory
-            $file->storeAs('/profile_pics', $filename,'public');
-
+           $file->storeAs('/profile_pics', $filename,'public');
             // Delete old image if exists
-            if ($user->profile_pic) {
-                Storage::delete('/profile_pics' . $user->profile_pic);
+            if ($user->profile_pic && Storage::disk('public')->exists('profile_pics/'.$user->profile_pics)) {
+                Storage::disk('public')->delete('profile_pics/' . $user->profile_pic);
             }
+            //dd(Storage::disk('public')->exists('profile_pics/'));
 
             // Save new image path to database
             $user->profile_pic = $filename;

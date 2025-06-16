@@ -23,6 +23,10 @@
             {{ session('welcome_message') }} <strong>{{ Auth::user()->name }}</strong>
         </span>
             </nav>
+        @elseif (session('message'))
+            <nav id="welcome_message" class="navbar navbar-light bg-light p-3 mb-4 transition-opacity duration-500">
+                <span>{{ session('message') }}</span>
+            </nav>
         @endif
         @include('pages.invoices_list')
     </main>

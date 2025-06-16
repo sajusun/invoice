@@ -55,7 +55,8 @@
                     <td>@{{invoice.total_amount}}</td>
                     <td>
                         <span v-if="invoice.status==='Pending'" class="bg-yellow-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
-                        <span v-else class="bg-green-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+                        <span v-else-if="invoice.status==='Paid'" class="bg-green-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
+                        <span v-else class="bg-gray-500 px-3 py-1 text-white rounded">@{{invoice.status}}</span>
                     </td>
                 </tr>
 
@@ -78,8 +79,8 @@
                                    class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
                                     <i class="fa fa-eye"></i> View</a>
 
-                                <a href="#" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
-                                    <i class="fa fa-edit"></i> Edit</a>
+                                <b href="#" @click="edit_invoice(invoice.invoice_number,invoice.status)" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
+                                    <i class="fa fa-edit"></i> Edit</b>
 
                                 <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"
                                         @click="confirmDelete(invoice.invoice_number)">
@@ -101,5 +102,25 @@
             <button @click="fetchInvoices(pagination.prev_page_url)" :disabled="!pagination.prev_page_url" class="text-sm px-4 py-2 bg-gray-300 rounded">Prev</button>
             <button @click="fetchInvoices(pagination.next_page_url)" :disabled="!pagination.next_page_url" class=" text-sm px-4 py-2 bg-gray-300 rounded">Next</button>
         </div>
+        <!-- Modal -->
+        <div class="fixed inset-0 items-center justify-center bg-black bg-opacity-50" :class="openModal?'flex':'hidden'">
+            <div class="bg-white w-11/12 max-w-md p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Change Payment Status</h2>
+                <form method="get" action="{{route('changeStatus')}}">
+                    @csrf
+                    <input class="hidden" name="id" :value="invoice_id">
+                <select id="paymentStatus"  class="w-full border border-gray-300 rounded p-2 cursor-pointer" name="paymentStatus">
+                    <option value="Pending" class="bg-yellow-500 py-1 text-white rounded h-8" :selected="status=='Pending'">Pending</option>
+                    <option value="Paid" class="bg-green-500 py-1 text-white rounded" :selected="status=='Paid'">Paid</option>
+                    <option value="Cancelled" class="bg-gray-500x py-1 text-white rounded" :selected="status=='Cancelled'">Cancelled</option>
+                </select>
+                <div class="flex justify-end mt-6 space-x-3">
+                    <button @click="openModal = false" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Confirm</button>
+                </div>
+                </form>
+            </div>
+        </div>
     </div>
+
 </div>

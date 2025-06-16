@@ -20,11 +20,12 @@ Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
 Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices']);
 Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
 Route::get('/invoice/search', [InvoicesController::class, 'search_invoice']);
+Route::get('/invoice/status', [InvoicesController::class, 'change_status'])->name('changeStatus');
+
 Route::get('invoice/find/customer/{number}', [CustomersController::class, 'find_by_number']);
-
-
 Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
 Route::get('/dashboard/customers/{id}/view', [DashboardController::class, 'customer_details'])->name('customers.details');
+Route::post('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
 Route::get('/dashboard/customers/search', [DashboardController::class, 'search_customers']);
 Route::get('/dashboard/customers/{id}', [DashboardController::class, 'get_customer_data']);
 Route::get('/dashboard/customers/{id}/invoice', [DashboardController::class, 'get_customer_invoice']);
@@ -54,7 +55,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth','verified'])->group(function () {
     Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice']);
     Route::post('/customer/{id}/delete', [CustomersController::class, 'delete_customer']);
-
     //Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
 });
 

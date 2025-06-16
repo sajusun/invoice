@@ -6,6 +6,7 @@ use App\Models\Customers;
 use App\Models\User;
 use App\Services\CustomerService;
 use App\Services\InvoiceService;
+use http\Env\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +62,28 @@ class CustomersController extends Controller
         } else {
             return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
         }
+    }
+
+    public function customers_data_update($id)
+    {
+        $validated = validator(request()->all(),[
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'numeric', 'digits_between:10,12'],
+            'address' => ['required', 'string', 'max:255'],
+        ]);
+        if ($validated->fails()) {
+            return redirect()->back()->with(['message'=> $validated->errors()->first(),'response'=>'error']);
+        }
+        $user=Auth::user();
+        $user=$user->Customers->find($id);
+        $user->name=Request()->name;
+        $user->email=Request()->email;
+        $user->phone=Request()->phone;
+        $user->address=Request()->address;
+        $user->save();
+        return redirect()->back()->with(['message' => 'Update Successfully.', 'response' => 'success']);
+
     }
 
 }

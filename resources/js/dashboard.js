@@ -10,6 +10,9 @@ const {createApp} = Vue;
                 pagination: {},
                 search: '',
                 previous: [],
+                openModal:false,
+                status:'',
+                invoice_id:'',
                 loading: false,
                 searchBtn: "Search",
                 ready: false,
@@ -20,6 +23,11 @@ const {createApp} = Vue;
             this.fetchInvoices(this.url);
         },
         methods: {
+            edit_invoice(invoice_id,status) {
+                this.openModal=true;
+                this.invoice_id=invoice_id;
+                this.status=status;
+            },
             fetchInvoices(url) {
                 this.searchBtn = "searching";
                 this.loading = true;
