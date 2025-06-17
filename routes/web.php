@@ -24,8 +24,11 @@ Route::get('/invoice/status', [InvoicesController::class, 'change_status'])->nam
 
 Route::get('invoice/find/customer/{number}', [CustomersController::class, 'find_by_number']);
 Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
-Route::get('/dashboard/customers/{id}/view', [DashboardController::class, 'customer_details'])->name('customers.details');
+Route::get('/dashboard/customers/{id}/view', [CustomersController::class, 'customer_details'])->name('customers.details');
+
+Route::get('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
 Route::post('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
+
 Route::get('/dashboard/customers/search', [DashboardController::class, 'search_customers']);
 Route::get('/dashboard/customers/{id}', [DashboardController::class, 'get_customer_data']);
 Route::get('/dashboard/customers/{id}/invoice', [DashboardController::class, 'get_customer_invoice']);

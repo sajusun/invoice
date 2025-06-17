@@ -33,12 +33,14 @@ class DashboardController extends Controller
         return view('pages.customers.customers_list', ['customers' =>  $customers, 'controller' => $customer_ctrl]);
     }
 
-    public function customer_details($id): View
-    {
-        $customer_ctrl = new CustomersController();
-        $customer = $customer_ctrl->get_customer_by_invoiceId($id);
-        return view('pages.customers.customers_details', ['customer' =>  $customer, 'controller' => $customer_ctrl]);
-    }
+//    public function customer_details($id)
+//    {
+//        $customer_ctrl = new CustomersController();
+////        $customer = $customer_ctrl->get_customer_by_invoiceId($id);
+////        return view('pages.customers.customers_details', ['customer' =>  $customer, 'controller' => $customer_ctrl]);
+//      return  $customer_ctrl->customer_details($id);
+//
+//    }
 
     public function get_customers()
     {

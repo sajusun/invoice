@@ -103,7 +103,7 @@
                                            class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
                                             <i class="fa fa-eye"></i> View</a>
 
-                                        <a :href="goto(customer.id)" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
+                                        <a :href="goto_edit(customer.id)" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
                                             <i class="fa fa-edit"></i> Edit</a>
 
                                         <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"

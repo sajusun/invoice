@@ -62,6 +62,9 @@ createApp({
         goto(customer_id) {
             return `customers/${customer_id}/view`
         },
+        goto_edit(customer_id) {
+            return `customers/${customer_id}/update`
+        },
         confirmDelete(uid) {
             let url = `/customer/${uid}/delete`
             Swal.fire({
