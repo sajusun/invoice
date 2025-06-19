@@ -2,7 +2,6 @@
 <html lang="en" x-data="{ sidebarOpen: false, isLoggedIn: true }" class="h-full">
 <head>
     @vite('resources/js/customer.js')
-
     @include('custom-layouts.headTagContent')
     <title>Invozen Dashboard - Manage Your Invoices</title>
     <meta name="description"
@@ -20,29 +19,29 @@
 
     <main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
         <div id="customer" class="w-full xl:max-w-5xl py-1 px-1  xl:pl-10">
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- Total Invoices -->
-                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-                    <p class="text-gray-500 text-sm">Total Invoices</p>
-                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{ sum_of_invoices
-                        }}</p>
-                </div>
+{{--            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">--}}
+{{--                <!-- Total Invoices -->--}}
+{{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
+{{--                    <p class="text-gray-500 text-sm">Total Invoices</p>--}}
+{{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{ sum_of_invoices--}}
+{{--                        }}</p>--}}
+{{--                </div>--}}
 
-                <!-- Pending Invoices -->
-                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-                    <p class="text-gray-500 text-sm">Pending Invoices</p>
-                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{status}}</p>
-                </div>
+{{--                <!-- Pending Invoices -->--}}
+{{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
+{{--                    <p class="text-gray-500 text-sm">Pending Invoices</p>--}}
+{{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{status}}</p>--}}
+{{--                </div>--}}
 
-                <!-- Total Revenue -->
-                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-                    <p class="text-gray-500 text-sm">Total Revenue</p>
-                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{total}}</p>
-                </div>
-            </div>
+{{--                <!-- Total Revenue -->--}}
+{{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
+{{--                    <p class="text-gray-500 text-sm">Total Revenue</p>--}}
+{{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{total}}</p>--}}
+{{--                </div>--}}
+{{--            </div>--}}
             <div class="mt-4 list-view">
                 <div class="flex py-1">
-                    <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">Customers List </h4>
+                    <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">Customers List @{{sum_of_invoices}}</h4>
                     <span class="flex w-4/5 md:w-3/5 mr-1 text-xs sm:text-sm md:text-base h-8 md:h-10">
                          <input v-model="search"
                                 @input="key_Searching()"

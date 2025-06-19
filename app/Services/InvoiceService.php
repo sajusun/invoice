@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Settings;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -26,6 +27,12 @@ class InvoiceService
     {
         return Auth::user()->invoices()->where('invoice_number', $invoiceNumber)->delete();
 
+    }
+
+    public static function currency()
+    {
+       $user=Auth::user();
+      return $user->settings->default_currency;
     }
 
 

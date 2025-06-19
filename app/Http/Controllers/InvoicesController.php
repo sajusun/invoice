@@ -215,13 +215,28 @@ class InvoicesController extends Controller
 
     public function sum_of_total()
     {
-        return Invoices::where('user_id', Auth::id())->sum('total_amount');
+        $user=Auth::user();
+        return $user->invoices()->where('status', '!=', 'cancelled')->sum('total_amount');
     }
 
-    public function invoice_status()
+    public function sum_of_paid()
     {
-        return Invoices::where('user_id', Auth::id())->where('status', 'pending')->get('status')->count();
+        $user=Auth::user();
+        return $user->invoices()->where('status', '!=', 'cancelled')->sum('paid_amount');
     }
+    public function sum_of_due()
+    {
+        return $this->sum_of_total()-$this->sum_of_paid();
+    }
+
+    public function invoice_status(string $status='pending')
+    {
+        return Invoices::where('user_id', Auth::id())->where('status', $status)->get('status')->count();
+    }
+//    public function canceled_status()
+//    {
+//        return Invoices::where('user_id', Auth::id())->where('status', 'canceled')->get('status')->count();
+//    }
 
     public function change_status(Request $request): RedirectResponse
     {

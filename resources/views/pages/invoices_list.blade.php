@@ -1,21 +1,23 @@
 <div class="w-full xl:max-w-5xl py-1 px-1  xl:pl-10">
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <!-- Total Invoices -->
-        <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-            <p class="text-gray-500 text-sm">Total Invoices</p>
-            <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50">{{$num_of_invoices}}</p>
+        <div class="bg-white shadow rounded-xl p-2 border border-gray-100 space-y-1">
+            <p class="text-green-500 text-sm border-b shadow-sm p-1 bg-gray-200">Total Invoices : {{$num_of_invoices}}</p>
+            <p class="text-white text-sm border-b shadow-sm p-1 bg-green-500 rounded">Paid : {{$paid}}</p>
+
         </div>
 
         <!-- Pending Invoices -->
-        <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-            <p class="text-gray-500 text-sm">Pending Invoices</p>
-            <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50">{{$status}}</p>
+        <div class="bg-white shadow rounded-xl p-2 border border-gray-100 space-y-1">
+            <p class="text-black text-sm border-b shadow-sm p-1 bg-yellow-500 rounded">Pending : {{$pending}}</p>
+            <p class="bg-gray-500 text-white text-sm border-b shadow-sm p-1 rounded">Cancelled : {{$canceled}}</p>
         </div>
 
         <!-- Total Revenue -->
-        <div class="bg-white shadow rounded-xl p-2 border border-gray-100">
-            <p class="text-gray-500 text-sm">Total Revenue</p>
-            <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600">{{$total}}</p>
+        <div class="bg-white shadow rounded-xl p-2 border border-gray-100 space-y-1">
+            <p class="text-white text-sm bg-green-500 p-1 rounded border-b shadow">Total Revenue : {{$total}} {{$currency}} </p>
+            <p class="text-red-500 text-sm bg-gray-200 p-1 rounded border-b shadow">Total Due : {{$due}} {{$currency}}</p>
+{{--            <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600">{{$total}}</p>--}}
         </div>
     </div>
     <div id="app" class="mt-4 list-view">

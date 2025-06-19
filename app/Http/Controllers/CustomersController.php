@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Customers;
 use App\Models\User;
 use App\Services\CustomerService;
-use App\Services\InvoiceService;
-use http\Env\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
@@ -49,19 +47,16 @@ class CustomersController extends Controller
     public function get_customer_by_invoiceId($customer_id)
     {
         return Customers::with('invoices')->where('id', $customer_id)->first();
-
     }
-
-    public function find_by_number($number): JsonResponse
+    public function get_customers($paginate=10)
     {
-        return response()->json([
-            'number' => $number,
-        ]);
+        return User::find(Auth::id())->customers()->with('invoices')->paginate(10);
+
     }
+
 
     public function delete_customer($id)
     {
-
         $deleted = CustomerService::delete_customer($id);
 
         if ($deleted) {
@@ -80,11 +75,9 @@ class CustomersController extends Controller
 
     public function customers_data_update($id): View|RedirectResponse
     {
-
         if (Request()->isMethod('GET')) {
             return $this->customer_details($id);
         }
-
         $validated = validator(request()->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
@@ -103,6 +96,5 @@ class CustomersController extends Controller
         $user->save();
         return redirect()->back()->with(['message' => 'Update Successfully.', 'response' => 'success']);
     }
-
 
 }

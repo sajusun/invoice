@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -22,8 +23,13 @@ class DashboardController extends Controller
         $invoices = $invoice_ctrl->get_all_invoices();
         $num_of_invoices = $invoice_ctrl->num_of_invoices();
         $total = $invoice_ctrl->sum_of_total();
-        $status = $invoice_ctrl->invoice_status();
-        return view('dashboard', ['num_of_invoices' => $num_of_invoices, 'total' => $total, 'invoices' => $invoices, 'status' => $status]);
+        $due = $invoice_ctrl->sum_of_due();
+        $pending = $invoice_ctrl->invoice_status();
+        $currency = InvoiceService::currency();
+        $canceled = $invoice_ctrl->invoice_status('cancelled');
+        $paid = $invoice_ctrl->invoice_status('paid');
+        return view('dashboard', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
+            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency]);
     }
 
     public function customers(): View
@@ -50,17 +56,15 @@ class DashboardController extends Controller
 
     public function search_customers(Request $request)
     {
-        $invoice_ctrl = new InvoicesController();
-
-        $sum_of_invoices = $invoice_ctrl->num_of_invoices();
-        $total = $invoice_ctrl->sum_of_total();
-        $status = $invoice_ctrl->invoice_status();
+        $customers_ctrl = new CustomersController();
+        $sum_of_invoices = $customers_ctrl->total_customers();
+        $total = '';
+        $status = '';
 
         $user = Auth::user();
         // Search by customer name or invoice number
         if ($request->has('search') && $request->search !== null) {
             $search = $request->search;
-
             $customers = $user->customers()->with('invoices')
                 ->when($search, function ($query, $search) {
                     return $query->where('name', 'like', "%{$search}%")
