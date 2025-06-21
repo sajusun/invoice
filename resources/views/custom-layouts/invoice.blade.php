@@ -8,32 +8,26 @@
     <div class="grid grid-cols-4 py-1">
         <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
             <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
-                <div class="invoice-header flex-row justify-between px-4">
-                    <div class="company-name text-2xl" id="company_name">
-                            <p class="company-name" id="company_name">{{$settings->company_name}}</p>
+                <div class="invoice-header flex-row justify-between px-4 shadow-sm border-b h-16">
+                    <div class="company-name text-lg text-gray-500" >
+                        <p>Invoice ID: <span class="w-32 h-8">@{{invoiceId}}</span></p>
                     </div>
-                    <div>
-                        <h2>INVOICE</h2>
-                        <input v-model="invoiceId" type="text" class="w-75 text-sm "
-                               placeholder="InvoiceID" value="">
+                    <div class="text-gray-500 text-lg">
+                        <input v-model:="invoiceDate" id="date" type="text" class="w-full h-8 datepicker" placeholder="Select" required>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2  mt-3 w-full">
-                    <div class="px-4 w-full">
-                        <input v-model="from" id="issueFrom" type="text" class="w-9/12 lg:w-72"
-                               placeholder="Who is this from?">
-                        <input v-model="to" id="issueTo" type="text" class="w-9/12 lg:w-72 mt-2"
-                               placeholder="Who is this to?">
-                        <input v-model="address" id="address" type="text" class="w-9/12 lg:w-72  mt-2"
-                               placeholder="address">
+                <div class="grid grid-cols-2  mt-3 w-full text-gray-600 ">
+                    <div class="px-4 w-full space-y-2">
+                        <input v-model="issueTo" id="issueTo" type="text" class="w-9/12 h-8 lg:w-72"
+                               placeholder="Name / Issue To" required>
+                        <input v-model="address" id="address" type="text" class="w-9/12 h-8 lg:w-72"
+                               placeholder="Address" required>
                     </div>
 
-                    <div class="px-4 flex flex-col items-end">
-                        <input v-model:="invoiceDate" id="date" type="text" class="w-9/12 datepicker"
-                               placeholder="Date">
+                    <div class="px-4 flex flex-col items-end space-y-2">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
-                               class="w-9/12 mt-2" placeholder="Contact Number">
+                               class="w-9/12 h-8" placeholder="Contact Number" required>
                         <datalist id="number_list">
                             <option value="01707947753"></option>
                             <option value="017198940397"></option>
@@ -42,8 +36,8 @@
                             <option value="018875987361"></option>
                             <option value="018875987161"></option>
                         </datalist>
-                        <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 mt-2"
-                               placeholder="Email Address">
+                        <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 h-8"
+                               placeholder="Email">
                     </div>
                 </div>
 
@@ -58,19 +52,19 @@
                     </tr>
                     </thead>
                     <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
-                    <tr v-for="(item, index) in items" :key="index">
-                        <td class="py-1.5">
-                            <input v-model="item.name" class="min-w-full border-0 text-sm" type="text"
-                                   placeholder="Description of item/service..."></td>
-                        <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.qty" class="w-full border-0 text-sm text-center" type="text"
+                    <tr v-for="(item, index) in items" :key="index" class="space-y-2">
+                        <td class="mx-1">
+                            <input v-model="item.name" class="w-60 h-8 border-0 text-sm p-0.5" type="text"
+                                   placeholder="Description / Service Name"></td>
+                        <td class="p-1 w-40 text-center">
+                            <input v-model.number="item.qty" class="w-full h-8 border-0 text-sm text-center" type="text"
                                    value="1"></td>
-                        <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.rate" class="w-full border-0 text-sm text-center" type="text"
+                        <td class="mx-1 w-40 text-center">
+                            <input v-model.number="item.rate" class="w-full h-8 border-0 text-sm text-center" type="text"
                                    value="0"></td>
-                        <td class="p-1.5 w-40 text-right text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
+                        <td class="p-1 w-40 text-right h-8 text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
                         <td class="w-10 py-1.5 flex justify-end items-center text-base">
-                            <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700"
+                            <i class="p-0.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700"
                                @click="removeItem(index)"></i>
                         </td>
                     </tr>
@@ -116,7 +110,7 @@
         <div class="col-span-1">
             <div class="w-full xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm px-0.5 lg:px-4">
                 <div class="mt-3">
-                    <div class="edit-section">
+                    <div class="edit-section space-y-1">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="emailInputCheck"
                                    v-model="showEmail">
@@ -166,11 +160,11 @@
 
     createApp({
         setup() {
-            const companyName = ref('Company Name');
+            const issueFrom = ref('');
             const invoiceId = ref('{{$invoiceId}}');
             const invoiceDate = ref('');
-            const from = ref('');
-            const to = ref('');
+
+            const issueTo = ref('');
             const address = ref('');
             const contactNumber = ref('');
             const email = ref('');
@@ -204,14 +198,15 @@
 
             const saveInvoice = () => {
                 const data = {
-                    company_name: companyName.value,
+                    issueFrom: issueFrom.value,
                     invoice_number: invoiceId.value,
                     invoice_date: invoiceDate.value,
-                    from: from.value,
-                    name: to.value,
+
+                    name: issueTo.value,
                     address: address.value,
                     phone: contactNumber.value,
                     email: email.value,
+
                     currency: currency.value,
                     notes: notes.value,
                     items: items.value,
@@ -242,7 +237,7 @@
             };
 
             return {
-                companyName, invoiceId, invoiceDate, from, to, address, contactNumber, email, showEmail,
+                issueFrom, invoiceId, invoiceDate, issueTo, address, contactNumber, email, showEmail,
                 tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax, isDisabled,
                 tax_amount,
                 addItem, removeItem, saveInvoice

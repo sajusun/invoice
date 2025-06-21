@@ -92,8 +92,8 @@ class InvoicesController extends Controller
         if ($validated->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => "Input All Required Fields",
-                'error' => $validated->errors(),
+                'message' => $validated->errors()->first(),
+                'error' => $validated->errors()->first(),
                 'redirect' => route('invoiceBuilder') // or your target route
             ]);
 
@@ -138,7 +138,6 @@ class InvoicesController extends Controller
                 DB::commit();
                 return response()->json([
                     'success' => true,
-                    'dd' => $validatedData,
                     'message' => 'Invoice Created Success',
                     'redirect' => route('previewInvoice', $validatedData['invoice_number'])// or your target route
                 ]);
