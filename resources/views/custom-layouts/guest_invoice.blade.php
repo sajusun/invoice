@@ -9,8 +9,8 @@
         <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
             <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
                 <div class="invoice-header flex-row justify-between px-4">
-                    <div class="company-name text-xl text-gray-500" id="company_name">
-                        <p>INVOICE <input contenteditable="true" v-model="invoiceId" class="w-32 text-sm h-8"></p>
+                    <div class="company-name text-lg text-gray-500" id="company_name">
+                        <p>Invoice ID : <input contenteditable="true" v-model="invoiceId" class="w-32 text-sm h-8"></p>
                     </div>
                     <div class="text-gray-500" >
                         <span>Issue Date : <input v-model:="invoiceDate" id="date" type="text" class="w-32 h-8 datepicker"
@@ -21,8 +21,8 @@
                 <div class="grid grid-cols-2  mt-2 w-full">
                     <div class="px-4 w-full space-y-2">
                         <p class="text-gray-500 text-sm">Issue To :</p>
-                        <input v-model="to" id="issueTo" type="text" class="w-9/12 mt-2 h-8"
-                               placeholder="Name">
+                        <input v-model="issueTo" id="issueTo" type="text" class="w-9/12 mt-2 h-8"
+                               placeholder="Name / Issue To">
                         <input v-model="address" id="address" type="text" class="w-9/12 h-8"
                                placeholder="Address">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
@@ -36,7 +36,7 @@
                         <input v-model="issueFrom" id="issueFrom" type="text" class="w-9/12 h-8"
                                placeholder="Company Name">
                         <input v-model="issueAddress" id="issueFrom" type="text" class="w-9/12 h-8"
-                               placeholder="Address?">
+                               placeholder="Address">
                         <input v-model="issuePhone" id="number_from" type="text" class="w-9/12 h-8"
                                placeholder="Contact Number">
                         <input v-show="showEmail" v-model="issueEmail" id="email_from" type="text" class="w-9/12 h-8"
@@ -166,10 +166,11 @@
             const issueAddress = ref('');
             const issuePhone = ref('');
             const issueEmail = ref('');
+
             const invoiceId = ref('{{$invoiceId}}');
             const invoiceDate = ref('');
-            const from = ref('');
-            const to = ref('');
+
+            const issueTo = ref('');
             const address = ref('');
             const contactNumber = ref('');
             const email = ref('');
@@ -211,7 +212,7 @@
                     invoice_number: invoiceId.value,
                     invoice_date: invoiceDate.value,
 
-                    name: to.value,
+                    name: issueTo.value,
                     address: address.value,
                     phone: contactNumber.value,
                     email: email.value,
@@ -246,7 +247,7 @@
             };
 
             return {
-                issueFrom, issueAddress,issuePhone,issueEmail, invoiceId, invoiceDate, to, address, contactNumber, email, showEmail,
+                issueFrom, issueAddress,issuePhone,issueEmail, invoiceId, invoiceDate, issueTo, address, contactNumber, email, showEmail,
                 tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax, isDisabled,
                 tax_amount,
                 addItem, removeItem, saveInvoice
