@@ -10,7 +10,11 @@
             <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
                 <div class="invoice-header flex-row justify-between px-4">
                     <div class="company-name text-2xl" id="company_name">
+                        @auth()
                             <p class="company-name" id="company_name">{{$settings->company_name}}</p>
+                        @else
+                            <p class="company-name" id="company_name" contenteditable="true">@{{ companyName }}</p>
+                        @endauth
                     </div>
                     <div>
                         <h2>INVOICE</h2>
@@ -112,6 +116,7 @@
                 </div>
             </div>
         </div>
+
 {{--                    side section--}}
         <div class="col-span-1">
             <div class="w-full xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm px-0.5 lg:px-4">
@@ -143,13 +148,10 @@
                     </select>
                 </div>
                 <div class="mt-3">
-                    @auth()
                         <button id="save_btn" class="dl-btn" :class="{'opacity-50 cursor-not-allowed': isDisabled}"
-                                @click="saveInvoice">Save & preview
+                                @click="saveInvoice">Print preview
                         </button>
-                    @else
-                        <button id="dl_btn" class="dl-btn" onclick="save()">Preview</button>
-                    @endauth
+
                 </div>
             </div>
         </div>
@@ -174,13 +176,13 @@
             const address = ref('');
             const contactNumber = ref('');
             const email = ref('');
-            const showEmail = ref(Boolean({{$settings?$settings->show_email_column:''}}));
-            const showTax = ref(Boolean({{$settings->show_tax_column}}));
+            const showEmail = ref(false);
+            const showTax = ref(false);
 
-            const tax_amount = ref({{$settings->default_tax_rate}});
+            const tax_amount = ref(0);
             const tax = computed(() => showTax.value ? tax_amount.value : 0);
             const paid = ref(0);
-            const currency = ref('{{$settings->default_currency}}');
+            const currency = ref('');
             const notes = ref('');
             const items = ref([{name: '', qty: 1, rate: 0}]);
             const isDisabled = ref(false);

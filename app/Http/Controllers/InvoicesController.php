@@ -25,8 +25,14 @@ class InvoicesController extends Controller
     public function view()
     {
         $invoiceId = InvoiceService::invoiceIdGenerator();
-        $settings = Auth::user()->settings;
-        return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
+        if (Auth::check()) {
+            $settings = Auth::user()->settings;
+
+            return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
+        } else {
+            return view('pages/invoice', ['invoiceId' => $invoiceId]);
+
+        }
     }
 
     public function theme()
@@ -43,14 +49,15 @@ class InvoicesController extends Controller
                 'phone' => $settings->companyPhone(),
                 'email' => $settings->companyEmail(),
             ];
-
             $data = InvoiceService::find_invoice($id);
+            return view('pages/invoice_preview', ['invoice_data' => $data, 'company_data' => $companyData]);
+
         } elseif (session($id)) {
             $data = session($id);
         } else {
             return Redirect()->route('invoiceBuilder');
         }
-        return view('pages/invoice_preview', ['invoice_data' => $data,'company_data'=>$companyData]);
+        return view('pages/invoice_preview', ['invoice_data' => $data]);
     }
 
     public function makeInvoice(Request $request)
@@ -215,21 +222,22 @@ class InvoicesController extends Controller
 
     public function sum_of_total()
     {
-        $user=Auth::user();
+        $user = Auth::user();
         return $user->invoices()->where('status', '!=', 'cancelled')->sum('total_amount');
     }
 
     public function sum_of_paid()
     {
-        $user=Auth::user();
+        $user = Auth::user();
         return $user->invoices()->where('status', '!=', 'cancelled')->sum('paid_amount');
     }
+
     public function sum_of_due()
     {
-        return $this->sum_of_total()-$this->sum_of_paid();
+        return $this->sum_of_total() - $this->sum_of_paid();
     }
 
-    public function invoice_status(string $status='pending')
+    public function invoice_status(string $status = 'pending')
     {
         return Invoices::where('user_id', Auth::id())->where('status', $status)->get('status')->count();
     }
@@ -240,15 +248,15 @@ class InvoicesController extends Controller
 
     public function change_status(Request $request): RedirectResponse
     {
-        $user=Auth::user();
-        $invoice=$user->invoices->where('invoice_number',$request->id)->first();
+        $user = Auth::user();
+        $invoice = $user->invoices->where('invoice_number', $request->id)->first();
         //$invoice= Invoices::where('user_id', Auth::id())->where('invoice_number', $request->id)->first();
 
-        if ($request->paymentStatus==='Paid'){
-                $invoice->paid_amount=$invoice->total_amount;
-                $invoice->status=$request->paymentStatus;
-        }else{
-            $invoice->status=$request->paymentStatus;
+        if ($request->paymentStatus === 'Paid') {
+            $invoice->paid_amount = $invoice->total_amount;
+            $invoice->status = $request->paymentStatus;
+        } else {
+            $invoice->status = $request->paymentStatus;
         }
         $invoice->save();
         return redirect()->back()->with('message', 'Updated');

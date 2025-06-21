@@ -7,7 +7,11 @@
 <body>
 @include('custom-layouts.navbar')
 <div class="p-4 md:p-1">
-    @include('custom-layouts.invoice')
+    @auth()
+        @include('custom-layouts.invoice')
+    @else
+        @include('custom-layouts.guest_invoice')
+    @endauth
 </div>
 {{--@include('custom-layouts.footer')--}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
