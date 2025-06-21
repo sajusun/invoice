@@ -64,14 +64,19 @@ class InvoicesController extends Controller
     {
 
         $validated = validator($request->all(), [
+            'issueFrom' => 'nullable|string',
+            'issueAddress' => 'nullable|string',
+            'issuePhone' => 'nullable|string',
+            'issueEmail' => 'nullable|string',
+
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone' => 'required|numeric',
             'email' => 'nullable|email',
+
             'status' => 'nullable|string',
             'invoice_date' => 'required|date',
             'currency' => 'required|string',
-            'company_name' => 'required|string',
             'tax_amount' => 'nullable|numeric',
             'need_tax' => 'nullable|boolean',
             'notes' => 'nullable|string',
@@ -104,7 +109,6 @@ class InvoicesController extends Controller
                 $customer = $user->customers()->where('phone', $validatedData['phone'])->first();
 
                 if (!$customer) {
-                    //insert new customer
                     $customer = Customers::create([
                         'user_id' => Auth::id(),
                         'name' => $validatedData['name'],

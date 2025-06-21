@@ -32,10 +32,10 @@
             </div>
             <div class="text-right mr-2">
                 <p class="text-base font-semibold text-gray-500">Issue From :</p>
-{{--                <p class="text-sm text-gray-600">{{$company_data['name']}}</p>--}}
-{{--                <p class="text-sm text-gray-600">{{$company_data['address']}}</p>--}}
-{{--                <p class="text-sm text-gray-600">{{$company_data['email']}}</p>--}}
-{{--                <p class="text-sm text-gray-600">{{$company_data['phone']}}</p>--}}
+                <p class="text-sm text-gray-600">{{$invoice_data['issueFrom']}}</p>
+                <p class="text-sm text-gray-600">{{$invoice_data['issueAddress']}}</p>
+                <p class="text-sm text-gray-600">{{$invoice_data['issuePhone']}}</p>
+                <p class="text-sm text-gray-600">{{$invoice_data['issueEmail']}}</p>
             </div>
         </div>
     </div>
@@ -96,11 +96,7 @@
     </div>
 
     <div class="mt-1 text-sm text-gray-500">
-        <p>Thank you for your business!</p>
+        <p class="cursor-crosshair">Thank you for your business!</p>
     </div>
 </div>
 
-@php
-dd($invoice_data)
-
-@endphp
