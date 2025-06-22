@@ -3,11 +3,6 @@
 <head>
     @include('custom-layouts.headTagContent')
     <title>Admin Secure Access</title>
-    <meta name="description"
-          content="Log in to your Invozen account to manage your invoices, clients, and payments securely.">
-    <meta name="keywords" content="login, invozen, account login, invoice software login">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{{config('app.url')}}/admin/login">
 </head>
 <body class="w-screen h-screen">
 {{--@include('custom-layouts.navbar')--}}
