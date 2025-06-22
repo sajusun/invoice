@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -48,7 +48,8 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
-        return redirect()->route('register')->with('message', 'Registered successfully! Please check your email to verify.');
+        return redirect()->route('signup.success')->with('signup_success',
+            'Registration success! Please check your email to verify.');
 
 //        return redirect(route('register',
 //            ['message'=>'registered successfully! Please check your email to verify.'],
@@ -59,5 +60,14 @@ class RegisteredUserController extends Controller
 //        Auth::login($user);
 //
 //        return redirect(route('dashboard', absolute: false));
+    }
+
+    public function signup_success()
+    {
+        if (session()->has('signup_success')) {
+            return view('auth.register_success');
+        } else {
+            return redirect()->route('register');
+        }
     }
 }
