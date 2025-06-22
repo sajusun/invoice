@@ -46,9 +46,9 @@ class RegisteredUserController extends Controller
             'user_id' => $user->id,
             'company_name' => $user->name . "Invozen App",
         ]);
-
+//        session()->flash('signup_success', $user->email);
         event(new Registered($user));
-        return redirect()->route('signup.success')->with('signup_success',
+        return redirect()->route('signup.success',$user->email)->with($user->email,
             'Registration success! Please check your email to verify.');
 
 //        return redirect(route('register',
@@ -62,10 +62,10 @@ class RegisteredUserController extends Controller
 //        return redirect(route('dashboard', absolute: false));
     }
 
-    public function signup_success()
+    public function signup_success($email)
     {
-        if (session()->has('signup_success')) {
-            return view('auth.register_success');
+        if (session()->has($email)) {
+            return view('auth.register_success',compact('email'));
         } else {
             return redirect()->route('register');
         }
