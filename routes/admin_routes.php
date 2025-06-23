@@ -1,5 +1,4 @@
 <?php
-// Admin Auth routes
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;

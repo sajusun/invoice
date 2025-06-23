@@ -5,11 +5,16 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('index');
-});
+//Route::get('/', function () {
+//    return view('index');
+//});
+
+Route::get('/', [DashboardController::class, 'homePage'])->name('home');
+Route::get('/pricing', [SubscriptionController::class, 'index'])->name('plan');
+
 
 Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoiceBuilder');
 Route::get('/invoice/theme', [InvoicesController::class, 'theme']);

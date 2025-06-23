@@ -17,9 +17,19 @@ class DashboardController extends Controller
         $this->middleware(['auth','verified']); // Only authenticated users can access this controller
     }
 
+    public function homePage()
+    {
+        $subscription= new SubscriptionController();
+        $plans=$subscription->plans();
+        $user=auth()->user();
+
+        return view('index',compact('plans','user'));
+    }
+
     public function dashboard(): View
     {
         $invoice_ctrl = new InvoicesController();
+
         $invoices = $invoice_ctrl->get_all_invoices();
         $num_of_invoices = $invoice_ctrl->num_of_invoices();
         $total = $invoice_ctrl->sum_of_total();
@@ -29,7 +39,7 @@ class DashboardController extends Controller
         $canceled = $invoice_ctrl->invoice_status('cancelled');
         $paid = $invoice_ctrl->invoice_status('paid');
         return view('dashboard', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
-            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency]);
+            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'plans'=>$plans]);
     }
 
     public function customers(): View

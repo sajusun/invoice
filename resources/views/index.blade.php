@@ -71,6 +71,9 @@
 <section class="lg:px-6 sm:px-2">
     @include('custom-layouts.features_card')
 </section>
+<section class="pb-4">
+    @include('subscription-plan.plan-widget')
+</section>
 <!-- Footer -->
 @include('custom-layouts.footer')
 </body>
