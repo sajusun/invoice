@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 //    return view('index');
 //});
 
-Route::get('/', [DashboardController::class, 'homePage'])->name('home');
+Route::get('/', [HomePageController::class, 'homePage'])->name('home');
 Route::get('/pricing', [SubscriptionController::class, 'index'])->name('plan');
 
 

@@ -63,15 +63,15 @@
 <!-- Hero Section -->
 <header class="text-white text-center py-5 shadow-sm">
     <div class="container">
-        <h1 class="display-4">Create Professional Invoices Instantly</h1>
+        <h1 class="">Create Professional Invoices Instantly</h1>
         <p class="lead">Simple, fast, and free invoice generator</p>
-        <a href="/invoice/builder" class="px-4 py-2 bg-color-main text-white rounded-md">Create Invoice</a>
+        <a href="/invoice/builder" class="px-4 py-2 bg-color-main text-white text-lg rounded-md">Create Invoice</a>
     </div>
 </header>
 <section class="lg:px-6 sm:px-2">
     @include('custom-layouts.features_card')
 </section>
-<section class="pb-4">
+<section class="pb-4 border-t my-8 py-4">
     @include('subscription-plan.plan-widget')
 </section>
 <!-- Footer -->

@@ -17,14 +17,7 @@ class DashboardController extends Controller
         $this->middleware(['auth','verified']); // Only authenticated users can access this controller
     }
 
-    public function homePage()
-    {
-        $subscription= new SubscriptionController();
-        $plans=$subscription->plans();
-        $user=auth()->user();
 
-        return view('index',compact('plans','user'));
-    }
 
     public function dashboard(): View
     {
