@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use App\Models\User;
 use App\Services\InvoiceService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +16,6 @@ class DashboardController extends Controller
     {
         $this->middleware(['auth','verified']); // Only authenticated users can access this controller
     }
-
-
 
     public function dashboard(): View
     {
@@ -32,7 +30,7 @@ class DashboardController extends Controller
         $canceled = $invoice_ctrl->invoice_status('cancelled');
         $paid = $invoice_ctrl->invoice_status('paid');
         return view('dashboard', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
-            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'plans'=>$plans]);
+            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency]);
     }
 
     public function customers(): View
@@ -41,15 +39,6 @@ class DashboardController extends Controller
         $customers = $customer_ctrl->customers();
         return view('pages.customers.customers_list', ['customers' =>  $customers, 'controller' => $customer_ctrl]);
     }
-
-//    public function customer_details($id)
-//    {
-//        $customer_ctrl = new CustomersController();
-////        $customer = $customer_ctrl->get_customer_by_invoiceId($id);
-////        return view('pages.customers.customers_details', ['customer' =>  $customer, 'controller' => $customer_ctrl]);
-//      return  $customer_ctrl->customer_details($id);
-//
-//    }
 
     public function get_customers()
     {
@@ -111,6 +100,13 @@ class DashboardController extends Controller
         $invoice_ctrl = new InvoicesController();
         return $invoice_ctrl->find_invoice($id);
 
+    }
+    public function my_plan(){
+        $subscription= new SubscriptionController();
+        $plans=$subscription->plans();
+        $user=auth()->user();
+        $payments = Payment::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+       return view('subscription-plan.my-plan',compact('payments','plans','user'));
     }
 
 }

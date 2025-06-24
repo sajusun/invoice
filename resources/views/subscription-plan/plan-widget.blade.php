@@ -20,12 +20,16 @@
         </ul>
         @auth()
             @if($user->plan_id===$plans[0]->id)
-                <button class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-default">Activated
+                <button class="mt-auto bg-gray-700 text-white py-2 px-4 rounded cursor-not-allowed">Activated
                 </button>
+            @else
+                <a href="#" class="mt-auto bg-blue-600 text-white py-2 px-4 rounded cursor-not-allowed">
+                    Free
+                </a>
             @endif
         @else
-            <button class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
-                Choose Free
+            <button class="mt-auto bg-blue-600 text-white py-2 px-4 rounded cursor-not-allowed">
+                Free Plan
             </button>
         @endauth
     </div>
@@ -45,14 +49,18 @@
         </ul>
         @auth()
             @if($user->plan_id===$plans[1]->id)
-                <button class="mt-auto bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition cursor-default">
+                <button class="mt-auto bg-yellow-600 text-white py-2 px-4 rounded cursor-not-allowed">
                     Activated
                 </button>
+            @else
+                <a href="{{route('payment.form',$plans[1]->id)}}" class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
+                    Choose Premium
+                </a>
             @endif
         @else
-            <button class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
+            <a href="{{route('payment.form',$plans[1]->id)}}" class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
                 Choose Premium
-            </button>
+            </a>
         @endauth
     </div>
 
@@ -71,14 +79,18 @@
         </ul>
         @auth()
             @if($user->plan_id===$plans[2]->id)
-                <button class="mt-auto bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition cursor-default">
+                <button class="mt-auto bg-green-700 text-white py-2 px-4 rounded cursor-not-allowed">
                     Activated
                 </button>
+            @else
+                <a href="{{route('payment.form',$plans[2]->id)}}" class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
+                    Choose Business
+                </a>
             @endif
         @else
-            <button class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
+            <a href="{{route('payment.form',$plans[2]->id)}}" class="mt-auto bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition cursor-pointer">
                 Choose Business
-            </button>
+            </a>
         @endauth
     </div>
 

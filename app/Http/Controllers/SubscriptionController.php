@@ -11,7 +11,6 @@ class SubscriptionController extends Controller
     public function index()
     {
         $plans = $this->plans();
-//        return view('subscription-plan.plan', compact('plans'));
         return view('subscription-plan.plan', compact('plans'));
     }
 

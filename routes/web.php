@@ -9,12 +9,9 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
-//Route::get('/', function () {
-//    return view('index');
-//});
 
 Route::get('/', [HomePageController::class, 'homePage'])->name('home');
-Route::get('/pricing', [SubscriptionController::class, 'index'])->name('plan');
+Route::get('/subscription-plan', [SubscriptionController::class, 'index'])->name('choose-plan');
 
 
 Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoiceBuilder');
@@ -60,7 +57,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::get('dashboard/my-plan', [DashboardController::class, 'my_plan'])->name('subscription.plan');
 });
+
+
 Route::middleware(['auth','verified'])->group(function () {
     Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice']);
     Route::post('/customer/{id}/delete', [CustomersController::class, 'delete_customer']);
@@ -69,3 +69,4 @@ Route::middleware(['auth','verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin_routes.php';
+require __DIR__.'/payment_routes.php';
