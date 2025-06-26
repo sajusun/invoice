@@ -11,5 +11,11 @@ Route::prefix('admin')->group(function () {
     // Protected admin routes
     Route::middleware(['admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+        Route::get('/dashboard/users-list', [DashboardController::class, 'all_user_list'])->name('admin.dashboard.users-list');
+
+        Route::get('/dashboard/payments', [DashboardController::class, 'payments'])->name('admin.dashboard.payments');
+        Route::get('/dashboard/payments/create', [DashboardController::class, 'view_payment_form'])->name('admin.dashboard.payments.create');
+        Route::post('/dashboard/payments/create', [DashboardController::class, 'make_payments'])->name('admin.dashboard.payments.create');
     });
 });

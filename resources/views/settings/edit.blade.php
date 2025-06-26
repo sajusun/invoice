@@ -40,12 +40,6 @@
                       class="w-full mt-1 p-2 border border-gray-300 rounded-md">{{ old('company_address', $settings->company_address ?? '') }}</textarea>
         </div>
 
-{{--        <div>--}}
-{{--            <label class="block font-semibold text-sm text-gray-700">Default Currency</label>--}}
-{{--            <input type="text" name="default_currency"--}}
-{{--                   value="{{ old('default_currency', $settings->default_currency ?? 'USD') }}"--}}
-{{--                   class="w-full mt-1 p-2 border border-gray-300 rounded-md" required>--}}
-{{--        </div>--}}
         <div>
             <label class="block font-semibold text-sm text-gray-700" for="currency">Currency:</label>
             <select id="currency" name="default_currency" class="w-full">

@@ -28,9 +28,9 @@
                 </a>
             @endif
         @else
-            <button class="mt-auto bg-blue-600 text-white py-2 px-4 rounded cursor-not-allowed">
+            <a href="{{route('payment.form',$plans[0]->id)}}" class="mt-auto bg-blue-600 text-white py-2 px-4 rounded cursor-pointer">
                 Free Plan
-            </button>
+            </a>
         @endauth
     </div>
 

@@ -14,14 +14,10 @@ class Payment extends Model
         'amount',
         'payment_status',
     ];
-
-    // Relationship: Payment belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    // Relationship: Payment belongs to a plan
     public function plan()
     {
         return $this->belongsTo(Plan::class);
