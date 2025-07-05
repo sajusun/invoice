@@ -244,10 +244,6 @@ class InvoicesController extends Controller
     {
         return Invoices::where('user_id', Auth::id())->where('status', $status)->get('status')->count();
     }
-//    public function canceled_status()
-//    {
-//        return Invoices::where('user_id', Auth::id())->where('status', 'canceled')->get('status')->count();
-//    }
 
     public function change_status(Request $request): RedirectResponse
     {
@@ -263,12 +259,6 @@ class InvoicesController extends Controller
         }
         $invoice->save();
         return redirect()->back()->with('message', 'Updated');
-        //return Invoices::where('user_id', Auth::id())->where('status', 'pending')->get('status')->count();
-//        return response()->json([
-//            'message' => $request['paymentStatus'],
-//            'id' => $request['id'],
-//            'out'=>$invoice
-//        ]);
     }
 
     public function delete_invoice($invoiceNumber)

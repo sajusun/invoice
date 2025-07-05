@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\Plan;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class SubscriptionController extends Controller
 {

@@ -29,7 +29,6 @@ class PaymentController extends Controller
             'payment_status' => 'success',
         ]);
 
-
         // Update user plan
         $user = Auth::user();
         $user->plan_id = $plan->id;
@@ -41,5 +40,26 @@ class PaymentController extends Controller
         $user->save();
 
         return redirect('/dashboard')->with('success', 'Your plan has been activated!');
+    }
+
+    public static function onSignUp($user): void
+    {
+        $plan = Plan::where('type', 'free')->first();
+
+        $payment = Payment::create([
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'payment_method' => 'Auto Sign Up',
+            'amount' => $plan->price,
+            'payment_status' => 'success',
+        ]);
+
+        $user->plan_id = $plan->id;
+        if ($plan->price > 0) {
+            $user->expires_at = now()->addDays(365);
+        } else {
+            $user->expires_at = null;
+        }
+        $user->save();
     }
 }

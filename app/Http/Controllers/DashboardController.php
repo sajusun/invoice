@@ -14,7 +14,7 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth','verified']); // Only authenticated users can access this controller
+        $this->middleware(['auth']); // Only authenticated users can access this controller
     }
 
     public function dashboard(): View

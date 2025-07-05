@@ -26,7 +26,6 @@
     </aside>
     <main class="flex-1 p-2">
         <div class="mb-2">
-{{--            <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>--}}
             <p class="text-gray-500 mt-1">{{Auth::guard('admin')->user()->name}}</p>
         </div>
 

@@ -59,7 +59,15 @@
             </button>
         </div>
     </form>
+
     <p>If you didn't create an account, you can ignore this email.</p>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+
+        <button type="submit" class="btn" style="background: red">
+            {{ __('Log Out') }}
+        </button>
+    </form>
     <p class="footer">This email was sent automatically. Please do not reply.</p>
 </div>
 </body>

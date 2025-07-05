@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SubscriptionController;
-use App\Models\MealApp\User;
 use App\Models\Payment;
 use App\Models\Plan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -19,9 +20,9 @@ class DashboardController extends Controller
         $usersThisWeek = User::whereDate('created_at', Carbon::today())->count();
         $usersList = User::whereDate('created_at', Carbon::today())->get();
         //$usersThisWeek =User::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-        $usersList=$this->userListThisWeek();
-        if ($request->has('status')){
-            $usersList=$this->filter_user_list($request)->latest()->paginate(10)->withQueryString();
+        $usersList = $this->userListThisWeek();
+        if ($request->has('status')) {
+            $usersList = $this->filter_user_list($request)->latest()->paginate(10)->withQueryString();
         }
 
         return view('admin.dashboard', compact(
@@ -35,35 +36,11 @@ class DashboardController extends Controller
 
     public function all_user_list(Request $request)
     {
-//        $query = User::query();
-//
-//        if ($request->has('status')) {
-//            if ($request->status == 'verified') {
-//                $query->whereNotNull('email_verified_at');
-//            } elseif ($request->status == 'unverified') {
-//                $query->whereNull('email_verified_at');
-//            } elseif ($request->status == 'new') {
-//                $query->whereDate('created_at', now()->toDateString());
-//            }
-//        }
-//
-//        // Search by name, id, or email
-//        if ($request->filled('search')) {
-//            $searchTerm = $request->search;
-//
-//            $query->where(function ($q) use ($searchTerm) {
-//                $q->where('name', 'like', "%$searchTerm%")
-//                    ->orWhere('email', 'like', "%$searchTerm%")
-//                    ->orWhere('id', $searchTerm);
-//            });
-//        }
-//
-//        // Paginate and preserve query strings
-//        $users = $query->latest()->paginate($request->paginate)->withQueryString();
-        $users=$this->filter_user_list($request)->latest()->paginate($request->paginate)->withQueryString();
-       return view('admin.users-list', compact('users'));
+        $users = $this->filter_user_list($request)->latest()->paginate($request->paginate)->withQueryString();
+        return view('admin.users-list', compact('users'));
 
     }
+
     public function filter_user_list(Request $request)
     {
         $query = User::query();
@@ -89,30 +66,33 @@ class DashboardController extends Controller
             });
         }
 
-        // Paginate and preserve query strings
         return $query;
-//       return view('admin.users-list', compact('users'));
-
     }
-    public function userListThisWeek(){
+
+    public function userListThisWeek()
+    {
         return User::whereBetween('created_at', [
             Carbon::now()->startOfWeek(),
             Carbon::now()->endOfWeek()
         ])->latest()->paginate(10);
     }
-    public function payments(){
-        $payments=Payment::with('user')->get();
+
+    public function payments()
+    {
+        $payments = Payment::with('user')->get();
         return view('admin.payments', compact('payments'));
     }
 
     public function view_payment_form(Request $request)
     {
-        $sub=new SubscriptionController();
-        $plans=$sub->plans();
-      return  view('admin.make-payment-form', compact('plans'));
+        $sub = new SubscriptionController();
+        $plans = $sub->plans();
+        return view('admin.make-payment-form', compact('plans'));
 
     }
-    public function make_payments(Request $request){
+
+    public function make_payments(Request $request)
+    {
         $plan = Plan::findOrFail($request->plan_id);
         $user = User::findOrFail($request->user_id);
 
@@ -134,5 +114,34 @@ class DashboardController extends Controller
         $user->save();
         return redirect()->route('admin.dashboard.payments')->with('success', 'Payment made successfully');
     }
+
+    public function destroy($id)
+    {
+        User::findOrFail($id)->delete();
+        return back()->with('success', 'User deleted successfully.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = json_decode($request->ids);
+        if (!$ids || !is_array($ids) || count($ids) == 0) {
+            return back()->with('error', 'No users selected.');
+        }
+
+        User::whereIn('id', $ids)->delete();
+        return back()->with('success', 'Selected users deleted.');
+    }
+
+    public function userPage($id)
+    {
+//        $user = User::find($id)->with(['customers', 'payments', 'plan']);
+        $user = User::find($id);
+        $user->load(['customers','payments', 'plan','settings']);
+        //dd($user);
+
+        return view('admin.user-info', compact('user'));
+
+    }
+
 
 }

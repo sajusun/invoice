@@ -5,11 +5,18 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+
+use App\Models\Invoices;
+use App\Models\Customers;
+use App\Models\Payment;
+use App\Models\Settings;
+use App\Models\Plan;
 
 /**
  * @method static find(int|string|null $id)
@@ -40,13 +47,21 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Customers::class);
     }
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
     public function settings(): HasOne
     {
         return $this->hasOne(Settings::class);
     }
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
+    }
+    public function detail(): HasOne
+    {
+        return $this->hasOne(UserDetail::class);
     }
 
 

@@ -56,34 +56,53 @@
                     </div>
 
                 </form>
+                <form method="post" action="{{ route('users.bulk-delete') }}" id="bulkDeleteForm">
+                    @csrf
+                    <input type="hidden" name="ids" id="bulkDeleteIds">
+
+                    <button type="submit" class="text-red-600 py-2 px-2 rounded hover:text-red-700 text-sm">Delete Selected
+                    </button>
+                </form>
 
             </div>
             <div class="overflow-x-auto h-min">
                 <table class="min-w-full table-auto">
                     <thead>
                     <tr class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+
+                        <th class="px-4 py-2 w-0">
+                            <input type="checkbox" name="selectAll" id="selectAll" class="mr-0">
+                        </th>
                         <th class="px-4 py-2">User ID</th>
                         <th class="px-4 py-2">Name</th>
                         <th class="px-4 py-2">Email</th>
-                        <th class="px-4 py-2">Date</th>
-                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2 text-center">Date</th>
+                        <th class="px-4 py-2 text-center">Status</th>
+                        <th class="px-4 py-2 text-center">Action</th>
+
                     </tr>
                     </thead>
                     <tbody class="text-sm text-gray-700">
                     @foreach($users as $user)
-
                         <tr class="border-b cursor-pointer hover:bg-gray-200">
+                            <td class="px-4 py-2">
+                                <input type="checkbox" name="ids[]" value="{{ $user->id }}" class="user-checkbox mr-2">
+                            </td>
                             <td class="px-4 py-2">#{{$user->id}}</td>
                             <td class="px-4 py-2">{{$user->name}}</td>
                             <td class="px-4 py-2">{{$user->email}}</td>
-                            <td class="px-4 py-2">{{$user->created_at}}</td>
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 text-center">{{$user->created_at}}</td>
+                            <td class="px-4 py-2 text-center">
                                 @if($user->email_verified_at)
                                     <span class="text-green-600 font-medium ">Verified</span>
                                 @else
                                     <span class="text-gray-600 font-medium">Unverified</span>
                                 @endif
                             </td>
+                            <td class="px-4 py-2 text-center w-8">
+                                <a class="w-32 px-6 py-2 text-blue-500 hover:text-gray-600" href="{{route('admin.dashboard.user.page',$user->id)}}">View</a>
+                            </td>
+
                         </tr>
                     @endforeach
 
@@ -101,4 +120,24 @@
 </div>
 
 </body>
+<script>
+    document.getElementById('selectAll').onclick = function() {
+        let checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    };
+
+    document.getElementById('bulkDeleteForm').onsubmit = function(e) {
+        e.preventDefault();
+        let selectedIds = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+            .map(cb => cb.value);
+        if (selectedIds.length === 0) {
+            alert('No users selected!');
+            return;
+        }
+        console.log(selectedIds)
+        document.getElementById('bulkDeleteIds').value = JSON.stringify(selectedIds);
+        this.submit();
+    };
+
+</script>
 </html>

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
 use App\Models\Settings;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -21,7 +22,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('pages.register');
+        $cc= new  CountryController();
+        $countries=$cc->getCountries();
+        //dd($country);
+
+        return view('pages.register',compact('countries'));
     }
 
     /**
@@ -35,6 +40,8 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'country' => ['required', 'string', 'max:255'],
+
         ]);
 
         $user = User::create([
@@ -42,11 +49,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        PaymentController::onSignUp($user);
         Settings::create([
             'user_id' => $user->id,
-            'company_name' => $user->name . "Invozen App",
+            'company_name' => "Invozen App",
         ]);
-//        session()->flash('signup_success', $user->email);
+        UserDetail::create([
+            'user_id' => $user->id,
+            'country' => $request->country,
+        ]);
+
         event(new Registered($user));
         return redirect()->route('signup.success',$user->email)->with($user->email,
             'Registration success! Please check your email to verify.');
