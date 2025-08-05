@@ -17,7 +17,7 @@
         <div class="bg-white shadow rounded-xl p-2 border border-gray-100 space-y-1">
             <p class="text-white text-sm bg-green-500 p-1 rounded border-b shadow">Total Revenue : {{$total}} {{$currency}} </p>
             <p class="text-red-500 text-sm bg-gray-200 p-1 rounded border-b shadow">Total Due : {{$due}} {{$currency}}</p>
-{{--            <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600">{{$total}}</p>--}}
+            <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600">{{$total}}</p>
         </div>
     </div>
     <div id="app" class="mt-4 list-view">

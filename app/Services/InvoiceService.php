@@ -32,7 +32,7 @@ class InvoiceService
     public static function currency()
     {
        $user=Auth::user();
-      return $user->settings->default_currency;
+      return $user->settings->default_currency??'USD';
     }
 
 

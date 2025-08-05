@@ -25,6 +25,13 @@ class PlanSeeder extends Seeder
             'name' => 'Premium',
             'price' => 9.99,
             'type' => 'premium',
+            'max_invoices' => 5000, // unlimited
+            'max_customers' => 1000 // unlimited
+        ]);
+        Plan::create([
+            'name' => 'Business',
+            'price' => 37.99,
+            'type' => 'business',
             'max_invoices' => null, // unlimited
             'max_customers' => null // unlimited
         ]);
