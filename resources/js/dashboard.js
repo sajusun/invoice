@@ -16,6 +16,7 @@ const {createApp} = Vue;
                 loading: false,
                 searchBtn: "Search",
                 ready: false,
+                isEmpty:false,
                 url: '/invoice/search?search=',
             }
         },
@@ -34,9 +35,10 @@ const {createApp} = Vue;
                 server.get(`${url}${this.search}`)
                     .then(response => {
                         this.searchBtn = "Search";
-                        console.log(response)
+                       // console.log(response)
                         this.invoices = response.data['invoices'].data;
                         let data = response.data['invoices'];
+                        this.isEmpty = data['data'].length === 0;
                         this.loading = false;
                         this.searchBtn = "Search";
                         this.pagination = {
@@ -51,7 +53,6 @@ const {createApp} = Vue;
             key_Searching() {
                 if (this.search.trim() === '' && this.ready) {
                     this.ready = false;
-
                     this.fetchInvoices(this.url);
                 }
 
@@ -62,7 +63,6 @@ const {createApp} = Vue;
                 }
                 this.fetchInvoices(this.url);
                 this.ready = true;
-
             },
             goto(invoice_number) {
                 return `${host}/invoice/${invoice_number}/preview`

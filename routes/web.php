@@ -41,19 +41,18 @@ Route::get('/privacy-policy', function () {
 Route::get('/terms-of-service', function () {
     return view('pages.terms');
 });
-Route::get('/contact-us', function () {
-    return view('pages.contact');
-});
+Route::get('/contact-us', [HomePageController::class, 'contact_form'])->name('contact.form');
+Route::post('/contact-us', [HomePageController::class, 'submit_contact'])->name('contact.form');
 
-Route::get('/dashboard',[DashboardController::class,'dashboard'])->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
 
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
 
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
@@ -62,12 +61,12 @@ Route::middleware(['auth','verified'])->group(function () {
 });
 
 
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice']);
     Route::post('/customer/{id}/delete', [CustomersController::class, 'delete_customer']);
     //Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
 });
 
-require __DIR__.'/auth.php';
-require __DIR__.'/admin_routes.php';
-require __DIR__.'/payment_routes.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/admin_routes.php';
+require __DIR__ . '/payment_routes.php';

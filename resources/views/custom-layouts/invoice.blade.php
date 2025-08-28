@@ -9,11 +9,12 @@
         <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
             <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
                 <div class="invoice-header flex-row justify-between px-4 shadow-sm border-b h-16">
-                    <div class="company-name text-lg text-gray-500" >
+                    <div class="company-name text-lg text-gray-500">
                         <p>Invoice ID: <span class="w-32 h-8">@{{invoiceId}}</span></p>
                     </div>
                     <div class="text-gray-500 text-lg">
-                        <input v-model:="invoiceDate" id="date" type="text" class="w-full h-8 datepicker" placeholder="Select" required>
+                        <input v-model:="invoiceDate" id="date" type="text" class="w-full h-8 datepicker"
+                               placeholder="Select" required>
                     </div>
                 </div>
 
@@ -29,12 +30,7 @@
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
                                class="w-9/12 h-8" placeholder="Contact Number" required>
                         <datalist id="number_list">
-                            <option value="01707947753"></option>
-                            <option value="017198940397"></option>
-                            <option value="018875987661"></option>
-                            <option value="018875987661"></option>
-                            <option value="018875987361"></option>
-                            <option value="018875987161"></option>
+
                         </datalist>
                         <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 h-8"
                                placeholder="Email">
@@ -60,7 +56,8 @@
                             <input v-model.number="item.qty" class="w-full h-8 border-0 text-sm text-center" type="text"
                                    value="1"></td>
                         <td class="mx-1 w-40 text-center">
-                            <input v-model.number="item.rate" class="w-full h-8 border-0 text-sm text-center" type="text"
+                            <input v-model.number="item.rate" class="w-full h-8 border-0 text-sm text-center"
+                                   type="text"
                                    value="0"></td>
                         <td class="p-1 w-40 text-right h-8 text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
                         <td class="w-10 py-1.5 flex justify-end items-center text-base">
@@ -106,7 +103,7 @@
                 </div>
             </div>
         </div>
-{{--                    side section--}}
+        {{--                    side section--}}
         <div class="col-span-1">
             <div class="w-full xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm px-0.5 lg:px-4">
                 <div class="mt-3">
@@ -154,15 +151,15 @@
 
 <script>
 
-    flatpickr(".datepicker", {});
 
+    // flatpickr(".datepicker", {});
     const {createApp, ref, computed, onMounted,} = Vue;
 
     createApp({
         setup() {
             const issueFrom = ref('');
             const invoiceId = ref('{{$invoiceId}}');
-            const invoiceDate = ref('');
+            let invoiceDate = ref('');
 
             const issueTo = ref('');
             const address = ref('');
@@ -179,6 +176,7 @@
             const items = ref([{name: '', qty: 1, rate: 0}]);
             const isDisabled = ref(false);
 
+            let fp = null;
             const subtotal = computed(() =>
                 items.value.reduce((acc, item) => acc + (item.qty * item.rate), 0)
             );
@@ -188,14 +186,24 @@
 
             const addItem = () => items.value.push({name: '', qty: 1, rate: 0});
             const removeItem = (index) => items.value.splice(index, 1);
+            // onMounted(() => {
+            //   invoiceDate =  flatpickr('.datepicker', {
+            //         dateFormat: "Y-m-d",
+            //         defaultDate: new Date(),
+            //         allowInput: true,
+            //     });
+            // });
             onMounted(() => {
-                flatpickr('.datepicker', {
+                fp = flatpickr(".datepicker", {
                     dateFormat: "Y-m-d",
                     defaultDate: new Date(),
                     allowInput: true,
+                    onChange: (selectedDates, dateStr) => {
+                        invoiceDate.value = dateStr; // keep Vue state updated
+                    },
                 });
+                invoiceDate.value = fp.input.value;
             });
-
             const saveInvoice = () => {
                 const data = {
                     issueFrom: issueFrom.value,
@@ -231,11 +239,7 @@
                     isDisabled.value = false;
                     // console.log(res)
                 });
-
-                //  console.log('Invoice data:', data);
-                //alert('Invoice saved (see console)');
             };
-
             return {
                 issueFrom, invoiceId, invoiceDate, issueTo, address, contactNumber, email, showEmail,
                 tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax, isDisabled,

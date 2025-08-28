@@ -22,4 +22,12 @@ class HomePageController extends Controller
     {
       return view('pages.maintenance');
     }
+
+    public function contact_form()
+    {
+      return  view('pages.contact');
+    }
+    public function submit_contact(Request $request){
+        return redirect()->route('contact.form')->with('message','Successfully Submitted');
+    }
 }

@@ -13,6 +13,7 @@ createApp({
             loading: false,
             searchBtn: "Search",
             ready: false,
+            isEmpty:false,
             url: `/dashboard/customers/search?search=`
         }
     },
@@ -26,14 +27,13 @@ createApp({
             server.get(`${url}${this.search}`)
                 .then(response => {
                     this.searchBtn = "Search";
-
-                    console.log(response.data)
                     this.customers = response.data['customers'].data;
                     this.status = response.data['status'];
                     this.sum_of_invoices = response.data['sum_of_invoices'];
                     this.total = response.data['total'];
-
                     let data = response.data['customers'];
+                    this.isEmpty = data['data'].length === 0;
+
                     this.loading = false;
                     this.searchBtn = "Search";
                     this.pagination = {

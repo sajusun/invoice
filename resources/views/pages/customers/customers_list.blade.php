@@ -19,29 +19,30 @@
 
     <main class="flex-1 p-1.5 sm:p-2.5 md:p-4 md:pb-6">
         <div id="customer" class="w-full xl:max-w-5xl py-1 px-1  xl:pl-10">
-{{--            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">--}}
-{{--                <!-- Total Invoices -->--}}
-{{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
-{{--                    <p class="text-gray-500 text-sm">Total Invoices</p>--}}
-{{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{ sum_of_invoices--}}
-{{--                        }}</p>--}}
-{{--                </div>--}}
+            {{--            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">--}}
+            {{--                <!-- Total Invoices -->--}}
+            {{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
+            {{--                    <p class="text-gray-500 text-sm">Total Invoices</p>--}}
+            {{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{ sum_of_invoices--}}
+            {{--                        }}</p>--}}
+            {{--                </div>--}}
 
-{{--                <!-- Pending Invoices -->--}}
-{{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
-{{--                    <p class="text-gray-500 text-sm">Pending Invoices</p>--}}
-{{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{status}}</p>--}}
-{{--                </div>--}}
+            {{--                <!-- Pending Invoices -->--}}
+            {{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
+            {{--                    <p class="text-gray-500 text-sm">Pending Invoices</p>--}}
+            {{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-black-50 ">@{{status}}</p>--}}
+            {{--                </div>--}}
 
-{{--                <!-- Total Revenue -->--}}
-{{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
-{{--                    <p class="text-gray-500 text-sm">Total Revenue</p>--}}
-{{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{total}}</p>--}}
-{{--                </div>--}}
-{{--            </div>--}}
+            {{--                <!-- Total Revenue -->--}}
+            {{--                <div class="bg-white shadow rounded-xl p-2 border border-gray-100">--}}
+            {{--                    <p class="text-gray-500 text-sm">Total Revenue</p>--}}
+            {{--                    <p class="sm:text-lg md:text-2xl sm:mt-1 md:mt-2 font-bold text-green-600 ">@{{total}}</p>--}}
+            {{--                </div>--}}
+            {{--            </div>--}}
             <div class="mt-4 list-view">
                 <div class="flex py-1">
-                    <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">Customers List @{{sum_of_invoices}}</h4>
+                    <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">Customers List
+                        @{{sum_of_invoices}}</h4>
                     <span class="flex w-4/5 md:w-3/5 mr-1 text-xs sm:text-sm md:text-base h-8 md:h-10">
                          <input v-model="search"
                                 @input="key_Searching()"
@@ -49,7 +50,7 @@
                                 type="text"
                                 id="searchInput"
                                 placeholder="Search Client..."
-                                class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring"
+                                class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus-visible:ring-0"
                          />
                         <button :disabled="search.trim()===''"
                                 class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm"
@@ -57,6 +58,10 @@
                         </button>
                      </span>
                 </div>
+                <div v-if="isEmpty" class="text-center text-gray-500 text-lg py-4">
+                    No Data Found!
+                </div>
+                <div v-else>
                 <div v-if="loading" class="flex justify-center items-center h-32">
                     <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
                 </div>
@@ -86,7 +91,8 @@
                                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div
                                         class="col-span-1 lg:col-span-1 text-xs sm:text-sm align-content-start text-left">
-                                        <div><b>Name:</b> @{{customer.name}} <i class="fa fa-angle-right"></i><span class="font-semibold">UID : @{{  customer.id}}</span></div>
+                                        <div><b>Name:</b> @{{customer.name}} <i class="fa fa-angle-right"></i><span
+                                                class="font-semibold">UID : @{{  customer.id}}</span></div>
                                         <div><b>Phone:</b> @{{customer.phone}}</div>
                                         <div><b>Email:</b> @{{customer.email}}</div>
                                     </div>
@@ -102,7 +108,8 @@
                                            class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
                                             <i class="fa fa-eye"></i> View</a>
 
-                                        <a :href="goto_edit(customer.id)" class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
+                                        <a :href="goto_edit(customer.id)"
+                                           class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
                                             <i class="fa fa-edit"></i> Edit</a>
 
                                         <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"
@@ -117,9 +124,6 @@
                     </template>
                     </tbody>
                 </table>
-                {{--        <div class="mt-4">--}}
-                {{--            {{ $invoices->links() }}--}}
-                {{--        </div>--}}
                 <!-- Pagination Controls -->
                 <div class="flex gap-2 mt-4">
                     <button @click="fetchCustomers(pagination.prev_page_url)"
@@ -129,6 +133,7 @@
                     <button @click="fetchCustomers(pagination.next_page_url)"
                             :disabled="!pagination.next_page_url" class="px-4 py-2 bg-gray-300 rounded">Next
                     </button>
+                </div>
                 </div>
             </div>
 

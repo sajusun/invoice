@@ -7,41 +7,39 @@
 <body>
 @include('custom-layouts.navbar')
 
-<div class="max-w-2xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6"></h1>
-
-    <form method="POST" action="{{ route('settings.update') }}" class="space-y-5">
+<div class="max-w-2xl mx-auto px-4 pb-4 shadow my-6  bg-white rounded text-gray-500">
+    <h1 class="text-2xl font-bold text-gray-800 text-center border-b py-4">settings</h1>
+    <form method="POST" action="{{ route('settings.update') }}" class="space-y-4">
         @csrf
-
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Company Name</label>
+            <label class="block font-semibold text-sm text-gray-500">Company Name</label>
             <input type="text" name="company_name" value="{{$settings->company_name ?? ''}}"
                    class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400"
                    required>
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Company Email</label>
+            <label class="block font-semibold text-sm text-gray-500">Company Email</label>
             <input type="email" name="company_email"
                    value="{{ old('company_email', $settings->company_email ?? '') }}"
                    class="w-full mt-1 p-2 border border-gray-300 rounded-md">
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Company Phone</label>
+            <label class="block font-semibold text-sm text-gray-500">Company Phone</label>
             <input type="text" name="company_phone"
                    value="{{ old('company_phone', $settings->company_phone ?? '') }}"
                    class="w-full mt-1 p-2 border border-gray-300 rounded-md">
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Company Address</label>
+            <label class="block font-semibold text-sm text-gray-500">Company Address</label>
             <textarea name="company_address"
                       class="w-full mt-1 p-2 border border-gray-300 rounded-md">{{ old('company_address', $settings->company_address ?? '') }}</textarea>
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700" for="currency">Currency:</label>
+            <label class="block font-semibold text-sm text-gray-500" for="currency">Currency:</label>
             <select id="currency" name="default_currency" class="w-full">
                 <option class="bg-blue-600" selected>{{$settings->default_currency}}</option>
                 <option value="BDT">BDT</option>
@@ -52,21 +50,21 @@
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Default Tax Rate (%)</label>
+            <label class="block font-semibold text-sm text-gray-500">Default Tax Rate (%)</label>
             <input type="number" step="0.01" name="default_tax_rate"
                    value="{{ old('default_tax_rate', $settings->default_tax_rate ?? '') }}"
                    class="w-full mt-1 p-2 border border-gray-300 rounded-md">
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Invoice Prefix</label>
+            <label class="block font-semibold text-sm text-gray-500">Invoice Prefix</label>
             <input type="text" name="invoice_prefix"
                    value="{{ old('invoice_prefix', $settings->invoice_prefix ?? '') }}"
                    class="w-full mt-1 p-2 border border-gray-300 rounded-md">
         </div>
 
         <div>
-            <label class="block font-semibold text-sm text-gray-700">Start Number</label>
+            <label class="block font-semibold text-sm text-gray-500">Start Number</label>
             <input type="number" name="start_number" value="{{ old('start_number', $settings->start_number ?? 1) }}"
                    class="w-full mt-1 p-2 border border-gray-300 rounded-md">
         </div>
