@@ -151,7 +151,6 @@
 
 <script>
 
-
     // flatpickr(".datepicker", {});
     const {createApp, ref, computed, onMounted,} = Vue;
 

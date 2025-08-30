@@ -36,6 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'social_login',
+        'profile_pic',
     ];
 
     public function invoices(): HasMany

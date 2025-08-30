@@ -13,7 +13,13 @@
                  :aria-expanded="open">
                 <!-- User avatar -->
                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
+                    @if(Auth::user()->social_login)
+                        <img src="{{Auth::user()->profile_pic}}" alt="Thumbnail">
+
+                    @else
                     <img src="{{ Auth::user()->profile_pic ? asset('storage/profile_pics/' . Auth::user()->profile_pic) : asset('storage/' . 'profile_pics/profile.png')}}" alt="Thumbnail">
+                    @endif
+
                 </div>
                 <!-- User name (hidden on mobile) -->
                 <span class="hidden md:inline text-sm font-medium">{{ Auth::user()->name}}</span>

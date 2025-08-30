@@ -41,7 +41,11 @@
             <div class="profile-pic-container flex justify-center"
                  onclick="document.getElementById('profilePicInput').click()">
                 <img id="profilePic"
-                     src="{{ Auth::user()->profile_pic ? asset('storage/profile_pics/' . Auth::user()->profile_pic) : asset('storage/' . 'profile_pics/profile.png')}}"
+                     @if(Auth::user()->social_login)
+                         src="{{ Auth::user()->profile_pic}}"
+                     @else
+                         src="{{ Auth::user()->profile_pic ? asset('storage/profile_pics/' . Auth::user()->profile_pic) : asset('storage/' . 'profile_pics/profile.png')}}"
+                     @endif
                      alt="Profile Picture">
                 <input type="file" name="profile_pic" id="profilePicInput" accept="image/*" onchange="previewProfilePic(event)">
             </div>

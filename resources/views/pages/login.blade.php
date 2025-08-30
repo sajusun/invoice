@@ -63,6 +63,24 @@
             Don't have an account?
             <a href="{{route('register')}}" class="color-main hover:text-indigo-500 font-medium">Sign up</a>
         </div>
+        <!-- Social Login Section -->
+        <div class="mt-6 space-y-4">
+            <div class="flex justify-center items-center space-x-4">
+                <!-- Google Login -->
+                <a href="{{ url('login/google') }}" class="w-full flex justify-center items-center border rounded-lg py-2 bg-white text-gray-700 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/archive/c/c1/20221203181232%21Google_%22G%22_logo.svg"
+                         alt="Google"
+                         class="w-5 h-5 mr-3"> Google
+                </a>
+            </div>
+
+            <div class="flex justify-center items-center space-x-4">
+                <!-- Facebook Login -->
+                <a href="{{ url('login/facebook') }}" class="w-full flex justify-center items-center border rounded-lg py-2 bg-blue-600 text-white shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="w-5 h-5 mr-3"> Facebook
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

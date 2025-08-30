@@ -46,6 +46,7 @@ class ProfileController extends Controller
 
             // Save new image path to database
             $user->profile_pic = $filename;
+            $user->social_login = false;
         }
 
         if ($request->user()->isDirty('email')) {
