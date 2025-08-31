@@ -11,9 +11,9 @@
 </head>
 <body class="w-screen h-screen">
 {{--@include('custom-layouts.navbar')--}}
-<div class="h-full bg-gray-100 flex items-center justify-center p-4">
+<div class="h-full bg-gray-100 flex items-center justify-center">
     <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Sign In</h2>
+        <div class="text-2xl font-bold text-gray-900 text-center border-b pb-4">Sign In</div>
         @if ($errors->any())
             <div class="text-red-400 text-sm align-baseline">
                 @foreach ($errors->all() as $error)
@@ -31,7 +31,7 @@
                     name="email"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2
                     focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                    placeholder="your@email.com" required
+                    placeholder="Example@email.com" required
                 />
             </div>
             <div>
@@ -40,7 +40,7 @@
                     type="password" name="password" id="password"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2
                      focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                    placeholder="••••••••" required
+                    placeholder="At least 8 characters" required
                 />
             </div>
             <div class="flex items-center justify-between">
@@ -59,9 +59,11 @@
                 Sign In
             </button>
         </form>
-        <div class="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?
-            <a href="{{route('register')}}" class="color-main hover:text-indigo-500 font-medium">Sign up</a>
+        <!-- Divider -->
+        <div class="flex items-center my-6">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="px-3 text-gray-400 text-sm">Or</span>
+            <div class="flex-grow border-t border-gray-300"></div>
         </div>
         <!-- Social Login Section -->
         <div class="mt-6 space-y-4">
@@ -81,9 +83,12 @@
                 </a>
             </div>
         </div>
+        <div class="mt-6 text-center text-sm text-gray-600">
+            Don't have an account?
+            <a href="{{route('register')}}" class="color-main hover:text-indigo-500 font-medium">Sign up</a>
+        </div>
     </div>
 </div>
-
 
 {{--@include('custom-layouts.footer')--}}
 </body>

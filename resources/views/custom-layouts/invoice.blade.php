@@ -4,42 +4,42 @@
     </div>
 @endif
 
-<div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto">
+<div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto text-xs">
     <div class="grid grid-cols-4 py-1">
-        <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
-            <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
-                <div class="invoice-header flex-row justify-between px-4 shadow-sm border-b h-16">
-                    <div class="company-name text-lg text-gray-500">
-                        <p>Invoice ID: <span class="w-32 h-8">@{{invoiceId}}</span></p>
+        <div class=" col-span-4 md:col-span-3 md:px-4">
+            <div class="shadow-lg py-4 px-2 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
+                <div class="invoice-header flex-row justify-between px-2 py-1 shadow-sm border-b h-16">
+                    <div class="company-name lg:text-lg text-gray-500">
+                        <p> Invoice ID: <span class="w-32 h-8">@{{invoiceId}}</span></p>
                     </div>
-                    <div class="text-gray-500 text-lg">
-                        <input v-model:="invoiceDate" id="date" type="text" class="w-full h-8 datepicker"
+                    <div class="text-gray-500 lg:text-lg">
+                        <input v-model:="invoiceDate" id="date" type="text" class="text-xs lg:text-base w-32 lg:w-full h-8 datepicker"
                                placeholder="Select" required>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2  mt-3 w-full text-gray-600 ">
                     <div class="px-4 w-full space-y-2">
-                        <input v-model="issueTo" id="issueTo" type="text" class="w-9/12 h-8 lg:w-72"
+                        <input v-model="issueTo" id="issueTo" type="text" class="text-xs lg:text-base w-9/12 h-8 lg:w-72"
                                placeholder="Name / Issue To" required>
-                        <input v-model="address" id="address" type="text" class="w-9/12 h-8 lg:w-72"
+                        <input v-model="address" id="address" type="text" class="text-xs lg:text-base w-9/12 h-8 lg:w-72"
                                placeholder="Address" required>
                     </div>
 
                     <div class="px-4 flex flex-col items-end space-y-2">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
-                               class="w-9/12 h-8" placeholder="Contact Number" required>
+                               class="text-xs lg:text-base w-9/12 h-8" placeholder="Contact Number" required>
                         <datalist id="number_list">
 
                         </datalist>
-                        <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 h-8"
+                        <input v-show="showEmail" v-model="email" id="email" type="text" class="text-xs lg:text-base w-9/12 h-8"
                                placeholder="Email">
                     </div>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-base my-4">
+                <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-base my-4 px-2">
                     <thead class="p-1.5">
-                    <tr class="bg-gray-100">
+                    <tr class="bg-gray-100 text-xs md:text-sm lg:text-base">
                         <th class="p-1.5">Item</th>
                         <th class="p-1.5">Quantity</th>
                         <th class="p-1.5">Rate</th>
@@ -47,36 +47,36 @@
                         <th class="p-1.5"></th>
                     </tr>
                     </thead>
-                    <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
+                    <tbody id="invoice-items" class="divide-y divide-gray-400 text-xs md:text-sm lg:text-base text-gray-800">
                     <tr v-for="(item, index) in items" :key="index" class="space-y-2">
                         <td class="mx-1">
-                            <input v-model="item.name" class="w-60 h-8 border-0 text-sm p-0.5" type="text"
+                            <input v-model="item.name" class="text-xs md:text-sm lg:text-base w-32 md:w-60 h-8 border-0 p-0.5" type="text"
                                    placeholder="Description / Service Name"></td>
                         <td class="p-1 w-40 text-center">
-                            <input v-model.number="item.qty" class="w-full h-8 border-0 text-sm text-center" type="text"
+                            <input v-model.number="item.qty" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center" type="text"
                                    value="1"></td>
                         <td class="mx-1 w-40 text-center">
-                            <input v-model.number="item.rate" class="w-full h-8 border-0 text-sm text-center"
+                            <input v-model.number="item.rate" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center"
                                    type="text"
                                    value="0"></td>
-                        <td class="p-1 w-40 text-right h-8 text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
-                        <td class="w-10 py-1.5 flex justify-end items-center text-base">
-                            <i class="p-0.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700"
+                        <td class="p-1 w-40 text-right h-8 text-xs md:text-sm lg:text-base">@{{ (item.qty * item.rate).toFixed(2) }}</td>
+                        <td class="w-10 py-1.5 flex justify-end items-center">
+                            <i class="p-0.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700 text-xs md:text-sm lg:text-base"
                                @click="removeItem(index)"></i>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
-                <button class="text-sm bg-color-main px-3 py-2 shadow-sm text-white rounded-md" @click="addItem">+
+                <button class="text-xs md:text-sm lg:text-base bg-color-main px-1.5 py-1 md:px-3 md:py-2 shadow-sm text-white rounded-md" @click="addItem">+
                     Item +
                 </button>
-                <div class="flex justify-between">
+                <div class="flex-1 md:flex md:justify-between">
                     <div class="mt-3 w-full px-2">
-                        <textarea id="invoiceNotes" rows="2" v-model="notes" class="w-full text-base text-gray-400"
+                        <textarea id="invoiceNotes" rows="2" v-model="notes" class="w-full text-xs md:text-sm lg:text-base text-gray-400"
                                   placeholder="Write any notes about this invoice"></textarea>
                     </div>
-                    <div class="mt-3 flex justify-end w-full px-2">
+                    <div class="mt-3 flex justify-end w-full md:w-full px-2">
                         <div class="w-full max-w-80 divide-y divide-gray-200">
                             <div v-show="showTax" id="subtotalBox" class="flex justify-between py-0.5">
                                 <span>Subtotal :</span> <span
@@ -84,16 +84,16 @@
                             </div>
                             <div v-show="showTax" id="taxBox" class="flex justify-between py-0.5">
                                 <p>Tax(%) : </p>
-                                <input v-model.number="tax_amount" type="number" id="tax" value="0"
-                                       class="h-8 w-16 text-center">
+                                <input v-model.number="tax_amount" type="text" id="tax" value="0"
+                                       class="h-8 w-20 md:h-8 md:w-16 text-center text-xs md:text-sm lg:text-base">
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <span>Total :</span> <span id="total">@{{ total.toFixed(2) }} @{{ currency }}</span>
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <p>Amount Paid :</p>
-                                <input v-model.number="paid" type="number" id="paid" value="0"
-                                       class="h-8 w-[calc(8rem)] max-w-48">
+                                <input v-model.number="paid" type="text" id="paid" value="0"
+                                       class="md:h-8 md:w-16 text-center text-xs md:text-sm lg:text-base h-8 w-24">
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <p>Balance Due :</p> <span id="balance">@{{ balance.toFixed(2) }} @{{ currency }}</span>

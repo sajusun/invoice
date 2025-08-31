@@ -8,16 +8,16 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.invozen.com/register">
 </head>
-<body class="container w-screen h-screen">
-<div class="h-full bg-gray-100 flex items-center justify-center p-4">
-<div class="max-w-lg w-full mx-auto p-8 mt-4 mb-4 bg-white shadow-sm rounded">
-    <h1 class="text-xl font-bold mb-4 text-gray-800 space-y-1 text-center">Create an Account</h1>
+<body class="w-screen h-screen">
+<div class="h-full bg-gray-100 flex items-center justify-center">
+<div class="max-w-lg w-full p-8  bg-white shadow-md rounded-lg">
+    <div class="text-xl font-bold text-gray-800 text-center border-b pb-4 ">Create an account</div>
     @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             <p>{{ $errors->first() }}</p>
         </div>
     @endif
-    <form action="{{ route('register') }}" method="POST" class="space-y-2" >
+    <form action="{{ route('register') }}" method="POST" class="space-y-2 pt-3">
         @csrf
         <div>
             <label class="block text-gray-700">Full Name</label>
@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <label class="block text-gray-700">Email Address</label>
+            <label class="block text-gray-700">Email</label>
             <input type="email" name="email" required class="w-full border px-3 py-2 rounded mt-1" value="{{old('email')}}">
         </div>
 

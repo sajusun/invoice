@@ -59,7 +59,9 @@ class SocialAuthController extends Controller
             'social_login' => true,
             'password' => '',
         ]);
-
+            if (!$user->hasVerifiedEmail()) {
+                $user->markEmailAsVerified();
+            }
         Auth::login($user);
 
             return redirect()->route('dashboard'); // Make sure this route exists
