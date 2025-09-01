@@ -10,29 +10,31 @@
             <div class="shadow-lg py-4 px-2 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
                 <div class="invoice-header flex-row justify-between px-2 py-1 shadow-sm border-b h-16">
                     <div class="company-name lg:text-lg text-gray-500">
-                        <p> Invoice ID: <span class="w-32 h-8">@{{invoiceId}}</span></p>
+                        <p> Invoice ID: <span class="w-full h-8">@{{invoiceId}}</span></p>
                     </div>
                     <div class="text-gray-500 lg:text-lg">
-                        <input v-model:="invoiceDate" id="date" type="text" class="text-xs lg:text-base w-32 lg:w-full h-8 datepicker"
+                        <input v-model:="invoiceDate" id="date" type="text"
+                               class="text-xs lg:text-base w-full lg:w-full h-8 datepicker"
                                placeholder="Select" required>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2  mt-3 w-full text-gray-600 ">
-                    <div class="px-4 w-full space-y-2">
-                        <input v-model="issueTo" id="issueTo" type="text" class="text-xs lg:text-base w-9/12 h-8 lg:w-72"
+                    <div class="px-2 w-full space-y-2">
+                        <input v-model="issueTo" id="issueTo" type="text" class="text-xs lg:text-base w-full h-8 lg:w-72"
                                placeholder="Name / Issue To" required>
-                        <input v-model="address" id="address" type="text" class="text-xs lg:text-base w-9/12 h-8 lg:w-72"
+                        <input v-model="address" id="address" type="text" class="text-xs lg:text-base w-full h-8 lg:w-72"
                                placeholder="Address" required>
                     </div>
 
                     <div class="px-4 flex flex-col items-end space-y-2">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
-                               class="text-xs lg:text-base w-9/12 h-8" placeholder="Contact Number" required>
+                               class="text-xs lg:text-base w-full lg:w-72  h-8" placeholder="Contact Number" required>
                         <datalist id="number_list">
 
                         </datalist>
-                        <input v-show="showEmail" v-model="email" id="email" type="text" class="text-xs lg:text-base w-9/12 h-8"
+                        <input v-show="showEmail" v-model="email" id="email" type="text"
+                               class="text-xs lg:text-base w-full h-8"
                                placeholder="Email">
                     </div>
                 </div>
@@ -50,8 +52,8 @@
                     <tbody id="invoice-items" class="divide-y divide-gray-400 text-xs md:text-sm lg:text-base text-gray-800">
                     <tr v-for="(item, index) in items" :key="index" class="space-y-2">
                         <td class="mx-1">
-                            <input v-model="item.name" class="text-xs md:text-sm lg:text-base w-32 md:w-60 h-8 border-0 p-0.5" type="text"
-                                   placeholder="Description / Service Name"></td>
+                            <input v-model="item.name" class="text-xs md:text-sm lg:text-base w-32 sm:w-48 md:w-60 h-8 border-0 p-0.5"
+                                   type="text" placeholder="Description / Service Name"></td>
                         <td class="p-1 w-40 text-center">
                             <input v-model.number="item.qty" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center" type="text"
                                    value="1"></td>
@@ -85,7 +87,7 @@
                             <div v-show="showTax" id="taxBox" class="flex justify-between py-0.5">
                                 <p>Tax(%) : </p>
                                 <input v-model.number="tax_amount" type="text" id="tax" value="0"
-                                       class="h-8 w-20 md:h-8 md:w-16 text-center text-xs md:text-sm lg:text-base">
+                                       class="h-8 w-20 md:w-16 text-center text-xs md:text-sm lg:text-base">
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <span>Total :</span> <span id="total">@{{ total.toFixed(2) }} @{{ currency }}</span>
@@ -93,7 +95,7 @@
                             <div class="flex justify-between py-0.5">
                                 <p>Amount Paid :</p>
                                 <input v-model.number="paid" type="text" id="paid" value="0"
-                                       class="md:h-8 md:w-16 text-center text-xs md:text-sm lg:text-base h-8 w-24">
+                                       class="md:w-16 text-center text-xs md:text-sm lg:text-base h-8 w-24">
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <p>Balance Due :</p> <span id="balance">@{{ balance.toFixed(2) }} @{{ currency }}</span>
@@ -104,8 +106,8 @@
             </div>
         </div>
         {{--                    side section--}}
-        <div class="col-span-1">
-            <div class="w-full xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm px-0.5 lg:px-4">
+        <div class="lg:col-span-1 w-screen md:w-full">
+            <div class="w-full px-8 xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm md:px-0.5 lg:px-4">
                 <div class="mt-3">
                     <div class="edit-section space-y-1">
                         <div class="form-check">
@@ -124,9 +126,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-3">
+                <div class="mt-3 w-full">
                     <label for="currency">Currency:</label>
-                    <select id="currency" class="w-full" v-model="currency">
+                    <select id="currency" class="w-full text-xs md:text-sm lg:text-base rounded" v-model="currency">
                         <option value="BDT">BDT</option>
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
@@ -135,7 +137,7 @@
                 </div>
                 <div class="mt-3">
                     @auth()
-                        <button id="save_btn" class="dl-btn" :class="{'opacity-50 cursor-not-allowed': isDisabled}"
+                        <button id="save_btn" class="py-2 px-4 w-full text-xs md:text-sm lg:text-base text-white bg-green-600 rounded" :class="{'opacity-50 cursor-not-allowed': isDisabled}"
                                 @click="saveInvoice">Save & preview
                         </button>
                     @else

@@ -49,15 +49,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        PaymentController::onSignUp($user);
-        Settings::create([
-            'user_id' => $user->id,
-            'company_name' => "Invozen App",
-        ]);
-        UserDetail::create([
-            'user_id' => $user->id,
-            'country' => $request->country,
-        ]);
+        $this->on_register_run($user);
+//        PaymentController::onSignUp($user);
+//        Settings::create([
+//            'user_id' => $user->id,
+//            'company_name' => "Invozen App",
+//        ]);
+//        UserDetail::create([
+//            'user_id' => $user->id,
+//            'country' => $request->country,
+//        ]);
 
         event(new Registered($user));
         return redirect()->route('signup.success',$user->email)->with($user->email,
@@ -82,4 +83,18 @@ class RegisteredUserController extends Controller
             return redirect()->route('register');
         }
     }
+
+    public static function on_register_run(User $user): void
+    {
+        PaymentController::onSignUp($user);
+        Settings::create([
+            'user_id' => $user->id,
+            'company_name' => "Invozen App",
+        ]);
+        UserDetail::create([
+            'user_id' => $user->id,
+            'country' => request('country')??'',
+        ]);
+    }
+
 }

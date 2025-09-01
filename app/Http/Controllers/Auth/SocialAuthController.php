@@ -32,7 +32,7 @@ class SocialAuthController extends Controller
             if (!$user->hasVerifiedEmail()) {
                 $user->markEmailAsVerified();
             }
-
+            RegisteredUserController::on_register_run($user);
             Auth::login($user); //
             return redirect()->route('dashboard'); // Make sure this route exists
         } catch (\Exception $e) {
@@ -49,8 +49,6 @@ class SocialAuthController extends Controller
     {
         try{
         $facebookUser = Socialite::driver('facebook')->user();
-
-// Check if the user exists, or create one
         $user = User::firstOrCreate([
             'email' => $facebookUser->getEmail(),
         ], [
@@ -62,6 +60,7 @@ class SocialAuthController extends Controller
             if (!$user->hasVerifiedEmail()) {
                 $user->markEmailAsVerified();
             }
+RegisteredUserController::on_register_run($user);
         Auth::login($user);
 
             return redirect()->route('dashboard'); // Make sure this route exists
