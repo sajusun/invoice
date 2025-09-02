@@ -4,42 +4,53 @@
     </div>
 @endif
 
-<div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto">
+<div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto text-xs md:text-sm lg:text-base">
     <div class="grid grid-cols-4 py-1">
-        <div class=" col-span-4 md:col-span-3 p-4 md:px-4">
-            <div class="shadow-lg p-4 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
-                <div class="invoice-header flex-row justify-between px-4">
-                    <div class="company-name text-lg text-gray-500" id="company_name">
-                        <p>Invoice ID : <input contenteditable="true" v-model="invoiceId" class="w-32 text-sm h-8"></p>
+        <div class=" col-span-4 md:col-span-3 p-0 md:p-4 md:px-4">
+            <div class="shadow-lg py-4 px-1 md:px-2 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
+                <div class="invoice-header flex-row justify-between px-0.5 py-1 shadow-sm border-b h-12">
+                    <div class="company-name text-gray-500 flex justify-between items-center justify-items-center" id="company_name">
+                        <p class="w-full">Invoice ID :</p>
+                        <input contenteditable="true" v-model="invoiceId"
+                               class="text-xs md:text-sm lg:text-base w-24 h-8">
                     </div>
-                    <div class="text-gray-500" >
-                        <span>Issue Date : <input v-model:="invoiceDate" id="date" type="text" class="w-32 h-8 datepicker"
-                                         placeholder="select"></span>
+                    <div class="text-gray-500 flex justify-items-center items-center">
+                        <span class="w-full">Issue Date :</span>
+                        <input v-model:="invoiceDate" id="date" type="text"
+                               class="text-xs lg:text-base w-28 md:w-full h-8 datepicker"
+                               placeholder="select" required>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2  mt-2 w-full">
-                    <div class="px-4 w-full space-y-2">
-                        <p class="text-gray-500 text-sm">Issue To :</p>
-                        <input v-model="issueTo" id="issueTo" type="text" class="w-9/12 mt-2 h-8"
+                <div class="grid grid-cols-2  mt-3 w-full text-gray-600">
+                    <div class="px-1 md:px-4 w-full space-y-2">
+                        <p class="text-gray-500 text-sm md:text-sm">Issue To :</p>
+                        <input v-model="issueTo" id="issueTo" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Name / Issue To">
-                        <input v-model="address" id="address" type="text" class="w-9/12 h-8"
+                        <input v-model="address" id="address" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Address">
                         <input v-model="contactNumber" id="ContactNumber" list="number_list" type="text"
-                               class="w-9/12 mt-2 h-8" placeholder="Contact Number">
-                        <input v-show="showEmail" v-model="email" id="email" type="text" class="w-9/12 h-8"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8" placeholder="Contact Number">
+                        <input v-show="showEmail" v-model="email" id="email" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Email">
                     </div>
 
-                    <div class="px-4 flex flex-col items-end space-y-2">
-                        <p class="text-gray-500 text-sm w-9/12">Issue From :</p>
-                        <input v-model="issueFrom" id="issueFrom" type="text" class="w-9/12 h-8"
+                    <div class="px-1 md:px-4 flex flex-col items-end space-y-2">
+                        <span class="text-gray-500 text-sm md:text-sm">Issue From :</span>
+                        <input v-model="issueFrom" id="issueFrom" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Company Name">
-                        <input v-model="issueAddress" id="issueFrom" type="text" class="w-9/12 h-8"
+                        <input v-model="issueAddress" id="issueFrom" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Address">
-                        <input v-model="issuePhone" id="number_from" type="text" class="w-9/12 h-8"
+                        <input v-model="issuePhone" id="number_from" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Contact Number">
-                        <input v-show="showEmail" v-model="issueEmail" id="email_from" type="text" class="w-9/12 h-8"
+                        <input v-show="showEmail" v-model="issueEmail" id="email_from" type="text"
+                               class="text-xs lg:text-base w-full lg:w-72  h-8"
                                placeholder="Email">
 
                     </div>
@@ -56,31 +67,32 @@
                     </tr>
                     </thead>
                     <tbody id="invoice-items" class="divide-y divide-gray-400 text-sm text-gray-800">
-                    <tr v-for="(item, index) in items" :key="index">
+                    <tr v-for="(item, index) in items" :key="index" class="space-y-2">
                         <td class="py-1.5">
-                            <input v-model="item.name" class="min-w-full border-0 text-sm" type="text"
+                            <input v-model="item.name" class="text-xs md:text-sm lg:text-base w-32 sm:w-48 md:w-60 h-8 border-0 p-0.5" type="text"
                                    placeholder="Description of item/service..."></td>
                         <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.qty" class="w-full border-0 text-sm text-center" type="text"
+                            <input v-model.number="item.qty" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center" type="text"
                                    value="1"></td>
                         <td class="p-1.5 w-40 text-center">
-                            <input v-model.number="item.rate" class="w-full border-0 text-sm text-center" type="text"
+                            <input v-model.number="item.rate" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center" type="text"
                                    value="0"></td>
-                        <td class="p-1.5 w-40 text-right text-sm">@{{ (item.qty * item.rate).toFixed(2) }}</td>
-                        <td class="w-10 py-1.5 flex justify-end items-center text-base">
-                            <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700"
+                        <td class="p-1 w-40 text-right h-8 text-xs md:text-sm lg:text-base">@{{ (item.qty * item.rate).toFixed(2) }}</td>
+                        <td class="w-10 py-1.5 flex justify-end items-center text-xs md:text-sm lg:text-base">
+                            <i class="p-1.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700 text-xs md:text-sm lg:text-base"
                                @click="removeItem(index)"></i>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
-                <button class="text-sm bg-color-main px-3 py-2 shadow-sm text-white rounded-md" @click="addItem">+
+                <button class="text-xs md:text-sm lg:text-base bg-color-main px-1.5 py-1 md:px-3 md:py-2 shadow-sm text-white rounded-md" @click="addItem">+
                     Item +
                 </button>
-                <div class="flex justify-between">
+
+                <div class="flex-1 md:flex md:justify-between">
                     <div class="mt-3 w-full px-2">
-                        <textarea id="invoiceNotes" rows="2" v-model="notes" class="w-full text-base text-gray-400"
+                        <textarea id="invoiceNotes" rows="2" v-model="notes" class="w-full text-xs md:text-sm lg:text-base text-gray-400"
                                   placeholder="Write any notes about this invoice"></textarea>
                     </div>
                     <div class="mt-3 flex justify-end w-full px-2">
@@ -92,7 +104,7 @@
                             <div v-show="showTax" id="taxBox" class="flex justify-between py-0.5">
                                 <p>Tax(%) : </p>
                                 <input v-model.number="tax_amount" type="number" id="tax" value="0"
-                                       class="h-8 w-16 text-center">
+                                       class="h-8 w-20 md:w-16 text-center text-xs md:text-sm lg:text-base">
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <span>Total :</span> <span id="total">@{{ total.toFixed(2) }} @{{ currency }}</span>
@@ -100,7 +112,7 @@
                             <div class="flex justify-between py-0.5">
                                 <p>Amount Paid :</p>
                                 <input v-model.number="paid" type="number" id="paid" value="0"
-                                       class="h-8 w-[calc(8rem)] max-w-48">
+                                       class="md:w-16 text-center text-xs md:text-sm lg:text-base h-8 w-24">
                             </div>
                             <div class="flex justify-between py-0.5">
                                 <p>Balance Due :</p> <span id="balance">@{{ balance.toFixed(2) }} @{{ currency }}</span>
@@ -112,10 +124,10 @@
         </div>
 
         {{--                    side section--}}
-        <div class="col-span-1">
-            <div class="w-full xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm px-0.5 lg:px-4">
+        <div class="lg:col-span-1 w-screen md:w-full">
+            <div class="w-full px-8 xl:w-64 lg:mx-auto side-panel text-xs lg:text-sm md:px-0.5 lg:px-4">
                 <div class="mt-3">
-                    <div class="edit-section">
+                    <div class="edit-section space-y-1">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="emailInputCheck"
                                    v-model="showEmail">
@@ -134,15 +146,15 @@
                 </div>
                 <div class="mt-3">
                     <label for="currency">Currency:</label>
-                    <select id="currency" class="w-full" v-model="currency">
-                        <option value="BDT">BDT</option>
+                    <select id="currency" class="w-full text-xs md:text-sm lg:text-base rounded" v-model="currency">
+                    <option value="BDT">BDT</option>
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
                         <option value="GBP">GBP</option>
                     </select>
                 </div>
                 <div class="mt-3">
-                    <button id="save_btn" class="dl-btn" :class="{'opacity-50 cursor-not-allowed': isDisabled}"
+                    <button id="save_btn" class="py-2 px-4 w-full text-xs md:text-sm lg:text-base text-white bg-green-600 rounded" :class="{'opacity-50 cursor-not-allowed': isDisabled}"
                             @click="saveInvoice">Print preview
                     </button>
 
@@ -156,7 +168,7 @@
 
 <script>
 
-    flatpickr(".datepicker", {});
+    // flatpickr(".datepicker", {});
 
     const {createApp, ref, computed, onMounted,} = Vue;
 
@@ -184,6 +196,8 @@
             const notes = ref('');
             const items = ref([{name: '', qty: 1, rate: 0}]);
             const isDisabled = ref(false);
+            let fp = null;
+
 
             const subtotal = computed(() =>
                 items.value.reduce((acc, item) => acc + (item.qty * item.rate), 0)
@@ -194,20 +208,31 @@
 
             const addItem = () => items.value.push({name: '', qty: 1, rate: 0});
             const removeItem = (index) => items.value.splice(index, 1);
+            // onMounted(() => {
+            //     flatpickr('.datepicker', {
+            //         dateFormat: "Y-m-d",
+            //         defaultDate: new Date(),
+            //         allowInput: true,
+            //     });
+            // });
             onMounted(() => {
-                flatpickr('.datepicker', {
+                fp = flatpickr(".datepicker", {
                     dateFormat: "Y-m-d",
                     defaultDate: new Date(),
                     allowInput: true,
+                    onChange: (selectedDates, dateStr) => {
+                        invoiceDate.value = dateStr; // keep Vue state updated
+                    },
                 });
+                invoiceDate.value = fp.input.value;
             });
 
             const saveInvoice = () => {
                 const data = {
                     issueFrom: issueFrom.value,
-                    issueAddress:issueAddress.value,
-                    issuePhone:issuePhone.value,
-                    issueEmail:issueEmail.value,
+                    issueAddress: issueAddress.value,
+                    issuePhone: issuePhone.value,
+                    issueEmail: issueEmail.value,
 
                     invoice_number: invoiceId.value,
                     invoice_date: invoiceDate.value,
@@ -241,16 +266,35 @@
                     isDisabled.value = false;
                     // console.log(res)
                 });
-
-                //  console.log('Invoice data:', data);
-                //alert('Invoice saved (see console)');
             };
 
             return {
-                issueFrom, issueAddress,issuePhone,issueEmail, invoiceId, invoiceDate, issueTo, address, contactNumber, email, showEmail,
-                tax, paid, currency, notes, items, subtotal, taxAmount, total, balance, showTax, isDisabled,
+                issueFrom,
+                issueAddress,
+                issuePhone,
+                issueEmail,
+                invoiceId,
+                invoiceDate,
+                issueTo,
+                address,
+                contactNumber,
+                email,
+                showEmail,
+                tax,
+                paid,
+                currency,
+                notes,
+                items,
+                subtotal,
+                taxAmount,
+                total,
+                balance,
+                showTax,
+                isDisabled,
                 tax_amount,
-                addItem, removeItem, saveInvoice
+                addItem,
+                removeItem,
+                saveInvoice
             };
         }
     }).mount('#app');

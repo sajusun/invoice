@@ -4,12 +4,12 @@
     </div>
 @endif
 
-<div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto text-xs">
+<div id="app" class="w-full xl:max-w-6xl py-1 px-1  xl:mx-auto text-xs md:text-sm lg:text-base">
     <div class="grid grid-cols-4 py-1">
         <div class=" col-span-4 md:col-span-3 md:px-4">
             <div class="shadow-lg py-4 px-2 md:p-2 w-full lg:w-10/12 max-w-3xl m-auto">
                 <div class="invoice-header flex-row justify-between px-2 py-1 shadow-sm border-b h-16">
-                    <div class="company-name lg:text-lg text-gray-500">
+                    <div class="company-name text-gray-500">
                         <p> Invoice ID: <span class="w-full h-8">@{{invoiceId}}</span></p>
                     </div>
                     <div class="text-gray-500 lg:text-lg">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2  mt-3 w-full text-gray-600 ">
+                <div class="grid grid-cols-2  mt-3 w-full text-gray-600">
                     <div class="px-2 w-full space-y-2">
                         <input v-model="issueTo" id="issueTo" type="text" class="text-xs lg:text-base w-full h-8 lg:w-72"
                                placeholder="Name / Issue To" required>
