@@ -38,40 +38,52 @@
                                placeholder="Email">
                     </div>
                 </div>
-
-                <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-base my-4 px-2">
+                <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-base px-4 my-4">
                     <thead class="p-1.5">
-                    <tr class="bg-gray-100 text-xs md:text-sm lg:text-base">
-                        <th class="p-1.5">Item</th>
-                        <th class="p-1.5">Quantity</th>
-                        <th class="p-1.5">Rate</th>
+                    <tr class="bg-gray-300">
+                        <th class="p-1.5">Description</th>
+                        <th class="p-1.5">Qty</th>
+                        <th class="p-1.5">Price</th>
                         <th class="p-1.5 text-right">Amount</th>
                         <th class="p-1.5"></th>
                     </tr>
                     </thead>
-                    <tbody id="invoice-items" class="divide-y divide-gray-400 text-xs md:text-sm lg:text-base text-gray-800">
+                    <tbody id="invoice-items" class="divide-y divide-gray-400 text-gray-800">
                     <tr v-for="(item, index) in items" :key="index" class="space-y-2">
-                        <td class="mx-1">
-                            <input v-model="item.name" class="text-xs md:text-sm lg:text-base w-32 sm:w-48 md:w-60 h-8 border-0 p-0.5"
-                                   type="text" placeholder="Description / Service Name"></td>
-                        <td class="p-1 w-40 text-center">
-                            <input v-model.number="item.qty" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center" type="text"
-                                   value="1"></td>
-                        <td class="mx-1 w-40 text-center">
-                            <input v-model.number="item.rate" class="text-xs md:text-sm lg:text-base w-full h-8 border-0 text-center"
+                        <td class="w-64 sm:w-72">
+                            <input v-model="item.name"
+                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit"
                                    type="text"
-                                   value="0"></td>
-                        <td class="p-1 w-40 text-right h-8 text-xs md:text-sm lg:text-base">@{{ (item.qty * item.rate).toFixed(2) }}</td>
-                        <td class="w-10 py-1.5 flex justify-end items-center">
-                            <i class="p-0.5 fa fa-trash text-red-500 cursor-pointer ml-2 hover:text-red-700 text-xs md:text-sm lg:text-base"
+                                   placeholder="Description">
+                        </td>
+                        <td class="w-24 sm:w-40 ">
+                            <input v-model.number="item.qty"
+                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit text-center"
+                                   type="text"
+                                   value="1">
+                        </td>
+                        <td class="w-24 sm:w-40 ">
+                            <input v-model.number="item.rate"
+                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit text-center"
+                                   type="text"
+                                   value="0">
+                        </td>
+                        <td class="w-32 sm:w-48  text-right h-8 text-xs md:text-sm lg:text-base bg-inherit">
+                            @{{ (item.qty * item.rate).toFixed(2) }}
+                        </td>
+                        <td class="w-10 sm:w-16 flex justify-center justify-items-center">
+                            <i class="fa fa-trash text-red-500 cursor-pointer
+                             hover:text-red-700 text-xs md:text-sm lg:text-base"
                                @click="removeItem(index)"></i>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
-                <button class="text-xs md:text-sm lg:text-base bg-color-main px-1.5 py-1 md:px-3 md:py-2 shadow-sm text-white rounded-md" @click="addItem">+
-                    Item +
+                <button class="text-xs md:text-sm lg:text-lg bg-inherit text-gray-500 px-2 py-0.5
+                md:px-4 md:py-1 rounded-full shadow-md hover:shadow border transition translate-x-1
+                 border-gray-400 font-semibold" @click="addItem">
+                    <i class="fa-sharp fa-solid fa-plus text-green-600"></i>
                 </button>
                 <div class="flex-1 md:flex md:justify-between">
                     <div class="mt-3 w-full px-2">

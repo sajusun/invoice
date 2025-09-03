@@ -6,7 +6,7 @@
 </head>
 <body>
 @include('custom-layouts.navbar')
-<div class="p-0.5 md:p-1">
+<div class="px-0 py-0.5 md:p-1">
     @auth()
         @include('custom-layouts.invoice')
     @else
