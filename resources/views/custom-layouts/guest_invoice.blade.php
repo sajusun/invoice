@@ -59,37 +59,34 @@
                 <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-base px-4 my-4">
                     <thead class="p-1.5">
                     <tr class="bg-gray-300">
-                        <th class="p-1.5">Description</th>
+                        <th class="p-1.5 text-left">Description</th>
                         <th class="p-1.5">Qty</th>
-                        <th class="p-1.5">Rate</th>
+                        <th class="p-1.5">Price</th>
                         <th class="p-1.5 text-right">Amount</th>
-                        <th class="p-1.5"></th>
                     </tr>
                     </thead>
                     <tbody id="invoice-items" class="divide-y divide-gray-400 text-gray-800">
                     <tr v-for="(item, index) in items" :key="index" class="space-y-2">
-                        <td class="w-64 sm:w-72">
+                        <td class="">
                             <input v-model="item.name"
-                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit"
+                                   class="text-xs md:text-sm lg:text-base max-w-2/5 w-full h-8 border-0 py-0 px-0.5 bg-inherit"
                                    type="text"
                                    placeholder="Description">
                         </td>
-                        <td class="w-24 sm:w-40 ">
+                        <td class="px-2">
                             <input v-model.number="item.qty"
-                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit text-center"
+                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit text-center max-w-16"
                                    type="text"
                                    value="1">
                         </td>
-                        <td class="w-24 sm:w-40 ">
+                        <td class="pr-2">
                             <input v-model.number="item.rate"
-                                   class="text-xs md:text-sm lg:text-base w-full h-8 border-0 py-0 px-0.5 bg-inherit text-center"
+                                   class="text-xs md:text-sm lg:text-base w-full max-w-24 h-8 border-0 py-0 px-0.5 bg-inherit text-center outline-none"
                                    type="text"
                                    value="0">
                         </td>
-                        <td class="w-32 sm:w-48  text-right h-8 text-xs md:text-sm lg:text-base bg-inherit">
-                            @{{ (item.qty * item.rate).toFixed(2) }}
-                        </td>
-                        <td class="w-10 sm:w-16 flex justify-center justify-items-center">
+                        <td class=" text-right h-8 text-xs md:text-sm lg:text-base bg-inherit align-middle flex justify-end mr-1">
+                            <span class="mr-2 w-full">@{{ (item.qty * item.rate).toFixed(2) }}</span>
                             <i class="fa fa-trash text-red-500 cursor-pointer
                              hover:text-red-700 text-xs md:text-sm lg:text-base"
                                @click="removeItem(index)"></i>
@@ -97,10 +94,10 @@
                     </tr>
                     </tbody>
                 </table>
-
-                <button class="text-xs md:text-sm lg:text-base bg-inherit text-gray-500 px-1.5 py-1
-                md:px-4 md:py-1 shadow rounded-sm border border-gray-400 font-semibold" @click="addItem">
-                    + item
+                <button class="text-xs md:text-sm lg:text-lg bg-inherit text-gray-500 px-2 py-0.5
+                md:px-4 md:py-1 rounded-full shadow-md hover:shadow border transition translate-x-1
+                 border-gray-400 font-semibold" @click="addItem">
+                    <i class="fa-sharp fa-solid fa-plus text-green-600"></i>
                 </button>
 
                 <div class="flex-1 md:flex md:justify-between">
