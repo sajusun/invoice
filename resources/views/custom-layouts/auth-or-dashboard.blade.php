@@ -51,7 +51,7 @@
                     Profile
                 </a>
 
-                <a href="/settings"
+                <a href="{{ route('settings.edit') }}"
                    class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                     <i class="fas fa-cog w-4 mr-2"> </i>
                     Settings

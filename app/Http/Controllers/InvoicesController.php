@@ -37,7 +37,7 @@ class InvoicesController extends Controller
 
     public function theme()
     {
-        return View('invoice-theme.theme-1');
+        return View('pages.invoice.builder');
     }
 
     public function previewInvoice($id = '')

@@ -1,12 +1,6 @@
-<head>
-    <title>App Setting</title>
-    @include('custom-layouts.headTagContent')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</head>
-<body>
-@include('custom-layouts.navbar')
-
+<x-app-layout>
+    <x-slot name="title">App Setting</x-slot>
+    <x-slot name="page_name">App Setting</x-slot>
 <div class="max-w-2xl mx-auto px-4 pb-4 shadow my-6  bg-white rounded text-gray-500">
     <h1 class="text-2xl font-bold text-gray-800 text-center border-b py-4">settings</h1>
     <form method="POST" action="{{ route('settings.update') }}" class="space-y-4">
@@ -94,14 +88,15 @@
         </div>
     </form>
 </div>
-@include('custom-layouts.footer')
-</body>
+    <x-slot name="scripts">
+        <script>
+            document.getElementById('show_tax_column').addEventListener('change', function () {
+                this.value = this.checked ? 1 : 0;
+            });
+            document.getElementById('show_email_column').addEventListener('change', function () {
+                this.value = this.checked ? 1 : 0;
+            });
+        </script>
+    </x-slot>
+</x-app-layout>
 
-<script>
-    document.getElementById('show_tax_column').addEventListener('change', function () {
-        this.value = this.checked ? 1 : 0;
-    });
-    document.getElementById('show_email_column').addEventListener('change', function () {
-        this.value = this.checked ? 1 : 0;
-    });
-</script>

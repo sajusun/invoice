@@ -10,17 +10,18 @@ use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', [HomePageController::class, 'homePage'])->name('home');
+Route::get('/', [HomePageController::class, 'home'])->name('home');
+Route::get('/home', [HomePageController::class, 'home'])->name('main');
 Route::get('/subscription-plan', [SubscriptionController::class, 'index'])->name('choose-plan');
 
 
-Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoiceBuilder');
+Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoice.builder');
 Route::get('/invoice/theme', [InvoicesController::class, 'theme']);
 Route::get('/invoice/{id}/preview', [InvoicesController::class, 'previewInvoice'])->name('previewInvoice');
 Route::get('/invoice/preview', [InvoicesController::class, 'previewInvoice']);
 Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
 
-Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices']);
+Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices'])->name('invoices');
 Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
 Route::get('/invoice/search', [InvoicesController::class, 'search_invoice']);
 Route::get('/invoice/status', [InvoicesController::class, 'change_status'])->name('changeStatus');

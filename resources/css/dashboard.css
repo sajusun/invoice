@@ -1,0 +1,60 @@
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 70px 1fr;
+    grid-template-areas:
+                "sidebar header"
+                "sidebar main";
+    min-height: 100vh;
+}
+.sidebar {
+    grid-area: sidebar;
+}
+.header {
+    grid-area: header;
+}
+.main {
+    grid-area: main;
+}
+.sidebar-item.active {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4f46e5;
+    border-right: 3px solid #4f46e5;
+}
+.sidebar-item:hover {
+    background-color: rgba(79, 70, 229, 0.05);
+}
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+                    "header"
+                    "main";
+    }
+    .sidebar {
+        display: none;
+    }
+    .mobile-menu {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    .mobile-menu.active {
+        transform: translateX(0);
+    }
+}
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+

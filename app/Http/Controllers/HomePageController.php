@@ -18,6 +18,11 @@ class HomePageController extends Controller
         return view('index',compact('plans','user'));
     }
 
+    public function home()
+    {
+      return view('home');
+    }
+
     public function maintenanceMode(): View
     {
       return view('pages.maintenance');

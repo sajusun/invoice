@@ -20,7 +20,8 @@ class DashboardController extends Controller
     public function dashboard(): View
     {
         $invoice_ctrl = new InvoicesController();
-
+        $customer_ctrl = new CustomersController();
+        $customers = $customer_ctrl->customers()->count();
         $invoices = $invoice_ctrl->get_all_invoices();
         $num_of_invoices = $invoice_ctrl->num_of_invoices();
         $total = $invoice_ctrl->sum_of_total();
@@ -29,8 +30,9 @@ class DashboardController extends Controller
         $currency = InvoiceService::currency();
         $canceled = $invoice_ctrl->invoice_status('cancelled');
         $paid = $invoice_ctrl->invoice_status('paid');
-        return view('dashboard', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
-            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency]);
+        return view('dashboard2', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
+            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'customers'=>$customers]);
+        //return view('dashboard2');
     }
 
     public function customers(): View
