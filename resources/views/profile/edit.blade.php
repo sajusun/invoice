@@ -51,8 +51,7 @@
         <div class="shadow bg-white p-4 rounded-md">
             <p class="text-lg text-center flex justify-center border-b-2 text-gray-500">
                 Profile Information
-            <div class="text-center py-1"><x-input-error :messages="$errors->userDeletion->get('password')" class="error-mgs"/></div>
-
+            <x-input-error :messages="$errors->userDeletion->get('password')" class="error-mgs"/>
             </p>
             @if (session('status'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-center">
