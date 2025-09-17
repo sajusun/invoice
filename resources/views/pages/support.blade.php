@@ -4,6 +4,7 @@
     <div class="bg-gray-50 py-16">
         <div class="max-w-4xl mx-auto px-6">
             <h1 class="text-4xl font-bold text-gray-900 text-center mb-10">Support Center</h1>
+            <x-breadcrumbs />
 
             <div class="bg-white p-8 rounded-lg shadow-sm">
                 <h2 class="text-xl font-semibold mb-4">Frequently Asked Questions</h2>

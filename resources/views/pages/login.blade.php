@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <x-slot name="head">
-            <title>Login to Invozen - Secure Access</title>
+    <x-slot name="meta">
+            <title>Login to {{config('app.name')}} - Secure Access</title>
             <meta name="description"
                   content="Log in to your Invozen account to manage your invoices, clients, and payments securely.">
             <meta name="keywords" content="login, invozen, account login, invoice software login">
@@ -9,10 +9,9 @@
     </x-slot>
     <x-slot name="header"></x-slot>
 <div class="auth-container flex items-center justify-center py-12 px-4">
-    <!-- Login Form -->
     <div id="login-form" class="w-full max-w-md auth-card bg-white p-8">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-primary">{{config('app.name', 'Laravel')}}</h1>
+            <a href="/"><h1 class="text-3xl font-bold text-primary">{{config('app.name', 'App Name')}}</h1></a>
             <p class="text-gray-600 mt-2">Sign in to your account</p>
         </div>
                 @if ($errors->any())

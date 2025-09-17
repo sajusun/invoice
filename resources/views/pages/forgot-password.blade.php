@@ -1,5 +1,13 @@
 <x-app-layout>
-    <div class="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+    <x-slot name="meta">
+        <title>Forgot password - {{config('app.name')}}</title>
+        <meta name="description"
+              content="invozen app forgot password , password stolen">
+        <meta name="keywords" content="forgot password, password stolen">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{{ route('password.request') }}">
+    </x-slot>
+    <div class="flex items-center justify-center min-h-[calc(100vh-64px)] bg-gray-50 px-4">
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
             <h2 class="text-2xl font-bold text-center text-primary mb-2">Forgot Password</h2>
 

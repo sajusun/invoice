@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <x-slot name="head">
-        <title>Signup to Invozen - Create Your Free Account</title>
+    <x-slot name="meta">
+        <title>Signup to {{config('app.name')}} - Create Your Free Account</title>
         <meta name="description"
               content="Join Invozen today and streamline your invoicing process. Sign up for free and start creating invoices in seconds.">
         <meta name="keywords" content="sign up, invozen register, create account, free invoicing">
@@ -16,7 +16,7 @@
 {{--                        class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-1">--}}
 {{--                        <i class="fa-solid fa-user-plus text-white text-xl"></i>--}}
 {{--                    </div>--}}
-                    <h1 class="text-3xl font-bold text-primary">{{config('app.name', 'Laravel')}}</h1>
+                    <a href="/"><h1 class="text-3xl font-bold text-primary">{{config('app.name', 'App Name')}}</h1></a>
                     <p class="text-gray-600 mt-1">Create your account</p>
                 </div>
                 <div class="border-b my-4"></div>
