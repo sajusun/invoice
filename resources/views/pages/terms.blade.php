@@ -1,36 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms and Conditions - Invozen</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 2rem 10%; }
-        h1, h2 { color: #2A9D8F; }
-    </style>
-</head>
-<body>
-    <h1>Terms and Conditions</h1>
-    <p>Last updated: [Date]</p>
-    
-    <h2>1. Acceptance of Terms</h2>
-    <p>By accessing and using Invozen, you agree to comply with and be bound by these Terms and Conditions.</p>
-    
-    <h2>2. Use of Service</h2>
-    <p>Invozen provides online invoicing services. You agree to use our services lawfully and not to misuse our platform.</p>
-    
-    <h2>3. Account Responsibilities</h2>
-    <p>You are responsible for maintaining the confidentiality of your account and password and for all activities under your account.</p>
-    
-    <h2>4. Payment and Refunds</h2>
-    <p>All payments for our services are non-refundable. Invozen reserves the right to modify pricing at any time.</p>
-    
-    <h2>5. Termination</h2>
-    <p>We reserve the right to suspend or terminate your account if you violate these terms.</p>
-    
-    <h2>6. Liability</h2>
-    <p>Invozen is not liable for any damages or losses arising from your use of our service.</p>
-    
-    <p>If you have any questions, please contact us at [email@example.com].</p>
-</body>
-</html>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="text-2xl font-semibold text-gray-900">Terms & Conditions</h2>
+        <x-breadcrumbs />
+    </x-slot>
+
+    <div class="p-6 bg-white rounded-xl shadow-md space-y-6 text-gray-700">
+        <p>Welcome to Invozen. By using our services, you agree to comply with the following terms and conditions.</p>
+
+        <h3 class="font-semibold text-gray-900">1. Account Responsibilities</h3>
+        <p>Users must maintain accurate information and are responsible for account security.</p>
+
+        <h3 class="font-semibold text-gray-900">2. Payment Terms</h3>
+        <p>Subscriptions and invoices must be paid on time. Late payments may result in account suspension.</p>
+
+        <h3 class="font-semibold text-gray-900">3. Prohibited Use</h3>
+        <p>Users may not use the service for illegal activities or to disrupt others’ access.</p>
+
+        <h3 class="font-semibold text-gray-900">4. Liability</h3>
+        <p>Invozen is not liable for indirect damages or loss of data. Please back up your information regularly.</p>
+    </div>
+</x-app-layout>

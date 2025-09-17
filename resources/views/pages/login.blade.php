@@ -5,7 +5,7 @@
                   content="Log in to your Invozen account to manage your invoices, clients, and payments securely.">
             <meta name="keywords" content="login, invozen, account login, invoice software login">
             <meta name="robots" content="index, follow">
-            <link rel="canonical" href="{{config('app.url')}}/login">
+            <link rel="canonical" href="{{ route('login') }}">
     </x-slot>
     <x-slot name="header"></x-slot>
 <div class="auth-container flex items-center justify-center py-12 px-4">

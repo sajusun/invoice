@@ -24,37 +24,37 @@
             <div>
                 <h4 class="text-lg font-semibold mb-4">Product</h4>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Templates</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                    <li><a href="#pricing" class="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                    <li><a href="#testimonials" class="text-gray-400 hover:text-white transition-colors">Templates</a></li>
+                    <li><a href="{{route('integrations')}}" class="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
                 </ul>
             </div>
 
             <div>
                 <h4 class="text-lg font-semibold mb-4">Resources</h4>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Guides</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">API Docs</a></li>
+                    <li><a href="{{route('blog')}}" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="{{route('guides')}}" class="text-gray-400 hover:text-white transition-colors">Guides</a></li>
+                    <li><a href="{{route('support')}}" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                    <li><a href="{{route('api-docs')}}" class="text-gray-400 hover:text-white transition-colors">API Docs</a></li>
                 </ul>
             </div>
 
             <div>
                 <h4 class="text-lg font-semibold mb-4">Company</h4>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Careers</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="{{route('about')}}" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                    <li><a href="{{route('careers')}}" class="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                    <li><a href="{{route('contact.form')}}" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    <li><a href="{{route('pp')}}" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="{{route('t&c')}}" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2023 Invozen. All rights reserved.</p>
+            <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 Invozen. All rights reserved.</p>
             <div class="flex items-center space-x-6">
                 <span class="text-gray-400 text-sm">Accepted payment methods:</span>
                 <div class="flex space-x-2">

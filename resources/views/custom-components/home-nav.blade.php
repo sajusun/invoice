@@ -53,8 +53,7 @@
                 <a href="{{ route('login') }}"
                    class="hidden md:block text-gray-600 hover:text-primary transition-colors">Sign In</a>
                 <a href="{{ route('register') }}"
-                   class="hidden md:block bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">Get
-                    Started</a>
+                   class="hidden md:block bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign Up</a>
             @endguest
 
             @include('custom-components.dashboard_auth')

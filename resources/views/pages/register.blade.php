@@ -5,7 +5,7 @@
               content="Join Invozen today and streamline your invoicing process. Sign up for free and start creating invoices in seconds.">
         <meta name="keywords" content="sign up, invozen register, create account, free invoicing">
         <meta name="robots" content="index, follow">
-        <link rel="canonical" href="https://www.invozen.com/register">
+        <link rel="canonical" href="{{route('register')}}">
     </x-slot>
     <x-slot name="header"></x-slot>
 

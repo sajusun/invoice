@@ -38,10 +38,19 @@ Route::get('/dashboard/customers/{id}/invoice', [DashboardController::class, 'ge
 
 Route::get('/privacy-policy', function () {
     return view('pages.privacy');
-});
+})->name('pp');
 Route::get('/terms-of-service', function () {
     return view('pages.terms');
-});
+})->name('t&c');
+// Static Pages
+Route::view('/about', 'pages.about')->name('about');
+Route::view('/careers', 'pages.careers')->name('careers');
+Route::view('/blog', 'pages.blog')->name('blog');
+Route::view('/guides', 'pages.guides')->name('guides');
+Route::view('/support', 'pages.support')->name('support');
+Route::view('/integrations', 'pages.integrations')->name('integrations');
+Route::view('/api-docs', 'pages.api-docs')->name('api-docs');
+
 Route::get('/contact-us', [HomePageController::class, 'contact_form'])->name('contact.form');
 Route::post('/contact-us', [HomePageController::class, 'submit_contact'])->name('contact.form');
 
