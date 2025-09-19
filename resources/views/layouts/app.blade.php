@@ -16,22 +16,30 @@
 <body class="bg-gray-50">
 <div class="min-h-screen flex flex-col">
     @isset($header)
-        <header>
-            {{ $header }}
-        </header>
+{{--        @if($header!='')--}}
+{{--            <header id="header" class="bg-white shadow-sm sticky top-0 z-50">--}}
+{{--                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">--}}
+                    {{ $header }}
+{{--                </div>--}}
+{{--            </header>--}}
+{{--        @else--}}
+{{--            {{$header}}--}}
+{{--        @endif--}}
     @else
         <header id="header" class="bg-white shadow-sm sticky top-0 z-50">
-            <div class="header flex items-center justify-between transition max-w-7xl h-16 mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center">
-                <a href="/"><h1 class="text-2xl font-bold text-primary">{{$app_name??'Invozen'}}</h1></a>
-            </div>
-            @guest()
-                <div class="flex items-center space-x-4">
+            <div
+                class="header flex items-center justify-between transition max-w-7xl h-16 mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center">
+                    <a href="/"><h1 class="text-2xl font-bold text-primary">{{$app_name??'Invozen'}}</h1></a>
+                </div>
+                @guest()
+                    <div class="flex items-center space-x-4">
                         <a href="{{ route('login') }}"
                            class="hidden md:block text-gray-600 hover:text-primary transition-colors">Sign In</a>
                         <a href="{{ route('register') }}"
-                           class="hidden md:block bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign Up</a>
-                </div>
+                           class="hidden md:block bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign
+                            Up</a>
+                    </div>
             @endguest
             @include('custom-components.dashboard_auth')
         </header>

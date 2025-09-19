@@ -13,14 +13,18 @@
 </head>
 <body class="bg-gray-50 max-w-7xl mx-auto">
 <div id="dashboard-container" class="dashboard-grid">
-    @include('custom-components.dashboard-aside')
-    @include('custom-components.dashboard-header')
+    @include('custom-components.admin-dashboard-aside')
+    <x-admin-navbar/>
     {{$slot}}
 </div>
 <div id="mobile-menu" class="mobile-menu fixed inset-0 z-50 bg-gray-800 bg-opacity-75 hidden">
     <div class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 p-6">
         <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-bold text-primary">Invozen</h1>
+            @auth('admin')
+                <h1 class="text-2xl font-bold text-primary">Dashboard</h1>
+            @else
+            <h1 class="text-2xl font-bold text-primary">{{config('app.name')}} - Admin</h1>
+            @endauth
             <button id="close-menu" class="text-gray-600">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -69,7 +73,6 @@
         </div>
     </div>
 </div>
-</body>
 <script>
     // Mobile menu functionality
     document.getElementById('mobile-menu-button').addEventListener('click', function () {
@@ -86,4 +89,5 @@
         }, 300);
     });
 </script>
+</body>
 </html>

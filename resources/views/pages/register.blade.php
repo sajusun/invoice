@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-home-layout>
     <x-slot name="meta">
         <title>Signup to {{config('app.name')}} - Create Your Free Account</title>
         <meta name="description"
@@ -192,5 +192,5 @@
             // }
         });
     </script>
-</x-guest-layout>
+</x-home-layout>
 

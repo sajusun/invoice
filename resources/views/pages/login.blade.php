@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-home-layout>
     <x-slot name="meta">
             <title>Login to {{config('app.name')}} - Secure Access</title>
             <meta name="description"
@@ -83,4 +83,4 @@
         </div>
     </div>
 </div>
-</x-guest-layout>
+</x-home-layout>

@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    @include('custom-layouts.headTagContent')
-    <title>Admin Secure Access</title>
-</head>
-<body class="w-screen h-screen">
-{{--@include('custom-layouts.navbar')--}}
-<div class="h-full bg-gray-100 flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+<x-app-layout>
+    <x-slot name="header">
+        <x-admin-navbar></x-admin-navbar>
+    </x-slot>
+
+<div class="flex items-center justify-center py-12 px-4">
+    <div class="max-w-md w-full max-h-screen bg-white rounded-xl shadow-lg p-8">
         <h2 class="text-2xl font-bold text-red-500 mb-6 text-center">Admin Login</h2>
         @if ($errors->any())
             <div class="text-red-400 text-sm align-baseline">
@@ -48,18 +45,13 @@
                     password?</a>
             </div>
             <button
-                class="w-full bg-color-main hover:bg-indigo-700 text-white
+                class="w-full bg-primary hover:bg-primary-dark text-white
                  font-medium py-2.5 rounded-lg transition-colors"
                 type="submit">
                 Sign In
             </button>
         </form>
-{{--        <div class="mt-6 text-center text-sm text-gray-600">--}}
-{{--            Don't have an account?--}}
-{{--            <a href="{{route('register')}}" class="color-main hover:text-indigo-500 font-medium">Sign up</a>--}}
-{{--        </div>--}}
     </div>
 </div>
 
-</body>
-</html>
+</x-app-layout>

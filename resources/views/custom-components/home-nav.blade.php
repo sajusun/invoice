@@ -23,7 +23,7 @@
 
             <nav class="flex flex-col space-y-6">
                 @if (request()->routeIs('home'))
-                    <a href="#features" class="text-gray-600 hover:text-primary ">Features</a>
+                    <a href="#features" class="text-gray-600 hover:text-primary border-b">Features</a>
                     <a href="#pricing" class="text-gray-600 hover:text-primary ">Pricing</a>
                     <a href="#testimonials" class="text-gray-600 hover:text-primary ">Reviews</a>
                     <a href="#faq" class="text-gray-600 hover:text-primary">Support</a>

@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-home-layout>
     <!-- Hero Section -->
     <section id="hero" class="bg-gradient-to-br from-indigo-50 via-white to-cyan-50 py-16 md:py-0 md:h-[700px] flex items-center">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -330,5 +330,5 @@
         </div>
     </section>
 @include('custom-components.footer')
-</x-guest-layout>
+</x-home-layout>
 

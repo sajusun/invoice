@@ -1,18 +1,7 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Users List</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
 
-<div class="flex min-h-screen">
-    <!-- Main Content -->
+<x-admin-layout>
 
-    <main class="flex-1 p-6">
-        <div class="bg-white p-4 rounded-lg shadow">
+        <div class="p-4">
             <div>
                 <form method="GET" action="{{route('admin.dashboard.users-list')}}"
                       class="mb-4 flex flex-row gap-2">
@@ -115,11 +104,7 @@
             </div>
         </div>
 
-    </main>
-
-</div>
-
-</body>
+{{--</body>--}}
 <script>
     document.getElementById('selectAll').onclick = function() {
         let checkboxes = document.querySelectorAll('.user-checkbox');
@@ -140,4 +125,5 @@
     };
 
 </script>
-</html>
+</x-admin-layout>
+{{--</html>--}}
