@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\admin\AdminAuthenticate;
+use App\Http\Middleware\admin\CheckPermission;
+use App\Http\Middleware\admin\CheckRole;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckPlanExpiry;
 use Illuminate\Foundation\Application;
@@ -18,7 +21,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'checkPlanExpiry' => CheckPlanExpiry::class,
+            'permission' => CheckPermission::class,
+            'role' => CheckRole::class,
+            'admin.auth' => AdminAuthenticate::class,
         ]);
+//        $middleware->validateCsrfTokens([
+//            '/ssl/success',
+//            '/ssl/fail',
+//        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

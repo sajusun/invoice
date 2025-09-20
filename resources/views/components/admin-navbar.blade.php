@@ -7,7 +7,7 @@
             @auth('admin')
                 <a href="{{route('admin.dashboard')}}"><h1 class="text-2xl font-bold text-primary">Dashboard</h1></a>
             @else
-            <a href="/"><h1 class="text-2xl font-bold text-primary">{{$app_name??'Invozen'}} <span class="text-red-500">Admin</span></h1></a>
+            <a href="{{route('admin.dashboard')}}"><h1 class="text-2xl font-bold text-primary">{{config('app.name')}} <span class="text-red-500">Admin</span></h1></a>
             @endauth
         </div>
         @auth('admin')
@@ -100,7 +100,6 @@
             </div>
         @else
             <span class="text-2xl font-bold text-red-500">Need Admin Access to Process</span>
-
         @endauth
             </div>
 

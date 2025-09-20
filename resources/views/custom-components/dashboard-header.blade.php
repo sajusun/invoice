@@ -5,5 +5,5 @@
         </button>
         <h2 class="text-xl font-semibold text-gray-900">Dashboard</h2>
     </div>
-@include('custom-components.dashboard_auth')
+    @include('custom-components.user_auth_or_not')
 </div>

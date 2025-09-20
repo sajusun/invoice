@@ -7,36 +7,21 @@
     @isset($meta)
         {{$meta}}
     @endisset
-    <title>{{ $title ?? config('app.name', 'Invozen') }}</title>
+    <title>{{ $title ?? config('app.name') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/guest.css', 'resources/js/guest.js'])
 </head>
 <body>
 <div class="bg-gray-50">
-    <!-- Page Heading -->
     @isset($header)
-        @if($header!='')
-            <header id="header" class="bg-white shadow-sm sticky top-0 z-50">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @else
-            {{$header}}
-        @endif
-
+        {{$header}}
     @else
-        <header id="header" class="bg-white shadow-sm sticky top-0 z-50">
-            @include('custom-components.home-nav')
-        </header>
-
+        @include('custom-components.home-nav')
     @endisset
     <main>
         {{ $slot }}
     </main>
 </div>
-</body>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -63,4 +48,6 @@
         });
     });
 </script>
+
+</body>
 </html>

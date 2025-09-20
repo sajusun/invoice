@@ -41,11 +41,11 @@
 
         <p class="text-xs uppercase text-gray-500 font-semibold mb-3 mt-6">User</p>
         <div class="space-y-1">
-            <a href="{{ route('profile.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
+            <a href="{{ route('admin.profile.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-user-gear w-5 mr-3"></i>
                 <span>Profile</span>
             </a>
-            <a href="{{ route('settings.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
+            <a href="{{ route('admin.roles.index') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-gear w-5 mr-3"></i>
                 <span>Settings</span>
             </a>

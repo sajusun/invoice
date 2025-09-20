@@ -19,6 +19,13 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+        Schema::create('admins_details', function (Blueprint $table) {
+            $table->id();
+            $table->string('dp')->nullable();
+            $table->string('phone')->unique();
+            $table->foreignId('admin_id')->nullable()->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
     }
 
     /**
