@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AdminNotification;
+use App\Events\UserRegistered;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\InvoiceService;
@@ -14,7 +16,7 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth']); // Only authenticated users can access this controller
+        $this->middleware(['auth']);
     }
 
     public function dashboard(): View
@@ -30,6 +32,12 @@ class DashboardController extends Controller
         $currency = InvoiceService::currency();
         $canceled = $invoice_ctrl->invoice_status('cancelled');
         $paid = $invoice_ctrl->invoice_status('paid');
+
+        event(new UserRegistered(User::find(auth()->id())));
+        event(new AdminNotification(User::find(auth()->id()),
+            'New User Registered',
+            route('admin.dashboard.user.page',Auth::id())));
+
         return view('dashboard2', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
             'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'customers'=>$customers]);
         //return view('dashboard2');

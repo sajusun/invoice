@@ -1,11 +1,19 @@
-<x-app-layout>
-    <x-slot name="header">
-        <x-admin-navbar></x-admin-navbar>
+<x-home-layout>
+    <x-slot name="meta">
+        <title>{{config('app.name')}} - Admin Access</title>
+        <meta name="description"
+              content="Log in to your Invozen account to manage your invoices, clients, and payments securely.">
+        <meta name="keywords" content="login, invozen, account login, invoice software login">
+        <meta name="robots" content="noindex, nofollow">
+        <link rel="canonical" href="{{ route('admin.login') }}">
     </x-slot>
-
-<div class="flex items-center justify-center py-12 px-4">
-    <div class="max-w-md w-full max-h-screen bg-white rounded-xl shadow-lg p-8">
-        <h2 class="text-2xl font-bold text-red-500 mb-6 text-center">Admin Login</h2>
+    <x-slot name="header"></x-slot>
+    <div class="auth-container flex items-center justify-center py-12 px-4">
+        <div id="login-form" class="w-full max-w-md auth-card bg-white p-8">
+            <div class="text-center mb-8">
+                <a href="/"><h1 class="text-3xl font-bold text-primary">{{config('app.name')}} Admin</h1></a>
+                <p class="text-gray-600 mt-2">Sign in admin account</p>
+            </div>
         @if ($errors->any())
             <div class="text-red-400 text-sm align-baseline">
                 @foreach ($errors->all() as $error)
@@ -53,5 +61,4 @@
         </form>
     </div>
 </div>
-
-</x-app-layout>
+</x-home-layout>

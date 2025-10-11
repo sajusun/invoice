@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\AdminNotification;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomePageController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SubscriptionController;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 
 
@@ -42,6 +44,7 @@ Route::get('/privacy-policy', function () {
 Route::get('/terms-of-service', function () {
     return view('pages.terms');
 })->name('t&c');
+
 // Static Pages
 Route::view('/about', 'pages.about')->name('about');
 Route::view('/careers', 'pages.careers')->name('careers');

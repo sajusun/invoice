@@ -13,21 +13,32 @@
         @auth('admin')
             <div class="flex items-center space-x-8">
                 <!-- Notification Button + Dropdown -->
-                <div x-data="{ open: false }" class="relative">
+{{--                x-data="{ open: false }"--}}
+                <div  id="notificationBell" class="relative">
                     <!-- Button -->
-                    <button @click="open = !open" class="relative text-gray-600 hover:text-gray-900">
+                    <button @click="toggleDropdown" class="relative text-gray-600 hover:text-gray-900">
                         <i class="fa-solid fa-bell text-lg"></i>
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                        <span id="notif_count"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">@{{ unread }}</span>
                     </button>
 
                     <!-- Dropdown -->
-                    <div x-show="open"
-                         @click.away="open = false"
+                    <div v-if="showDropdown"
+{{--                         @click.away="open = false"--}}
                          class="absolute top-full mt-2 right-1/2 translate-x-1/2 w-72 bg-white shadow-lg rounded-xl p-4 z-50 "
-                         style="display: none">
+                         style="display: block">
                         <p class="text-sm font-semibold mb-3">Notifications</p>
-                        <ul class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
+                        <ul id="notif_list" v-if="notifications.length !=0"
+                            class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
+                            <template v-for="(notif, index) in notifications" :key="index">
+{{--                                <li class="p-2 hover:bg-gray-50 rounded">📄@{{ notif.message }} <b>@{{ notif.time }}</b> created</li>--}}
+                               <a :href='notif.route'>
+                                   <li class="p-2 hover:bg-gray-50 rounded">
+                                       <p class="text-sm font-semibold text-gray-600">@{{ notif.message }}</p>
+                                       <p class="text-xs text-gray-500">@{{ notif.time }}</p>
+                                   </li>
+                               </a>
+                            </template>
                             <li class="p-2 hover:bg-gray-50 rounded">📄 New invoice <b>#INV-0043</b> created</li>
                             <li class="p-2 hover:bg-gray-50 rounded">💰 Payment received from <b>Acme Corp</b></li>
                             <li class="p-2 hover:bg-gray-50 rounded">⚠️ <b>3 invoices</b> overdue</li>
@@ -69,23 +80,23 @@
                                     <p class="text-sm font-medium text-gray-800">{{Auth::guard('admin')->user()->name}}</p>
                                     <p class="text-xs text-gray-500 truncate">{{Auth::guard('admin')->user()->email}}</p>
                                 </div>
-                                <a href="{{ route('dashboard') }}"
+                                <a href="{{ route('admin.dashboard') }}"
                                    class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                     <i class="fas fa-dashboard w-4 mr-2"></i>
                                     Dashboard
                                 </a>
-                                <a href="{{ route('profile.edit') }}"
+                                <a href="{{ route('admin.profile.edit') }}"
                                    class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                     <i class="fas fa-user w-4 mr-2"></i>
                                     Profile
                                 </a>
 
-                                <a href="/settings"
+                                <a href="{{ route('admin.roles.index') }}"
                                    class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                     <i class="fas fa-cog w-4 mr-2"> </i>
-                                    Settings
+                                    Admin Users
                                 </a>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form method="POST" action="{{ route('admin.logout') }}">
                                     @csrf
                                     <button type="submit"
                                             class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
@@ -102,5 +113,4 @@
             <span class="text-2xl font-bold text-red-500">Need Admin Access to Process</span>
         @endauth
             </div>
-
 </header>

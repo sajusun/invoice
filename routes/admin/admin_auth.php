@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 //});
 //});
 
-Route::middleware(['admin.auth'])->prefix('admin/dashboard')->name('admin.')->group(function () {
+Route::middleware(['admin'])->prefix('admin/dashboard')->name('admin.')->group(function () {
     Route::get('project', [ProjectController::class, 'update'])->name('project.index');
     Route::post('project/{id}', [ProjectController::class, 'edit'])->name('project.update');
 
@@ -34,7 +34,7 @@ Route::middleware(['admin.auth'])->prefix('admin/dashboard')->name('admin.')->gr
 
 });
 
-Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
 //    Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
 
     Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');

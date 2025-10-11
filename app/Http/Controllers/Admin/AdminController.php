@@ -30,7 +30,7 @@ class AdminController extends Controller
             'role_id' => 'required|exists:roles,id',
         ]);
 
-        AuthNeed::permission('*')->role(['super_admin', 'admin']);
+        AuthNeed::permission('*')->role(['super_admin']);
 
         // Create new admin user
         Admin::create([
@@ -46,6 +46,8 @@ class AdminController extends Controller
     // Show edit form for admin user
     public function edit($id)
     {
+//        AuthNeed::permission('*')->role(['super_admin', 'admin']);
+
         $user = Admin::findOrFail($id);
         $roles = Role::all();
 
@@ -56,7 +58,7 @@ class AdminController extends Controller
     {
         $currentAdmin = Auth::guard('admin')->user();
 
-        AuthNeed::permission('*')->role(['super_admin', 'admin']);
+        AuthNeed::permission('*')->role(['super_admin']);
         $user = Admin::findOrFail($id);
        // dd($user->role->name);
 
@@ -71,7 +73,7 @@ class AdminController extends Controller
     // Update admin user
     public function update(Request $request, $id)
     {
-        AuthNeed::permission('*')->role(['super_admin', 'admin']);
+        AuthNeed::permission('*')->role(['super_admin']);
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email,' . $id,

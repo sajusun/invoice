@@ -12,7 +12,6 @@ class AdminAuthenticate
         if (!Auth::guard('admin')->check()) {
             return redirect()->route('admin.login');
         }
-
         return $next($request);
     }
 }

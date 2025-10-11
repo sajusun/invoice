@@ -3,7 +3,7 @@
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open" class="relative text-gray-600 hover:text-gray-900">
                 <i class="fa-solid fa-bell text-lg"></i>
-                <span
+                <span id="notif_count"
                     class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
             </button>
             <div x-show="open"
@@ -11,7 +11,7 @@
                  class="absolute top-full mt-2 right-1/2 translate-x-1/2 w-72 bg-white shadow-lg rounded-xl p-4 z-50 "
                  style="display: none">
                 <p class="text-sm font-semibold mb-3">Notifications</p>
-                <ul class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
+                <ul id="notif_list" class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
                     <li class="p-2 hover:bg-gray-50 rounded">📄 New invoice <b>#INV-0043</b> created</li>
                     <li class="p-2 hover:bg-gray-50 rounded">💰 Payment received from <b>Acme Corp</b></li>
                     <li class="p-2 hover:bg-gray-50 rounded">⚠️ <b>3 invoices</b> overdue</li>
@@ -60,7 +60,7 @@
                             Profile
                         </a>
 
-                        <a href="/settings"
+                        <a href="{{ route('settings.edit') }}"
                            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                             <i class="fas fa-cog w-4 mr-2"> </i>
                             Settings

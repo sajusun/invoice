@@ -9,7 +9,7 @@
     @endisset
     <title>{{ $title ?? config('app.name') }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite(['resources/css/guest.css', 'resources/js/guest.js'])
+    @vite(['resources/css/guest.css', 'resources/js/bootstrap.js'])
 </head>
 <body>
 <div class="bg-gray-50">

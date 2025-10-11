@@ -17,19 +17,21 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->intended('/admin/dashboard');
+        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
+            return redirect()->route('admin.dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'Invalid login details',
+            'email' => 'Invalid login credentials',
         ]);
     }
 
-    public function logout()
+    public function logout(request $request)
     {
         Auth::guard('admin')->logout();
-        return redirect('/admin/login');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('admin.login');
     }
 }
 

@@ -47,7 +47,7 @@
             </a>
             <a href="{{ route('admin.roles.index') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-gear w-5 mr-3"></i>
-                <span>Settings</span>
+                <span>Admin Users</span>
             </a>
             <form method="POST" action="{{route('admin.logout')}}" class="sidebar-item flex items-center p-0 rounded-lg transition-colors">
                 @csrf

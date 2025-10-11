@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProfileController;
 use App\Models\Settings;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -24,8 +23,6 @@ class RegisteredUserController extends Controller
     {
         $cc= new  CountryController();
         $countries=$cc->getCountries();
-        //dd($country);
-
         return view('pages.register',compact('countries'));
     }
 
@@ -50,15 +47,6 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
         $this->on_register_run($user);
-//        PaymentController::onSignUp($user);
-//        Settings::create([
-//            'user_id' => $user->id,
-//            'company_name' => "Invozen App",
-//        ]);
-//        UserDetail::create([
-//            'user_id' => $user->id,
-//            'country' => $request->country,
-//        ]);
 
         event(new Registered($user));
         return redirect()->route('signup.success',$user->email)->with($user->email,

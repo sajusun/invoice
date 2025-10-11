@@ -1,4 +1,4 @@
-<x-dashboard-layout>
+<x-admin-layout>
     <div class="p-6 shadow">
         <div class="overflow-y-auto">
             <h1 class="text-2xl max-w-2xl mx-auto font-bold mb-4 px-4 text-center border-b text-dark-light ">Edit Admin User</h1>
@@ -39,7 +39,7 @@
                         @endforeach
                     </select>
                 </div>
-                @hasPermission('edit')
+                @hasPermission('*')
                 <button type="submit" class="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">Update</button>
                 <a href="{{ route('admin.roles.index') }}" class="ml-3 text-gray-600 hover:underline">Cancel</a>
                 @endhasPermission
@@ -47,4 +47,4 @@
         </div>
     </div>
 
-</x-dashboard-layout>
+</x-admin-layout>
