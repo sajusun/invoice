@@ -7,44 +7,49 @@
             @auth('admin')
                 <a href="{{route('admin.dashboard')}}"><h1 class="text-2xl font-bold text-primary">Dashboard</h1></a>
             @else
-            <a href="{{route('admin.dashboard')}}"><h1 class="text-2xl font-bold text-primary">{{config('app.name')}} <span class="text-red-500">Admin</span></h1></a>
+                <a href="{{route('admin.dashboard')}}"><h1
+                        class="text-2xl font-bold text-primary">{{config('app.name')}} <span
+                            class="text-red-500">Admin</span></h1></a>
             @endauth
         </div>
         @auth('admin')
             <div class="flex items-center space-x-8">
                 <!-- Notification Button + Dropdown -->
-{{--                x-data="{ open: false }"--}}
-                <div  id="notificationBell" class="relative">
+                {{--                x-data="{ open: false }"--}}
+                <div id="notificationBell" class="relative">
                     <!-- Button -->
                     <button @click="toggleDropdown" class="relative text-gray-600 hover:text-gray-900">
                         <i class="fa-solid fa-bell text-lg"></i>
                         <span id="notif_count"
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">@{{ unread }}</span>
+                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">@{{ unread }}</span>
                     </button>
 
                     <!-- Dropdown -->
                     <div v-if="showDropdown"
-{{--                         @click.away="open = false"--}}
+                         {{--                         @click.away="open = false"--}}
                          class="absolute top-full mt-2 right-1/2 translate-x-1/2 w-72 bg-white shadow-lg rounded-xl p-4 z-50 "
                          style="display: block">
                         <p class="text-sm font-semibold mb-3">Notifications</p>
-                        <ul id="notif_list" v-if="notifications.length !=0"
+                        <div v-if="notifications.length === 0" class="p-4 text-gray-500 text-center">
+                            No notifications yet.
+                        </div>
+                        <ul id="notif_list" v-else
                             class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
                             <template v-for="(notif, index) in notifications" :key="index">
-{{--                                <li class="p-2 hover:bg-gray-50 rounded">📄@{{ notif.message }} <b>@{{ notif.time }}</b> created</li>--}}
-                               <a :href='notif.route'>
-                                   <li class="p-2 hover:bg-gray-50 rounded">
-                                       <p class="text-sm font-semibold text-gray-600">@{{ notif.message }}</p>
-                                       <p class="text-xs text-gray-500">@{{ notif.time }}</p>
-                                   </li>
-                               </a>
+                                <li class="p-2 hover:bg-gray-50 rounded">
+                                    <a :href='notif.route'>
+                                        <p class="text-sm font-semibold text-gray-600">@{{ notif.title }}</p>
+                                        <p class="text-sm text-gray-500">@{{ notif.message }}</p>
+                                        <p class="text-xs text-gray-500">@{{ notif.created_at }}</p>
+                                    </a>
+                                </li>
                             </template>
-                            <li class="p-2 hover:bg-gray-50 rounded">📄 New invoice <b>#INV-0043</b> created</li>
-                            <li class="p-2 hover:bg-gray-50 rounded">💰 Payment received from <b>Acme Corp</b></li>
-                            <li class="p-2 hover:bg-gray-50 rounded">⚠️ <b>3 invoices</b> overdue</li>
-                            <!-- Example more notifications -->
-                            <li class="p-2 hover:bg-gray-50 rounded">🔔 System update scheduled</li>
-                            <li class="p-2 hover:bg-gray-50 rounded">👤 New client registered</li>
+                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">📄 New invoice <b>#INV-0043</b> created</li>--}}
+                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">💰 Payment received from <b>Acme Corp</b></li>--}}
+                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">⚠️ <b>3 invoices</b> overdue</li>--}}
+                            {{--                            <!-- Example more notifications -->--}}
+                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">🔔 System update scheduled</li>--}}
+                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">👤 New client registered</li>--}}
                         </ul>
                     </div>
                 </div>
@@ -68,7 +73,8 @@
                                     @endif
 
                                 </div>
-                                <span class="hidden md:inline text-sm font-medium">{{ Auth::guard('admin')->user()->name}}</span>
+                                <span
+                                    class="hidden md:inline text-sm font-medium">{{ Auth::guard('admin')->user()->name}}</span>
                                 <i class="fas fa-angle-down w-4 mr-2" :class="{'transform rotate-180': open}"> </i>
                             </div>
 
@@ -112,5 +118,5 @@
         @else
             <span class="text-2xl font-bold text-red-500">Need Admin Access to Process</span>
         @endauth
-            </div>
+    </div>
 </header>

@@ -1,12 +1,12 @@
-import { createApp } from 'vue';
+import {createApp} from 'vue';
 
 const app = createApp({
     data() {
         return {
-            showDropdown:false,
+            showDropdown: false,
             total: '',
             read: '',
-            unread:'0',
+            unread: '0',
             notifications: [],
 
         };
@@ -14,25 +14,26 @@ const app = createApp({
     methods: {
         toggleDropdown() {
             this.showDropdown = !this.showDropdown;
-            this.unread=0;
+            this.unread = 0;
         },
-        addNotification(message, route, time) {
-            this.notifications.unshift({ message, route, time: new Date().toLocaleTimeString(), });
+        addNotification(title, message, created_at, is_read, route) {
+            this.notifications.unshift({title,message, created_at,is_read,route,});
         },
         async fetchNotifications() {
-            // const res = await fetch('/notifications');
-            // const data = await res.json();
-            // this.notifications = data;
+            const res = await axios.get('/api/admin/notifications');
+            const data = await res.data.notifications;
+            console.log(data)
+            this.notifications = data;
         }
     },
     async mounted() {
-       // await this.fetchNotifications();
+        await this.fetchNotifications();
         const adminId = document.querySelector('meta[name="user-id"]').content;
         window.Echo.private(`admin.notifications`)
             .listen('AdminNotification', (event) => {
                 console.log("hello", event.message);
-                this.unread=parseInt(this.unread)+1
-                this.addNotification(`${event.message} : ${event.name} `, event.route);
+                this.unread = parseInt(this.unread) + 1
+                this.addNotification(event.title, event.message, event.created_at, event.is_read, event.route);
             });
     }
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\AdminNotification;
 use App\Events\UserRegistered;
+use App\Helpers\AdminNotifier;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\InvoiceService;
@@ -33,10 +34,18 @@ class DashboardController extends Controller
         $canceled = $invoice_ctrl->invoice_status('cancelled');
         $paid = $invoice_ctrl->invoice_status('paid');
 
-        event(new UserRegistered(User::find(auth()->id())));
-        event(new AdminNotification(User::find(auth()->id()),
-            'New User Registered',
-            route('admin.dashboard.user.page',Auth::id())));
+
+//        AdminNotifier::send(
+//            'New User Registered',
+//            'A new user named ' . auth()->user()->name. ' just registered.',
+//            route('admin.dashboard.user.page', auth()->user()->id)
+//        );
+        AdminNotifier::userDelete(User::find(Auth::id()));
+        AdminNotifier::userRegister(User::find(Auth::id()));
+        AdminNotifier::invoiceGenerate(2434);
+//        event(new AdminNotification(User::find(auth()->id()),
+//            'New User Registered',
+//            route('admin.dashboard.user.page',Auth::id())));
 
         return view('dashboard2', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
             'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'customers'=>$customers]);
