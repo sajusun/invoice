@@ -47,21 +47,21 @@ class SocialAuthController extends Controller
 
     public function handleFacebookCallback()
     {
-        try{
-        $facebookUser = Socialite::driver('facebook')->user();
-        $user = User::firstOrCreate([
-            'email' => $facebookUser->getEmail(),
-        ], [
-            'name' => $facebookUser->getName(),
-            'profile_pic' => $facebookUser->getAvatar(),
-            'social_login' => true,
-            'password' => '',
-        ]);
+        try {
+            $facebookUser = Socialite::driver('facebook')->user();
+            $user = User::firstOrCreate([
+                'email' => $facebookUser->getEmail(),
+            ], [
+                'name' => $facebookUser->getName(),
+                'profile_pic' => $facebookUser->getAvatar(),
+                'social_login' => true,
+                'password' => '',
+            ]);
             if (!$user->hasVerifiedEmail()) {
                 $user->markEmailAsVerified();
             }
-RegisteredUserController::on_register_run($user);
-        Auth::login($user);
+            RegisteredUserController::on_register_run($user);
+            Auth::login($user);
 
             return redirect()->route('dashboard'); // Make sure this route exists
         } catch (\Exception $e) {

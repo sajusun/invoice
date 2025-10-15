@@ -40,12 +40,6 @@ class DashboardController extends Controller
 //            'A new user named ' . auth()->user()->name. ' just registered.',
 //            route('admin.dashboard.user.page', auth()->user()->id)
 //        );
-        AdminNotifier::userDelete(User::find(Auth::id()));
-        AdminNotifier::userRegister(User::find(Auth::id()));
-        AdminNotifier::invoiceGenerate(2434);
-//        event(new AdminNotification(User::find(auth()->id()),
-//            'New User Registered',
-//            route('admin.dashboard.user.page',Auth::id())));
 
         return view('dashboard2', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
             'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'customers'=>$customers]);

@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Middleware\admin\AdminAuthenticate;
+use App\Http\Middleware\admin\AdminMiddleware;
 use App\Http\Middleware\admin\CheckPermission;
 use App\Http\Middleware\admin\CheckRole;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckPlanExpiry;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;

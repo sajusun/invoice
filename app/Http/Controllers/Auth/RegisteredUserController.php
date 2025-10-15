@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\AdminNotifier;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\PaymentController;
@@ -49,6 +50,7 @@ class RegisteredUserController extends Controller
         $this->on_register_run($user);
 
         event(new Registered($user));
+        AdminNotifier::userRegister($user);
         return redirect()->route('signup.success',$user->email)->with($user->email,
             'Registration success! Please check your email to verify.');
 

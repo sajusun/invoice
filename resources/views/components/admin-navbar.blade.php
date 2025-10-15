@@ -40,16 +40,10 @@
                                     <a :href='notif.route'>
                                         <p class="text-sm font-semibold text-gray-600">@{{ notif.title }}</p>
                                         <p class="text-sm text-gray-500">@{{ notif.message }}</p>
-                                        <p class="text-xs text-gray-500">@{{ notif.created_at }}</p>
+                                        <p class="text-xs text-gray-500">@{{ formatDate(notif.created_at) }}</p>
                                     </a>
                                 </li>
                             </template>
-                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">📄 New invoice <b>#INV-0043</b> created</li>--}}
-                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">💰 Payment received from <b>Acme Corp</b></li>--}}
-                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">⚠️ <b>3 invoices</b> overdue</li>--}}
-                            {{--                            <!-- Example more notifications -->--}}
-                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">🔔 System update scheduled</li>--}}
-                            {{--                            <li class="p-2 hover:bg-gray-50 rounded">👤 New client registered</li>--}}
                         </ul>
                     </div>
                 </div>

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,20 +12,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AdminNotification implements ShouldBroadcastNow
+class UserNotificationEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $notification;
+    public  $notification;
 
-    public function __construct(\App\Models\AdminNotification $notification)
+    public function __construct(UserNotification $notification)
     {
         $this->notification = $notification;
     }
 
-    public function broadcastOn(): PrivateChannel
+    public function broadcastOn(): array
     {
-        return new PrivateChannel('admin.notifications');
+        return [
+            new PrivateChannel('user.notifications.'.$this->notification->user_id),
+        ];
     }
     public function broadcastWith(): array
     {
@@ -35,7 +37,6 @@ class AdminNotification implements ShouldBroadcastNow
             'message' => $this->notification->message,
             'route' => $this->notification->route,
             'is_read' => $this->notification->is_read,
-//            'created_at' => $this->notification->created_at->diffForHumans(),
             'created_at' => $this->notification->created_at,
         ];
     }

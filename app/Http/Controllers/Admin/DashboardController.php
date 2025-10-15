@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\UserNotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SubscriptionController;
 use App\Models\Payment;
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -24,6 +26,14 @@ class DashboardController extends Controller
         if ($request->has('status')) {
             $usersList = $this->filter_user_list($request)->latest()->paginate(10)->withQueryString();
         }
+        $notification = UserNotification::create([
+            'user_id' => 1,
+            'title' => 'Account Updated',
+            'message' => 'Your account information has been updated by the admin.',
+            'route' => '/account',
+        ]);
+
+        event(new UserNotificationEvent($notification));
 
         return view('admin.dashboard', compact(
             'totalUsers',

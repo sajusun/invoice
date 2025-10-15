@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AdminNotifier;
 use App\Models\Customers;
 use App\Models\Invoices;
 use App\Models\User;
@@ -136,6 +137,7 @@ class InvoicesController extends Controller
                     'status' => $status
                 ]);
                 DB::commit();
+                AdminNotifier::invoiceGenerate($invoice);
                 return response()->json([
                     'success' => true,
                     'message' => 'Invoice Created Success',

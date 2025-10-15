@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AdminNotifier;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\UserDetail;
 use Illuminate\Http\RedirectResponse;
@@ -38,9 +39,9 @@ class ProfileController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
 
             // Store in public disk under profile_pics directory
-           $file->storeAs('/profile_pics', $filename,'public');
+            $file->storeAs('/profile_pics', $filename, 'public');
             // Delete old image if exists
-            if ($user->profile_pic && Storage::disk('public')->exists('profile_pics/'.$user->profile_pics)) {
+            if ($user->profile_pic && Storage::disk('public')->exists('profile_pics/' . $user->profile_pics)) {
                 Storage::disk('public')->delete('profile_pics/' . $user->profile_pic);
             }
 
@@ -53,7 +54,7 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-     // $request->user()->save();
+        // $request->user()->save();
 
         $user->save();
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
@@ -67,13 +68,12 @@ class ProfileController extends Controller
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
-
         $user = $request->user();
 
         Auth::logout();
 
         $user->delete();
-
+        AdminNotifier::userDelete($user);
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

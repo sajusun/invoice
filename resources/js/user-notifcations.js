@@ -8,6 +8,7 @@ const app = createApp({
             read: '',
             unread: '0',
             notifications: [],
+            user_id:null,
 
         };
     },
@@ -20,7 +21,7 @@ const app = createApp({
             this.notifications.unshift({title,message, created_at,is_read,route,});
         },
         async fetchNotifications() {
-            const res = await axios.get('/api/admin/notifications');
+            const res = await axios.get(`/api/user/notifications?user_id=${this.user_id}`);
             const data = await res.data.notifications;
             console.log(data)
             this.notifications = data;
@@ -34,10 +35,12 @@ const app = createApp({
         }
     },
     async mounted() {
+        const userId = document.querySelector('meta[name="user-id"]').content;
+        this.user_id=userId;
         await this.fetchNotifications();
-        const adminId = document.querySelector('meta[name="user-id"]').content;
-        window.Echo.private(`admin.notifications`)
-            .listen('AdminNotification', (event) => {
+
+        window.Echo.private(`user.notifications.${userId}`)
+            .listen('UserNotificationEvent', (event) => {
                 console.log("hello", event.message);
                 this.unread = parseInt(this.unread) + 1
                 this.addNotification(event.title, event.message, event.created_at, event.is_read, event.route);
@@ -46,3 +49,8 @@ const app = createApp({
 });
 
 app.mount('#notificationBell');
+
+// Echo.private(`user.notifications.${userId}`)
+//     .listen('UserNotificationEvent', (e) => {
+//         console.log('New user notification:', e);
+//     });

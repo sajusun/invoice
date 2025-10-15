@@ -4,14 +4,15 @@ namespace App\Helpers;
 
 use App\Models\AdminNotification;
 use App\Events\AdminNotification as AdminNotificationEvent;
+use App\Models\Invoices;
 use App\Models\User;
 
 class AdminNotifier
 {
-    private static $instance = null;
-    private $title;
-    private $message;
-    private $route;
+    private static AdminNotifier|null $instance = null;
+    private string $title;
+    private string $message;
+    private string $route;
 
     private static function getInstance(): ?AdminNotifier
     {
@@ -45,12 +46,12 @@ class AdminNotifier
     }
 
 
-    public static function invoiceGenerate($invoice): void
+    public static function invoiceGenerate(Invoices $invoice): void
     {
         $instance = self::getInstance();
         $instance->route = '#';
         $instance->title = " New Invoice";
-        $instance->message = "A new invoice Generate " . $invoice;
+        $instance->message = "A new invoice Generate " . $invoice->id;
         $instance->push();
     }
     public static function userRegister(User $user): void
@@ -61,12 +62,27 @@ class AdminNotifier
         $instance->message = "A new user named ".$user->name ." just registered.";
         $instance->push();
     }
+    public static function userVerified(User $user): void
+    {
+        $instance = self::getInstance();
+        $instance->route = route('admin.dashboard.user.page', $user->id);
+        $instance->title = "Account Verification";
+        $instance->message = "A user named ".$user->name ." just verified there account.";
+        $instance->push();
+    }
     public static function userDelete(User $user): void
     {
         $instance = self::getInstance();
         $instance->route = route('admin.dashboard.user.page', $user->id);
         $instance->title = "Account Delete";
         $instance->message = "A  user named ".$user->name ." just delete there account.";
+        $instance->push();
+    } public static function purchasePlan(User $user): void
+    {
+        $instance = self::getInstance();
+        $instance->route = route('admin.dashboard.user.page', $user->id);
+        $instance->title = "Purchase Plan";
+        $instance->message = "A  user named ".$user->name ." just Purchase a plan.";
         $instance->push();
     }
 

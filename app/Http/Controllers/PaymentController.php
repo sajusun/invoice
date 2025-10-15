@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AdminNotifier;
 use App\Models\Payment;
 use App\Models\Plan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +32,7 @@ class PaymentController extends Controller
         ]);
 
         // Update user plan
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $user->plan_id = $plan->id;
         if ($plan->price > 0) {
             $user->expires_at = now()->addDays(365);
@@ -39,6 +41,7 @@ class PaymentController extends Controller
         }
         $user->save();
 
+        AdminNotifier::purchasePlan($user);
         return redirect('/dashboard')->with('success', 'Your plan has been activated!');
     }
 

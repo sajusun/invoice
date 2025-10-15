@@ -13,10 +13,3 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 
 });
-
-
-// window.Echo.channel('test-channel')
-//     .listen('TestNotification', (e) => {
-//         console.log("📢 Got Broadcast:", e.message);
-//     });
-// console.log(window.Echo);

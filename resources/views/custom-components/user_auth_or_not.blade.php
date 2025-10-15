@@ -1,23 +1,29 @@
 @auth()
     <div class="flex items-center space-x-8">
-        <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open" class="relative text-gray-600 hover:text-gray-900">
+        <div  class="relative" id="notificationBell">
+            <button @click="toggleDropdown" class="relative text-gray-600 hover:text-gray-900">
                 <i class="fa-solid fa-bell text-lg"></i>
                 <span id="notif_count"
-                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">@{{ unread }}</span>
             </button>
-            <div x-show="open"
-                 @click.away="open = false"
-                 class="absolute top-full mt-2 right-1/2 translate-x-1/2 w-72 bg-white shadow-lg rounded-xl p-4 z-50 "
-                 style="display: none">
+            <div v-if="showDropdown"
+{{--                 @click.away="open = false"--}}
+                 class="absolute top-full mt-2 right-1/2 translate-x-1/2 w-72 bg-white shadow-lg rounded-xl p-4 z-50 ">
                 <p class="text-sm font-semibold mb-3">Notifications</p>
-                <ul id="notif_list" class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
-                    <li class="p-2 hover:bg-gray-50 rounded">📄 New invoice <b>#INV-0043</b> created</li>
-                    <li class="p-2 hover:bg-gray-50 rounded">💰 Payment received from <b>Acme Corp</b></li>
-                    <li class="p-2 hover:bg-gray-50 rounded">⚠️ <b>3 invoices</b> overdue</li>
-                    <!-- Example more notifications -->
-                    <li class="p-2 hover:bg-gray-50 rounded">🔔 System update scheduled</li>
-                    <li class="p-2 hover:bg-gray-50 rounded">👤 New client registered</li>
+                <div v-if="notifications.length === 0" class="p-4 text-gray-500 text-center">
+                    No notifications yet.
+                </div>
+                <ul id="notif_list" v-else
+                    class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto scrollbar-thin">
+                    <template v-for="(notif, index) in notifications" :key="index">
+                        <li class="p-2 hover:bg-gray-50 rounded">
+                            <a :href='notif.route'>
+                                <p class="text-sm font-semibold text-gray-600">@{{ notif.title }}</p>
+                                <p class="text-sm text-gray-500">@{{ notif.message }}</p>
+                                <p class="text-xs text-gray-500">@{{ formatDate(notif.created_at) }}</p>
+                            </a>
+                        </li>
+                    </template>
                 </ul>
             </div>
         </div>
