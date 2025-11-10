@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="base-url" content="{{env('APP_URL')}}">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="user-id" content="{{ auth()->id() }}">
 
@@ -13,7 +15,6 @@
     {{ $styles ?? '' }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
 </head>
 <body class="bg-gray-50">
 <div class="min-h-screen flex flex-col">
@@ -26,15 +27,6 @@
                 <div class="flex items-center">
                     <a href="/"><h1 class="text-2xl font-bold text-primary">{{config('app.name')}}</h1></a>
                 </div>
-{{--                @guest()--}}
-{{--                    <div class="flex items-center space-x-4">--}}
-{{--                        <a href="{{ route('login') }}"--}}
-{{--                           class="hidden md:block text-gray-600 hover:text-primary transition-colors">Sign In</a>--}}
-{{--                        <a href="{{ route('register') }}"--}}
-{{--                           class="hidden md:block bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">Sign--}}
-{{--                            Up</a>--}}
-{{--                    </div>--}}
-{{--            @endguest--}}
             @include('custom-components.user_auth_or_not')
         </header>
     @endisset

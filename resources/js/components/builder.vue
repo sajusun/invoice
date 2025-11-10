@@ -1,6 +1,4 @@
-<!--<script setup>-->
 
-<!--</script>-->
 <script>
 import axios from "axios";
 
@@ -65,7 +63,6 @@ export default {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Invoice Form -->
             <div class="lg:col-span-2 space-y-6">
-
                 <!-- Business Info -->
                 <section class="bg-white rounded-xl p-6 invoice-shadow">
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Your Business Details</h2>

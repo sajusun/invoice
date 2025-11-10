@@ -1,6 +1,8 @@
-import {createApp} from 'vue';
+ // import {createApp} from 'vue';
 
-const app = createApp({
+  import {createApp} from "vue";
+
+ const notification = createApp({
     data() {
         return {
             showDropdown: false,
@@ -48,9 +50,5 @@ const app = createApp({
     }
 });
 
-app.mount('#notificationBell');
+notification.mount('#notificationBell');
 
-// Echo.private(`user.notifications.${userId}`)
-//     .listen('UserNotificationEvent', (e) => {
-//         console.log('New user notification:', e);
-//     });

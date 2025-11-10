@@ -8,7 +8,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('user.notifications.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
-},['guards'=>['web','auth']]);
+},['guards'=>['web']]);
 
 Broadcast::channel('App.Models.Admin.{id}', function ($admin, $id) {
     return (int) $admin->id === (int) $id;

@@ -246,7 +246,6 @@
                         alert(res.message);
                     }
                     isDisabled.value = false;
-                    // console.log(res)
                 });
             };
             return {

@@ -1,6 +1,6 @@
 @auth()
     <div class="flex items-center space-x-8">
-        <div  class="relative" id="notificationBell">
+        <div  class="relative" id="notificationBell" v-cloak>
             <button @click="toggleDropdown" class="relative text-gray-600 hover:text-gray-900">
                 <i class="fa-solid fa-bell text-lg"></i>
                 <span id="notif_count"
