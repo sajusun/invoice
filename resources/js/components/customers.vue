@@ -3,9 +3,6 @@
         <div class="mt-4 list-view">
             <!-- Header -->
             <div class="flex py-1">
-<!--                <h4 class="text-sm md:text-base font-semibold w-1/5 md:w-2/5 flex items-center">-->
-<!--                    Customers List {{ sum_of_invoices }}-->
-<!--                </h4>-->
                 <span class="flex w-4/5 md:w-3/5 mr-1 text-xs sm:text-sm md:text-base h-8 md:h-10">
           <input v-model="search"
                  @input="key_Searching"
@@ -119,7 +116,7 @@ const sum_of_invoices = ref(0)
 const openDetails = ref(null)
 
 // 🔹 Fetch customers from Laravel API
-const fetchCustomers = async (url = 'http://127.0.0.1:8000/dashboard/customers/search?search=') => {
+const fetchCustomers = async (url = '/dashboard/customers/search?search=') => {
     loading.value = true
 
     try {

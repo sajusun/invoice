@@ -8,9 +8,28 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 /**
- * @method static create(array $array)
- * @method static get(string $string)
- * @method static find(string $id, string[] $array)
+ * @property int $id
+ * @property int $user_id
+ * @property string $name
+ * @property string|null $email
+ * @property string $phone
+ * @property string|null $address
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invoices> $invoices
+ * @property-read int|null $invoices_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Customers whereUserId($value)
+ * @mixin \Eloquent
  */
 class Customers extends Model
 {

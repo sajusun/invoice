@@ -35,15 +35,14 @@ class DashboardController extends Controller
         $paid = $invoice_ctrl->invoice_status('paid');
 
 
-//        AdminNotifier::send(
-//            'New User Registered',
-//            'A new user named ' . auth()->user()->name. ' just registered.',
-//            route('admin.dashboard.user.page', auth()->user()->id)
-//        );
+        AdminNotifier::send(
+            'New User Registered',
+            'A new user named ' . auth()->user()->name. ' just registered.',
+            route('admin.dashboard.user.page', auth()->user()->id)
+        );
 
         return view('dashboard2', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
             'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'customers'=>$customers]);
-        //return view('dashboard2');
     }
 
     public function customers(): View
@@ -55,7 +54,7 @@ class DashboardController extends Controller
 
     public function get_customers()
     {
-        $customers = User::find(Auth::id())->customers()->with('invoices')->paginate(10);;
+        $customers = User::find(Auth::id())->customers()->with('invoices')->paginate(100);;
         return $customers;
     }
 

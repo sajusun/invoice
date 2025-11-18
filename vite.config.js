@@ -45,9 +45,16 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/dashboard.css',
+                'resources/css/guest.css',
+                'resources/js/bootstrap.js',
                 'resources/js/app.js',
                 'resources/js/customer.js',
                 'resources/js/builder.js',
+                'resources/js/invoice/invoice-list.js',
+
+                'resources/js/admin-dashboard.js',
+                'resources/js/admin-notifcations.js',
             ],
             refresh: true,
         }),],

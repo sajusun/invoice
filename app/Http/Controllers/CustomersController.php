@@ -48,9 +48,9 @@ class CustomersController extends Controller
     {
         return Customers::with('invoices')->where('id', $customer_id)->first();
     }
-    public function get_customers($paginate=10)
+    public function get_customers($paginate=100)
     {
-        return User::find(Auth::id())->customers()->with('invoices')->paginate(10);
+        return User::find(Auth::id())->customers()->with('invoices')->paginate($paginate);
 
     }
 

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use Illuminate\Validation\ValidationException;
 
 
@@ -34,6 +35,11 @@ class InvoicesController extends Controller
             return view('pages/invoice', ['invoiceId' => $invoiceId]);
 
         }
+    }
+    public function invoiceList()
+    {
+            return view('pages.invoice.invoice-list');
+
     }
 
     public function theme()
@@ -171,7 +177,13 @@ class InvoicesController extends Controller
     public function get_all_invoices()
     {
         $user = Auth::user();
-        return $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(10);
+        $data=$user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
+        ->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(100);
+        return response()->json([
+        "success"=>true,
+        "message"=>'Success',
+        "data"=>$data,
+        ]);
 
     }
 
