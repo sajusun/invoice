@@ -7,6 +7,7 @@ use App\Models\Customers;
 use App\Models\Invoices;
 use App\Models\User;
 use App\Services\InvoiceService;
+use App\Services\MethodService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -33,32 +34,43 @@ class InvoicesController extends Controller
             return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
         } else {
             return view('pages/invoice', ['invoiceId' => $invoiceId]);
-
         }
     }
     public function invoiceList()
     {
-            return view('pages.invoice.invoice-list');
-
+        return view('pages.invoice.invoice-list');
     }
 
     public function theme()
     {
         return View('pages.invoice.builder');
     }
+    public function getInvoiceCounts()
+    {
+        $counts = [
+            'all' => Invoices::count(),
+            'paid' => Invoices::where('status', 'paid')->count(),
+            'unpaid' => Invoices::where('status', 'unpaid')->count(),
+            'overdue' => Invoices::where('status', 'overdue')
+                //   ->where('due_date', '<', now())
+                ->count(),
+        ];
+
+        return $counts;
+    }
 
     public function previewInvoice($id = '')
     {
         if (Auth::check()) {
             $settings = new SettingsController();
-            $companyData = ['name' => $settings->companyName(),
+            $companyData = [
+                'name' => $settings->companyName(),
                 'address' => $settings->companyAddress(),
                 'phone' => $settings->companyPhone(),
                 'email' => $settings->companyEmail(),
             ];
             $data = InvoiceService::find_invoice($id);
             return view('pages/invoice_preview', ['invoice_data' => $data, 'company_data' => $companyData]);
-
         } elseif (session($id)) {
             $data = session($id);
         } else {
@@ -103,7 +115,6 @@ class InvoicesController extends Controller
                 'error' => $validated->errors()->first(),
                 'redirect' => route('invoiceBuilder') // or your target route
             ]);
-
         }
 
         $validatedData = $validated->validated();
@@ -147,9 +158,8 @@ class InvoicesController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Invoice Created Success',
-                    'redirect' => route('previewInvoice', $validatedData['invoice_number'])// or your target route
+                    'redirect' => route('previewInvoice', $validatedData['invoice_number']) // or your target route
                 ]);
-
             } catch (Exception $e) {
                 //back if any errors in transactions
                 DB::rollBack();
@@ -165,26 +175,21 @@ class InvoicesController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'redirect to preview page with data',
-                'redirect' => route('previewInvoice', $request->invoice_number)// or your target route
+                'redirect' => route('previewInvoice', $request->invoice_number) // or your target route
             ]);
         }
 
-//        return redirect()->route('previewInvoice')->with('message', 'Registered successfully! Please check your email to verify.');
+        //        return redirect()->route('previewInvoice')->with('message', 'Registered successfully! Please check your email to verify.');
 
     }
 
 
-    public function get_all_invoices()
+    public function get_all_invoices($paginate)
     {
         $user = Auth::user();
-        $data=$user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
-        ->with(['customer:id,name,email,phone,address'])->orderBy('created_at', 'desc')->paginate(100);
-        return response()->json([
-        "success"=>true,
-        "message"=>'Success',
-        "data"=>$data,
-        ]);
-
+        $data = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
+            ->with(['customer:id,name,email,phone,address'])->latest()->paginate($paginate);
+        return $data;
     }
 
     public function search_invoice(Request $request)
@@ -202,24 +207,28 @@ class InvoicesController extends Controller
                                 ->orWhere('email', 'like', "%{$search}%")
                                 ->orWhere('phone', 'like', "%{$search}%");
                         });
-                })->orderBy('created_at', 'desc')->paginate(10);
-
+                })->latest()->paginate($request->paginate);
         } else {
             return response()->json([
-                'success' => false,
-                'message' => 'search input is empty',
-                'invoices' => $this->get_all_invoices()
+                'success' => true,
+                'message' => 'Get data from default',
+                'status' => $this->getInvoiceCounts(),
+                'invoices' => $this->get_all_invoices($request->paginate)
+
             ]);
         }
 
         return response()->json([
             'success' => true,
+            'status' => $this->getInvoiceCounts(),
+
             'invoices' => $invoices,
-            'input' => $search
+            'message' => 'Get data from by search',
+
         ]);
     }
 
-//    return a specific customers invoice
+    //    return a specific customers invoice
     public function find_invoice($id): array
     {
         return User::find(Auth::id())->invoices->where('customer_id', $id)->all();
@@ -285,5 +294,4 @@ class InvoicesController extends Controller
             return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
         }
     }
-
 }

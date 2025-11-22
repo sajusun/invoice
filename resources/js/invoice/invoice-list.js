@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-
 import invoiceList from '@/components/invoice-list.vue'
 
 const app = createApp({})
