@@ -240,18 +240,32 @@
                         of <span class="font-medium">{{ totalInvoices }}</span> results
                     </div>
                     <div class="flex space-x-2">
-                        <button @click="prevPage" :disabled="currentPage === 1"
+                        <!-- <button @click="prevPage" :disabled="currentPage === 1"
                             :class="`px-3 py-1 border border-gray-300 rounded-md text-sm font-medium ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
                             Previous
-                        </button>
-                        <button v-for="page in totalPages" :key="page" @click="onClickLinks(links[page])"
+                        </button> -->
+                        <div class="flex space-x-2">
+    <button
+        v-for="link in links"
+        :key="link.label"
+        @click="onClickLinks(link.url)"
+        v-html="link.label"
+        :disabled="link.url === null"
+        :class="`
+            px-2 py-1 border rounded-md text-xm
+            ${link.active ? 'border-blue-500 bg-blue-50 text-blue-600' : ''}
+            ${link.url === null ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}
+        `">
+    </button>
+</div>
+                        <!-- <button v-for="page in totalPages" :key="page" @click="onClickLinks(links[page])"
                             :class="`px-3 py-1 border rounded-md text-sm font-medium ${currentPage === page ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`">
                             {{page}}
                         </button>
                         <button @click="nextPage" :disabled="currentPage === totalPages"
                             :class="`px-3 py-1 border border-gray-300 rounded-md text-sm font-medium ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
                             Next
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </div>
@@ -263,7 +277,10 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
-const invoices = ref([]);
+let invoices = ref([]);
+let paginate = ref([]);
+let linked = ref([]);
+
 const status= {
         all: 0,
         paid: 0,
@@ -275,7 +292,6 @@ const sortField = ref('id');
 const sortDirection = ref('asc');
 let currentPage = ref(1);
 const pageSize = ref(10);
-const paginate = ref([]);
 let links;
 
 const per_page =()=>{
@@ -292,7 +308,8 @@ const onClickLinks=(links)=>{
 //     console.log(links.url);
 //     console.log(links.label);
 //     currentPage=paginate.value.currentPage;
-fetchInvoices(links.url)
+// fetchInvoices(links.url)
+fetchInvoices(links)
 }
 
 let fetchInvoices = async (url = '/invoice/search') => {
@@ -308,6 +325,7 @@ let fetchInvoices = async (url = '/invoice/search') => {
 
         const invoice = data.invoices;
         invoices.value = invoice.data;
+        linked.value=invoice;
         status.all=data.status.all;
         status.paid=data.status.paid;
         status.unpaid=data.status.unpaid;
@@ -319,8 +337,8 @@ let fetchInvoices = async (url = '/invoice/search') => {
         paginate.value.total=invoice.total;
         paginate.value.currentPage=invoice.currentPage;
         links=invoice.links;
-        console.log(paginate.value.links[2].label);
-        console.log();
+        // console.log(paginate.value.links[2]);
+
 
     } catch (e) {
         console.error(e)
@@ -367,11 +385,18 @@ const filteredInvoices = computed(() => {
     return filtered.slice(start, end);
 });
 
+console.log(filteredInvoices);
 // const totalInvoices = computed(() => invoices.value.length);
 const totalInvoices = computed(() => paginate.value.total);
+const link = computed(() => linked);
+console.log(link);
+console.log(link.length);
+for (let index = 0; index < linked.length; index++) {
+    const element = linked[index];
+
+}
 // const totalPages = computed(() => Math.ceil(invoices.value.length / pageSize.value));
 const totalPages = computed(() =>   paginate.value.links?paginate.value.links.length:0);
-const link = computed(() => paginate.value.links);
 
 // const statusCounts = computed(() => {
 //     const counts = { paid: 0, pending: 0, overdue: 0, partial: 0 };
