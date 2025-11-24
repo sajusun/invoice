@@ -21,10 +21,10 @@ class Invoice_ItemsFactory extends Factory
         $total = $qty * $price;
 
         return [
-            'invoice_id' => null,
-            'description' => $this->faker->sentence(3),
-            'quantity' => $qty,
-            'unit_price' => $price,
+            'invoice_number' => null,
+            'name' => $this->faker->sentence(3),
+            'qty' => $qty,
+            'rate' => $price,
         ];
     }
 }

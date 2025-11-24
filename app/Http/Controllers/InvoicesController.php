@@ -184,7 +184,15 @@ class InvoicesController extends Controller
     }
 
 
-    public function get_all_invoices($paginate)
+    public function get_all_invoices()
+    {
+        $user = Auth::user();
+        $data = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
+            ->with(['customer:id,name,email,phone,address'])->latest()->get();
+        return $data;
+    }
+
+    public function all_invoices_by_paginate($paginate)
     {
         $user = Auth::user();
         $data = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
@@ -213,7 +221,7 @@ class InvoicesController extends Controller
                 'success' => true,
                 'message' => 'Get data from default',
                 'status' => $this->getInvoiceCounts(),
-                'invoices' => $this->get_all_invoices($request->paginate)
+                'invoices' => $this->all_invoices_by_paginate($request->paginate)
 
             ]);
         }

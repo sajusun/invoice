@@ -244,9 +244,9 @@
                             :class="`px-3 py-1 border border-gray-300 rounded-md text-sm font-medium ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
                             Previous
                         </button>
-                        <button v-for="page in totalPages" :key="page" @click="currentPage = page"
+                        <button v-for="page in totalPages" :key="page" @click="onClickLinks(links[page])"
                             :class="`px-3 py-1 border rounded-md text-sm font-medium ${currentPage === page ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`">
-                            {{ page }}
+                            {{page}}
                         </button>
                         <button @click="nextPage" :disabled="currentPage === totalPages"
                             :class="`px-3 py-1 border border-gray-300 rounded-md text-sm font-medium ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
@@ -263,21 +263,20 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
-let invoices = ref([]);
-let status= {
+const invoices = ref([]);
+const status= {
         all: 0,
         paid: 0,
         unpaid: 0,
         overdue: 0
       };
-let searchQuery = ref('');
-
-
+const searchQuery = ref('');
 const sortField = ref('id');
 const sortDirection = ref('asc');
-const currentPage = ref(1);
+let currentPage = ref(1);
 const pageSize = ref(10);
-const showAddForm = ref(false);
+const paginate = ref([]);
+let links;
 
 const per_page =()=>{
     saveToLocalStorage();
@@ -287,34 +286,44 @@ const per_page =()=>{
 const onTypeKey = () => {
     fetchInvoices();
 };
+const onClickLinks=(links)=>{
+    console.log(links);
 
-const fetchInvoices = async (url = `/invoice/search`) => {
+//     console.log(links.url);
+//     console.log(links.label);
+//     currentPage=paginate.value.currentPage;
+fetchInvoices(links.url)
+}
+
+let fetchInvoices = async (url = '/invoice/search') => {
     // loading.value = true
     try {
         const { data } = await axios.get(url, {
-            params: { search: searchQuery.value,paginate:pageSize.value*10 }
-        })
-        let invoiceList = data.invoices.data;
+            params: {
+                search: searchQuery.value,
+                paginate:pageSize.value,
+            }
+        });
         console.log(data)
-        invoices.value = invoiceList;
+
+        const invoice = data.invoices;
+        invoices.value = invoice.data;
         status.all=data.status.all;
         status.paid=data.status.paid;
         status.unpaid=data.status.unpaid;
         status.overdue=data.status.overdue;
-        console.log(status);
 
+        paginate.value.prev_page_url=invoice.prev_page_url;
+        paginate.value.next_page_url=invoice.next_page_url;
+        paginate.value.links=invoice.links;
+        paginate.value.total=invoice.total;
+        paginate.value.currentPage=invoice.currentPage;
+        links=invoice.links;
+        console.log(paginate.value.links[2].label);
+        console.log();
 
-        // customers.value = data.customers.data
-        // pagination.value = {
-        //     prev_page_url: data.prev_page_url,
-        //     next_page_url: data.next_page_url
-        // }
-        // sum_of_invoices.value = data.total
-        // isEmpty.value = customers.value.length === 0
     } catch (e) {
         console.error(e)
-        // customers.value = []
-        // isEmpty.value = true
     } finally {
         // loading.value = false
     }
@@ -358,16 +367,19 @@ const filteredInvoices = computed(() => {
     return filtered.slice(start, end);
 });
 
-const totalInvoices = computed(() => invoices.value.length);
-const totalPages = computed(() => Math.ceil(invoices.value.length / pageSize.value));
+// const totalInvoices = computed(() => invoices.value.length);
+const totalInvoices = computed(() => paginate.value.total);
+// const totalPages = computed(() => Math.ceil(invoices.value.length / pageSize.value));
+const totalPages = computed(() =>   paginate.value.links?paginate.value.links.length:0);
+const link = computed(() => paginate.value.links);
 
-const statusCounts = computed(() => {
-    const counts = { paid: 0, pending: 0, overdue: 0, partial: 0 };
-    invoices.value.forEach(invoice => {
-        counts[invoice.status]++;
-    });
-    return counts;
-});
+// const statusCounts = computed(() => {
+//     const counts = { paid: 0, pending: 0, overdue: 0, partial: 0 };
+//     invoices.value.forEach(invoice => {
+//         counts[invoice.status]++;
+//     });
+//     return counts;
+// });
 
 // Methods
 const formatCurrency = (amount) => {
@@ -450,19 +462,6 @@ const saveToLocalStorage = () => {
 //     showAddForm.value = false;
 // };
 
-const resetNewInvoice = () => {
-    newInvoice.value = {
-        customerName: '',
-        totalAmount: 0,
-        paidAmount: 0,
-        status: 'pending'
-    };
-};
-
-// const cancelAdd = () => {
-//     resetNewInvoice();
-//     showAddForm.value = false;
-// };
 
 const viewInvoice = (invoice) => {
     alert(`Viewing invoice: ${invoice.invoice_number}\nCustomer: ${invoice.customer.name}\nTotal: ${formatCurrency(invoice.total_amount)}`);

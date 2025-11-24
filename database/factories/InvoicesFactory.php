@@ -30,9 +30,9 @@ class InvoicesFactory extends Factory
         $total = $qty * $price;
 
         return [
-            'description' => $this->faker->sentence(3),
-            'quantity' => $qty,
-            'price' => $price,
+            'name' => $this->faker->sentence(3),
+            'qty' => $qty,
+            'rate' => $price,
         ];
     }
 }

@@ -1,4 +1,4 @@
-<x-applayout>
+<x-app-layout>
     <x-slot name="meta">
         <script src="{{asset('/js/classes.js')}}"></script>
         <script src="{{asset('/js/global-var.js')}}"></script>
@@ -14,5 +14,5 @@
     @endauth
 </div>
 
-</x-applayout>
+</x-app-layout>
 
