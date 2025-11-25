@@ -100,10 +100,8 @@
             <div class="px-6 py-4 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <!-- <h2 class="text-xl font-semibold text-gray-800">Invoice List</h2> -->
-                    <select name="paginate" id="paginate"
-                    v-model="pageSize"
-                    @change="per_page"
-                    class="border-gray-300 text-gray-700 text-sm hover:bg-gray-50">
+                    <select name="paginate" id="paginate" v-model="pageSize" @change="per_page"
+                        class="border-gray-300 text-gray-700 text-sm hover:bg-gray-50">
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
@@ -245,19 +243,13 @@
                             Previous
                         </button> -->
                         <div class="flex space-x-2">
-    <button
-        v-for="link in links"
-        :key="link.label"
-        @click="onClickLinks(link.url)"
-        v-html="link.label"
-        :disabled="link.url === null"
-        :class="`
+                            <button v-for="link in links" :key="link.label" @click="onClickLinks(link.url)"
+                                v-html="link.label" :disabled="link.url === null" :class="`
             px-2 py-1 border rounded-md text-xm
             ${link.active ? 'border-blue-500 bg-blue-50 text-blue-600' : ''}
-            ${link.url === null ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}
-        `">
-    </button>
-</div>
+            ${link.url === null ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
+                            </button>
+                        </div>
                         <!-- <button v-for="page in totalPages" :key="page" @click="onClickLinks(links[page])"
                             :class="`px-3 py-1 border rounded-md text-sm font-medium ${currentPage === page ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`">
                             {{page}}
@@ -281,12 +273,12 @@ let invoices = ref([]);
 let paginate = ref([]);
 let linked = ref([]);
 
-const status= {
-        all: 0,
-        paid: 0,
-        unpaid: 0,
-        overdue: 0
-      };
+const status = {
+    all: 0,
+    paid: 0,
+    unpaid: 0,
+    overdue: 0
+};
 const searchQuery = ref('');
 const sortField = ref('id');
 const sortDirection = ref('asc');
@@ -294,7 +286,7 @@ let currentPage = ref(1);
 const pageSize = ref(10);
 let links;
 
-const per_page =()=>{
+const per_page = () => {
     saveToLocalStorage();
     fetchInvoices()
 
@@ -302,14 +294,9 @@ const per_page =()=>{
 const onTypeKey = () => {
     fetchInvoices();
 };
-const onClickLinks=(links)=>{
-    console.log(links);
-
-//     console.log(links.url);
-//     console.log(links.label);
-//     currentPage=paginate.value.currentPage;
-// fetchInvoices(links.url)
-fetchInvoices(links)
+const onClickLinks = (link) => {
+    if (!link) return;
+    fetchInvoices(link)
 }
 
 let fetchInvoices = async (url = '/invoice/search') => {
@@ -318,25 +305,26 @@ let fetchInvoices = async (url = '/invoice/search') => {
         const { data } = await axios.get(url, {
             params: {
                 search: searchQuery.value,
-                paginate:pageSize.value,
+                paginate: pageSize.value,
             }
         });
         console.log(data)
 
         const invoice = data.invoices;
         invoices.value = invoice.data;
-        linked.value=invoice;
-        status.all=data.status.all;
-        status.paid=data.status.paid;
-        status.unpaid=data.status.unpaid;
-        status.overdue=data.status.overdue;
+        linked.value = invoice;
 
-        paginate.value.prev_page_url=invoice.prev_page_url;
-        paginate.value.next_page_url=invoice.next_page_url;
-        paginate.value.links=invoice.links;
-        paginate.value.total=invoice.total;
-        paginate.value.currentPage=invoice.currentPage;
-        links=invoice.links;
+        status.all = data.status.all;
+        status.paid = data.status.paid;
+        status.unpaid = data.status.unpaid;
+        status.overdue = data.status.overdue;
+
+        paginate.value.prev_page_url = invoice.prev_page_url;
+        paginate.value.next_page_url = invoice.next_page_url;
+        paginate.value.links = invoice.links;
+        paginate.value.total = invoice.total;
+        paginate.value.currentPage = invoice.currentPage;
+        links = invoice.links;
         // console.log(paginate.value.links[2]);
 
 
@@ -348,9 +336,9 @@ let fetchInvoices = async (url = '/invoice/search') => {
 }
 
 onMounted(() => {
-    let page=localStorage.getItem('pageSize');
-    if(page){
-    pageSize.value=page;
+    let page = localStorage.getItem('pageSize');
+    if (page) {
+        pageSize.value = page;
     }
     fetchInvoices();
 });
@@ -396,7 +384,7 @@ for (let index = 0; index < linked.length; index++) {
 
 }
 // const totalPages = computed(() => Math.ceil(invoices.value.length / pageSize.value));
-const totalPages = computed(() =>   paginate.value.links?paginate.value.links.length:0);
+const totalPages = computed(() => paginate.value.links ? paginate.value.links.length : 0);
 
 // const statusCounts = computed(() => {
 //     const counts = { paid: 0, pending: 0, overdue: 0, partial: 0 };

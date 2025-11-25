@@ -1,101 +1,235 @@
 <template>
-    <div id="customer" class="w-full xl:max-w-5xl py-1 px-1 xl:pl-10">
-        <div class="mt-4 list-view">
-            <!-- Header -->
-            <div class="flex py-1">
-                <span class="flex w-4/5 md:w-3/5 mr-1 text-xs sm:text-sm md:text-base h-8 md:h-10">
-          <input v-model="search"
-                 @input="key_Searching"
-                 @keydown.enter="onTabSearch"
-                 type="text"
-                 id="searchInput"
-                 placeholder="Search Client..."
-                 class="w-4/5 px-4 py-2 border rounded shadow-sm focus:outline-none focus-visible:ring-0"
-          />
-          <button :disabled="search.trim()===''"
-                  class="w-1/5 text-white bg-gray-400 border mx-0.5 rounded shadow-sm"
-                  @click="onTabSearch">
-            {{ searchBtn }}
-          </button>
-        </span>
+    <div id="invoice" class="container mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <i class="fas fa-file-invoice text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Client</p>
+                        <p class="text-xl font-bold text-gray-900">{{ status.total }}</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Empty -->
-            <div v-if="isEmpty" class="text-center text-gray-500 text-lg py-4">
-                No Data Found!
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">New Client</p>
+                        <p class="text-xl font-bold text-gray-900">{{ status.new }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-lg">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Unpaid</p>
+                        <p class="text-xl font-bold text-gray-900">{{ status.unpaid }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 rounded-lg">
+                        <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Overdue</p>
+                        <p class="text-xl font-bold text-gray-900">{{ status.overdue }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Invoice Form -->
+        <!-- <div class="bg-white rounded-lg shadow p-6 mb-4" v-if="showAddForm">
+            <h3 class="text-lg font-semibold mb-4">Add New Invoice</h3>
+            <form @submit.prevent="addInvoice" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                    <input v-model="newInvoice.customerName" type="text" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
+                    <input v-model="newInvoice.totalAmount" type="number" step="0.01" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Paid Amount</label>
+                    <input v-model="newInvoice.paidAmount" type="number" step="0.01" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select v-model="newInvoice.status" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="pending">Pending</option>
+                        <option value="paid">Paid</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="partial">Partial</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 lg:col-span-4 flex space-x-3">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Invoice
+                    </button>
+                    <button type="button" @click="cancelAdd"
+                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div> -->
+
+        <!-- Table Container -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <!-- Table Header -->
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <!-- <h2 class="text-xl font-semibold text-gray-800">Invoice List</h2> -->
+                    <select name="paginate" id="paginate" v-model="pageSize" @change="per_page"
+                        class="border-gray-300 text-gray-700 text-sm hover:bg-gray-50">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+
+
+                    <div class="mt-4 md:mt-0 flex space-x-3">
+                        <div class="relative">
+                            <input v-model="searchQuery" @keydown.enter="onTypeKey" type="text"
+                                placeholder="Search invoices..."
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i class="fas fa-plus mr-2"></i>
+                            New Invoice
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Table -->
-            <div v-else>
-                <div v-if="loading" class="flex justify-center items-center h-32">
-                    <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500"></div>
-                </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
 
-                <table v-else class="min-w-full divide-y divide-gray-200 text-xs md:text-sm lg:text-md">
-                    <thead>
-                    <tr>
-                        <th class="p-1.5">#</th>
-                        <th>Client Name</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                    </tr>
+                            <th class="px-3 py-2 w-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer text-inline"
+                                @click="sortBy('id')">#
+                                <i class="fas fa-sort ml-1" :class="sortIcon('id')"></i>
+                            </th>
+                            <th class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                @click="sortBy('name')">
+                                Name
+                                <i class="fas fa-sort ml-1" :class="sortIcon('name')"></i>
+                            </th>
+                            <th class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                @click="sortBy('email')">
+                                email
+                                <i class="fas fa-sort ml-1" :class="sortIcon('email')"></i>
+                            </th>
+                            <th class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                @click="sortBy('phone')">
+                                Phone
+                                <i class="fas fa-sort ml-1" :class="sortIcon('phone')"></i>
+                            </th>
+                            <th class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                @click="sortBy('address')">
+                                Address
+                                <i class="fas fa-sort ml-1" :class="sortIcon('address')"></i>
+                            </th>
+
+                            <th
+                                class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-400 text-sm text-gray-800">
-                    <tr v-for="(customer, index) in customers" :key="customer.id"
-                        class="list hover:bg-gray-50 text-center cursor-pointer"
-                        @click="toggleDetails(index)">
-                        <td class="w-4 p-1.5">{{ index + 1 }}</td>
-                        <td>{{ customer.name }}</td>
-                        <td>{{ customer.phone }}</td>
-                        <td>{{ customer.email }}</td>
-                    </tr>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-for="(customer, index) in filteredData" :key="customer.id"
+                            class="hover:bg-gray-50 transition-colors duration-150">
 
-                    <tr v-if="openDetails === index"
-                        class="details-row bg-gray-50">
-                        <td colspan="6" class="px-3 py-2">
-                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div class="col-span-1 lg:col-span-1 text-xs sm:text-sm text-left">
-                                    <div><b>Name:</b> {{ customer.name }}
-                                        <i class="fa fa-angle-right"></i>
-                                        <span class="font-semibold">UID : {{ customer.id }}</span>
-                                    </div>
-                                    <div><b>Phone:</b> {{ customer.phone }}</div>
-                                    <div><b>Email:</b> {{ customer.email }}</div>
-                                </div>
+                            <td class="px-0.5 py-2 whitespace-nowrap text-sm font-medium text-blue-600 text-center">
+                                {{ customer.id }}
+                            </td>
+                            <td class="px-0.5 py-2 whitespace-nowrap text-sm text-gray-900">
+                                {{ customer.name }}
+                            </td>
+                            <td class="px-0.5 py-2 whitespace-nowrap text-sm text-gray-500">
+                                {{ customer.email }}
+                            </td>
+                            <td class="px-0.5 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ customer.phone }}
+                            </td>
+                            <td class="px-0.5 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ customer.address }}
+                            </td>
 
-                                <div class="col-span-1 lg:col-span-1 text-xs sm:text-sm text-left">
-                                    <div><b>Address:</b> {{ customer.address }}</div>
-                                    <div><b>Date:</b> {{ customer.created_at }}</div>
-                                </div>
-
-                                <div class="col-span-2 lg:col-span-1 justify-center items-center">
-                                    <a :href="goto(customer.id)"
-                                       class="bg-blue-500 text-white px-3 py-1 rounded text-xs">
-                                        <i class="fa fa-eye"></i> View
-                                    </a>
-                                    <a :href="goto_edit(customer.id)"
-                                       class="bg-green-500 text-white px-3 py-1 m-2 rounded text-xs">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-                                    <button class="bg-red-500 text-white px-3 py-1 rounded text-xs"
-                                            @click="confirmDelete(customer.id)">
-                                        <i class="fa fa-trash"></i> Delete
+                            <td class="px-2 py-2 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <button @click="viewInvoice(customer)"
+                                        class="text-blue-600 hover:text-blue-900 transition-colors" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button @click="editInvoice(customer)"
+                                        class="text-green-600 hover:text-green-900 transition-colors" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button @click="downloadInvoice(customer)"
+                                        class="text-purple-600 hover:text-purple-900 transition-colors"
+                                        title="Download">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button @click="deleteInvoice(customer)"
+                                        class="text-red-600 hover:text-red-900 transition-colors" title="Delete">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                        <tr v-if="collection.length === 0">
+                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                                No invoices found
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+            </div>
 
-                <!-- Pagination -->
-                <div class="flex gap-2 mt-4">
-                    <button @click="fetchCustomers(pagination.prev_page_url)"
-                            :disabled="!pagination.prev_page_url"
-                            class="px-4 py-2 bg-gray-300 rounded">Prev</button>
-                    <button @click="fetchCustomers(pagination.next_page_url)"
-                            :disabled="!pagination.next_page_url"
-                            class="px-4 py-2 bg-gray-300 rounded">Next</button>
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-gray-200">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="text-sm text-gray-700 mb-4 md:mb-0">
+                        Showing <span class="font-medium">{{ paginate.from }}</span>
+                        to <span class="font-medium">{{ paginate.to }}</span>
+                        of <span class="font-medium">{{ paginate.total }}</span> results
+                    </div>
+                    <div class="flex space-x-2">
+                        <div class="flex space-x-2">
+                            <button v-for="link in paginate.links" :key="link.label" @click="onClickLinks(link.url)"
+                                v-html="link.label" :disabled="link.url === null" :class="`px-2 py-1 border rounded-md text-xm
+            ${link.active ? 'border-blue-500 bg-blue-50 text-blue-600' : ''}
+            ${link.url === null ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,70 +237,134 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
-const customers = ref([])
-const search = ref('')
-const searchBtn = ref('Search')
-const isEmpty = ref(false)
-const loading = ref(false)
-const pagination = ref({})
-const sum_of_invoices = ref(0)
-const openDetails = ref(null)
+let collection = ref([]);
+let paginate = ref([]);
+let status = {};
 
-// 🔹 Fetch customers from Laravel API
-const fetchCustomers = async (url = '/dashboard/customers/search?search=') => {
-    loading.value = true
+const searchQuery = ref('');
+const sortField = ref('id');
+const sortDirection = ref('asc');
+const pageSize = ref(10);
+// let links;
 
+const per_page = () => {
+    saveToLocalStorage();
+    fetchInvoices()
+
+}
+const setPaginate = (paginate_data) => {
+    paginate.value.prev_page_url = paginate_data.prev_page_url;
+    paginate.value.next_page_url = paginate_data.next_page_url;
+    paginate.value.links = paginate_data.links;
+    paginate.value.from = paginate_data.from;
+    paginate.value.to = paginate_data.to;
+    paginate.value.total = paginate_data.total;
+    paginate.value.currentPage = paginate_data.currentPage;
+}
+const onTypeKey = () => {
+    fetchInvoices();
+};
+const onClickLinks = (link) => {
+    if (!link) return;
+    fetchInvoices(link)
+}
+
+let fetchInvoices = async (url = '/dashboard/customers/search') => {
+    // loading.value = true
     try {
         const { data } = await axios.get(url, {
-            params: { search: search.value }
+            params: {
+                search: searchQuery.value,
+                paginate: pageSize.value,
+            }
+        });
 
-        })
-        console.log(data.customers.data)
-        customers.value = data.customers.data
-        pagination.value = {
-            prev_page_url: data.prev_page_url,
-            next_page_url: data.next_page_url
-        }
-        sum_of_invoices.value = data.total
-        isEmpty.value = customers.value.length === 0
+        console.log(data)
+        const customers = data.customers;
+        collection.value = customers.data;
+        status = data.status;
+        setPaginate(customers);
+
     } catch (e) {
         console.error(e)
-        customers.value = []
-        isEmpty.value = true
     } finally {
-        loading.value = false
+        // loading.value = false
+        connsole.log('final resp')
     }
 }
 
-// 🔹 Searching
-const key_Searching = () => {
-    if (search.value.trim() === '') return
-    fetchCustomers()
-}
-const onTabSearch = () => {
-    fetchCustomers()
-}
-
-// 🔹 Toggle Details
-const toggleDetails = (index) => {
-    openDetails.value = openDetails.value === index ? null : index
-}
-
-// 🔹 Action buttons
-const goto = (id) => `/customers/${id}`
-const goto_edit = (id) => `/customers/${id}/edit`
-const confirmDelete = async (id) => {
-    if (confirm('Are you sure to delete this customer?')) {
-        await axios.delete(`/api/customers/${id}`)
-        fetchCustomers()
-    }
-}
-
-// 🔹 Auto fetch on load
 onMounted(() => {
-    fetchCustomers()
-})
+    getFromLocalStorage();
+    fetchInvoices();
+});
+
+const filteredData = computed(() => {
+    let filtered = collection.value;
+    filtered.sort((a, b) => {
+        let aVal = a[sortField.value];
+        let bVal = b[sortField.value];
+
+        if (typeof aVal === 'string') {
+            aVal = aVal.toLowerCase();
+            bVal = bVal
+                .toLowerCase();
+        }
+        if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    return filtered;
+});
+
+
+const sortBy = (field) => {
+    if (sortField.value === field) {
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortField.value = field;
+        sortDirection.value = 'asc';
+    }
+};
+
+const sortIcon = (field) => {
+    if (sortField.value !== field) return 'text-gray-300';
+    return sortDirection.value === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
+};
+
+
+const saveToLocalStorage = () => {
+    localStorage.setItem('pageSize', pageSize.value);
+};
+const getFromLocalStorage = () => {
+    let page = localStorage.getItem('pageSize');
+    if (page) {
+        pageSize.value = page;
+    }
+};
+
+
+const viewInvoice = (item) => {
+    alert(`Viewing invoice: ${item.id}\nCustomer: ${item.name}\nTotal: ${item.email} `);
+};
+
+const editInvoice = (item) => {
+    alert(`Editing invoice: ${item.id}`);
+    // In a real app, you'd open an edit form with the invoice data
+};
+
+const downloadInvoice = (item) => {
+    alert(`Downloading invoice: ${item.id}`);
+    // In a real app, you'd generate and download a PDF
+};
+
+const deleteInvoice = (item) => {
+    if (confirm('Are you sure you want to delete this invoice?')) {
+        alert(item.id)
+    }
+};
+
 </script>

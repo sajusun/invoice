@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Customers;
 use App\Models\User;
 use App\Services\CustomerService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +16,7 @@ class CustomersController extends Controller
     {
         $this->middleware(['auth', 'verified']); // Only authenticated users can access this controller
     }
+
 
     public function customers()
     {
@@ -96,5 +96,32 @@ class CustomersController extends Controller
         $user->save();
         return redirect()->back()->with(['message' => 'Update Successfully.', 'response' => 'success']);
     }
+
+
+    public function customerStats()
+{
+
+    $totalCustomers = Customers::count();
+
+    $newCustomers = Customers::where('created_at', '>=', now()->subDays(7))->count();
+
+    $unpaidCustomers = Customers::whereHas('invoices', function ($query) {
+        $query->where('status', 'pending')
+              ->orWhere('status', 'unpaid');
+    })->count();
+
+    $overdueCustomers = Customers::whereHas('invoices', function ($query) {
+        $query->where('status', 'overdue');
+    })->count();
+
+    $status= [
+        'total'   => $totalCustomers,
+        'new'     => $newCustomers,
+        'unpaid'  => $unpaidCustomers,
+        'overdue' => $overdueCustomers,
+    ];
+    return $status;
+}
+
 
 }

@@ -52,18 +52,18 @@ class DashboardController extends Controller
         return view('pages.customers.customers_list', ['customers' =>  $customers, 'controller' => $customer_ctrl]);
     }
 
-    public function get_customers()
+    public function get_customers($paginate)
     {
-        $customers = User::find(Auth::id())->customers()->with('invoices')->paginate(100);;
+        $customers = User::find(Auth::id())->customers()->with('invoices')->paginate($paginate);;
         return $customers;
     }
 
     public function search_customers(Request $request)
     {
         $customers_ctrl = new CustomersController();
-        $sum_of_invoices = $customers_ctrl->total_customers();
-        $total = '';
-        $status = '';
+        // $sum_of_invoices = $customers_ctrl->total_customers();
+        // $total = '';
+
 
         $user = Auth::user();
         // Search by customer name or invoice number
@@ -82,19 +82,16 @@ class DashboardController extends Controller
         }else{
             return response()->json([
                 'success' => true,
-                'customers' => $this->get_customers(),
-                'sum_of_invoices' => $sum_of_invoices,
-                'total' => $total,
-                'status' => $status
+                'customers' => $this->get_customers($request->paginate),
+                'status' => $customers_ctrl->customerStats(),
+
             ]);
         }
 
         return response()->json([
         'success' => true,
         'customers' => $customers,
-        'sum_of_invoices' => $sum_of_invoices,
-        'total' => $total,
-        'status' => $status
+        'status' => $customers_ctrl->customerStats(),
     ]);
     }
 

@@ -229,9 +229,8 @@ class InvoicesController extends Controller
         return response()->json([
             'success' => true,
             'status' => $this->getInvoiceCounts(),
-
             'invoices' => $invoices,
-            'message' => 'Get data from by search',
+            'message' => 'search data',
 
         ]);
     }
