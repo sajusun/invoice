@@ -22,6 +22,9 @@ class CustomersController extends Controller
     {
         return User::find(Auth::id())->customers;
     }
+    public function addCustomer(){
+        return view('pages/customers/customer_add');
+    }
 
 //dont remove function here
     public function total_customers()

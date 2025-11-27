@@ -50,49 +50,6 @@
             </div>
         </div>
 
-        <!-- Add Invoice Form -->
-        <!-- <div class="bg-white rounded-lg shadow p-6 mb-4" v-if="showAddForm">
-            <h3 class="text-lg font-semibold mb-4">Add New Invoice</h3>
-            <form @submit.prevent="addInvoice" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
-                    <input v-model="newInvoice.customerName" type="text" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
-                    <input v-model="newInvoice.totalAmount" type="number" step="0.01" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Paid Amount</label>
-                    <input v-model="newInvoice.paidAmount" type="number" step="0.01" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select v-model="newInvoice.status" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="pending">Pending</option>
-                        <option value="paid">Paid</option>
-                        <option value="overdue">Overdue</option>
-                        <option value="partial">Partial</option>
-                    </select>
-                </div>
-                <div class="md:col-span-2 lg:col-span-4 flex space-x-3">
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
-                        <i class="fas fa-plus mr-2"></i>
-                        Add Invoice
-                    </button>
-                    <button type="button" @click="cancelAdd"
-                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div> -->
-
         <!-- Table Container -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <!-- Table Header -->
@@ -111,15 +68,15 @@
                     <div class="mt-4 md:mt-0 flex space-x-3">
                         <div class="relative">
                             <input v-model="searchQuery" @keydown.enter="onTypeKey" type="text"
-                                placeholder="Search invoices..."
+                                placeholder="Search clients..."
                                 class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
 
                         </div>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                        <a href="/dashboard/customers/add" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
                             <i class="fas fa-plus mr-2"></i>
-                            New Invoice
-                        </button>
+                            New Client
+                        </a>
                     </div>
                 </div>
             </div>
@@ -183,20 +140,20 @@
 
                             <td class="px-2 py-2 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <button @click="viewInvoice(customer)"
+                                    <a :href="view(customer.id)"
                                         class="text-blue-600 hover:text-blue-900 transition-colors" title="View">
                                         <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button @click="editInvoice(customer)"
+                                </a>
+                                    <a :href="edit(customer.id)"
                                         class="text-green-600 hover:text-green-900 transition-colors" title="Edit">
                                         <i class="fas fa-edit"></i>
-                                    </button>
+                            </a>
                                     <button @click="downloadInvoice(customer)"
                                         class="text-purple-600 hover:text-purple-900 transition-colors"
                                         title="Download">
                                         <i class="fas fa-download"></i>
                                     </button>
-                                    <button @click="deleteInvoice(customer)"
+                                    <button @click="confirmDelete(customer.id)"
                                         class="text-red-600 hover:text-red-900 transition-colors" title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -205,7 +162,7 @@
                         </tr>
                         <tr v-if="collection.length === 0">
                             <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No invoices found
+                                No Client found
                             </td>
                         </tr>
                     </tbody>
@@ -252,7 +209,7 @@ const pageSize = ref(10);
 
 const per_page = () => {
     saveToLocalStorage();
-    fetchInvoices()
+    fetchCustomers();
 
 }
 const setPaginate = (paginate_data) => {
@@ -265,14 +222,14 @@ const setPaginate = (paginate_data) => {
     paginate.value.currentPage = paginate_data.currentPage;
 }
 const onTypeKey = () => {
-    fetchInvoices();
+    fetchCustomers();
 };
 const onClickLinks = (link) => {
     if (!link) return;
-    fetchInvoices(link)
+    fetchCustomers(link)
 }
 
-let fetchInvoices = async (url = '/dashboard/customers/search') => {
+let fetchCustomers = async (url = '/dashboard/customers/search') => {
     // loading.value = true
     try {
         const { data } = await axios.get(url, {
@@ -281,8 +238,7 @@ let fetchInvoices = async (url = '/dashboard/customers/search') => {
                 paginate: pageSize.value,
             }
         });
-
-        console.log(data)
+        // console.log(data)
         const customers = data.customers;
         collection.value = customers.data;
         status = data.status;
@@ -292,13 +248,13 @@ let fetchInvoices = async (url = '/dashboard/customers/search') => {
         console.error(e)
     } finally {
         // loading.value = false
-        connsole.log('final resp')
+        // console.log('final resp')
     }
 }
 
 onMounted(() => {
     getFromLocalStorage();
-    fetchInvoices();
+    fetchCustomers();
 });
 
 const filteredData = computed(() => {
@@ -346,19 +302,16 @@ const getFromLocalStorage = () => {
     }
 };
 
-
 const viewInvoice = (item) => {
     alert(`Viewing invoice: ${item.id}\nCustomer: ${item.name}\nTotal: ${item.email} `);
 };
 
 const editInvoice = (item) => {
     alert(`Editing invoice: ${item.id}`);
-    // In a real app, you'd open an edit form with the invoice data
 };
 
 const downloadInvoice = (item) => {
     alert(`Downloading invoice: ${item.id}`);
-    // In a real app, you'd generate and download a PDF
 };
 
 const deleteInvoice = (item) => {
@@ -366,5 +319,14 @@ const deleteInvoice = (item) => {
         alert(item.id)
     }
 };
+// 🔹 Action buttons
+const view = (id) => `customers/${id}/view`
+const edit = (id) => `customers/${id}/update`
+const confirmDelete = async (id) => {
+    if (confirm('Are you sure to delete this customer?')) {
+        await axios.post(`/customers/${id}/delete`)
+        fetchCustomers()
+    }
+}
 
 </script>
