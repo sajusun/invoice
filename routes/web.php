@@ -68,7 +68,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
-
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::get('dashboard/my-plan', [DashboardController::class, 'my_plan'])->name('subscription.plan');
