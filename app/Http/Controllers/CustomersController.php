@@ -8,6 +8,7 @@ use App\Services\CustomerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CustomersController extends Controller
@@ -16,17 +17,45 @@ class CustomersController extends Controller
     {
         $this->middleware(['auth', 'verified']); // Only authenticated users can access this controller
     }
+    public function create()
+    {
+        return view('pages/customers/customer_add');
+    }
 
 
     public function customers()
     {
         return User::find(Auth::id())->customers;
     }
-    public function addCustomer(){
-        return view('pages/customers/customer_add');
+    public function store(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20|unique:customers',
+                'email' => 'nullable|email',
+                'address' => 'nullable|string'
+            ]);
+
+            $userId = Auth::user()->id;
+            $customer = new Customers();
+
+            $customer->user_id = $userId;
+            $customer->name = $request->name;
+            $customer->email = $request->email;
+            $customer->phone = $request->phone;
+            $customer->address = $request->address;
+            $isSave = $customer->save();
+            if (!$isSave) {
+                return back()->with('error', 'Failed!');
+            }
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Failed! ' . $th->getMessage());
+        }
+        return back()->with('success', 'Client saved successfully!');
     }
 
-//dont remove function here
+    //dont remove function here
     public function total_customers()
     {
         return User::find(Auth::id())->customers()->count();
@@ -51,10 +80,9 @@ class CustomersController extends Controller
     {
         return Customers::with('invoices')->where('id', $customer_id)->first();
     }
-    public function get_customers($paginate=100)
+    public function get_customers($paginate = 100)
     {
         return User::find(Auth::id())->customers()->with('invoices')->paginate($paginate);
-
     }
 
 
@@ -102,29 +130,27 @@ class CustomersController extends Controller
 
 
     public function customerStats()
-{
+    {
 
-    $totalCustomers = Customers::count();
+        $totalCustomers = Customers::count();
 
-    $newCustomers = Customers::where('created_at', '>=', now()->subDays(7))->count();
+        $newCustomers = Customers::where('created_at', '>=', now()->subDays(7))->count();
 
-    $unpaidCustomers = Customers::whereHas('invoices', function ($query) {
-        $query->where('status', 'pending')
-              ->orWhere('status', 'unpaid');
-    })->count();
+        $unpaidCustomers = Customers::whereHas('invoices', function ($query) {
+            $query->where('status', 'pending')
+                ->orWhere('status', 'unpaid');
+        })->count();
 
-    $overdueCustomers = Customers::whereHas('invoices', function ($query) {
-        $query->where('status', 'overdue');
-    })->count();
+        $overdueCustomers = Customers::whereHas('invoices', function ($query) {
+            $query->where('status', 'overdue');
+        })->count();
 
-    $status= [
-        'total'   => $totalCustomers,
-        'new'     => $newCustomers,
-        'unpaid'  => $unpaidCustomers,
-        'overdue' => $overdueCustomers,
-    ];
-    return $status;
-}
-
-
+        $status = [
+            'total'   => $totalCustomers,
+            'new'     => $newCustomers,
+            'unpaid'  => $unpaidCustomers,
+            'overdue' => $overdueCustomers,
+        ];
+        return $status;
+    }
 }

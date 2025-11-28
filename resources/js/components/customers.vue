@@ -143,7 +143,7 @@
                                     <a :href="view(customer.id)"
                                         class="text-blue-600 hover:text-blue-900 transition-colors" title="View">
                                         <i class="fas fa-eye"></i>
-                                </a>
+                                    </a>
                                     <a :href="edit(customer.id)"
                                         class="text-green-600 hover:text-green-900 transition-colors" title="Edit">
                                         <i class="fas fa-edit"></i>

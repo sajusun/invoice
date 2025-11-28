@@ -16,7 +16,6 @@ Route::get('/', [HomePageController::class, 'home'])->name('home');
 Route::get('/home', [HomePageController::class, 'home'])->name('main');
 Route::get('/subscription-plan', [SubscriptionController::class, 'index'])->name('choose-plan');
 
-
 Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoice.builder');
 Route::get('/invoice/theme', [InvoicesController::class, 'theme']);
 Route::get('/invoice/{id}/preview', [InvoicesController::class, 'previewInvoice'])->name('previewInvoice');
@@ -33,7 +32,8 @@ Route::get('invoice/find/customer/{number}', [CustomersController::class, 'find_
 Route::get('/dashboard/customers/{id}/view', [CustomersController::class, 'customer_details'])->name('customers.details');
 Route::get('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
 Route::post('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
-Route::get('/dashboard/customers/add', [CustomersController::class, 'addCustomer'])->name('customers.add');
+Route::get('/dashboard/customers/add', [CustomersController::class, 'create'])->name('customers.add');
+Route::post('/dashboard/customers/add', [CustomersController::class, 'store'])->name('customers.add');
 Route::get('/dashboard/customers/search', [DashboardController::class, 'search_customers']);
 
 Route::get('/dashboard/customers/{id}', [DashboardController::class, 'get_customer_data']);
