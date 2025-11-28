@@ -119,7 +119,6 @@
             alert('No users selected!');
             return;
         }
-        console.log(selectedIds)
         document.getElementById('bulkDeleteIds').value = JSON.stringify(selectedIds);
         this.submit();
     };

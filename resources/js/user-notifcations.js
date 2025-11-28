@@ -1,5 +1,3 @@
- // import {createApp} from 'vue';
-
   import {createApp} from "vue";
 
  const notification = createApp({

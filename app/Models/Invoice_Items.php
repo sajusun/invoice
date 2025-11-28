@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @method static create(array $array)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice_Items newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice_Items newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice_Items query()
+ * @mixin \Eloquent
  */
 class Invoice_Items extends Model
 {

@@ -23,7 +23,8 @@ Route::get('/invoice/{id}/preview', [InvoicesController::class, 'previewInvoice'
 Route::get('/invoice/preview', [InvoicesController::class, 'previewInvoice']);
 Route::post('/invoice/create', [InvoicesController::class, 'makeInvoice']);
 
-Route::get('/invoice/all', [InvoicesController::class, 'get_all_invoices'])->name('invoices');
+Route::get('/invoice/list', [InvoicesController::class, 'invoiceList'])->name('invoices');
+Route::get('/invoice/fetch', [InvoicesController::class, 'get_all_invoices'])->name('invoices.search');
 Route::post('/invoice/{id}', [InvoicesController::class, 'get_invoice']);
 Route::get('/invoice/search', [InvoicesController::class, 'search_invoice']);
 Route::get('/invoice/status', [InvoicesController::class, 'change_status'])->name('changeStatus');
