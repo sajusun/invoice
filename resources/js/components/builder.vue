@@ -39,15 +39,16 @@ export default {
             alert("Invoice preview logged to console.");
         },
         async saveDraft() {
-            await axios.post("/api/invoices/draft", this.invoice);
-            alert("Invoice saved as draft!");
+          let data=  await window.axios.post("/invoice/create", this.invoice);
+console.log(data);
+
         },
         async sendInvoice() {
-            await axios.post("/api/invoices/send", this.invoice);
-            alert("Invoice sent!");
+            await axios.post("/invoice/create", this.invoice);
+
         },
         exportPdf() {
-            alert("PDF export not yet implemented!");
+
         },
     },
 };

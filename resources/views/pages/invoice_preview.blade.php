@@ -20,7 +20,7 @@
     </div>
 </div>
 @auth()
-    @include('pages.preview.preview')
+    @include('pages.preview.preview2')
 @else
     @include('pages.preview.guest_preview')
 @endauth
