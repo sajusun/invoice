@@ -17,7 +17,7 @@ class InvoicesFactory extends Factory
             'customer_id' => null, // will be set in seeder
             'invoice_date' => $this->faker->date(),
             'user_id' => 1,
-            'items'=>json_encode($this->items()),
+            'items'=>json_encode([$this->items()]),
             'status' => $this->faker->randomElement(['paid', 'unpaid', 'overdue']),
             'paid_amount' => $subTotal,
             'tax_amount' => $tax,

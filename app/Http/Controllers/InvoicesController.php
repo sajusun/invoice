@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\ValidationException;
 
@@ -71,113 +72,117 @@ class InvoicesController extends Controller
             ];
             $data = InvoiceService::find_invoice($id);
             return view('pages/invoice_preview', ['invoice_data' => $data, 'company_data' => $companyData]);
+           // return [$data, $companyData];
         } elseif (session($id)) {
             $data = session($id);
         } else {
-            return Redirect()->route('invoiceBuilder');
+            return Redirect()->route('invoice.builder');
         }
-        return view('pages/invoice_preview', ['invoice_data' => $data]);
+        return view('pages/invoice/preview2', ['invoice_data' => $data]);
     }
 
     public function makeInvoice(Request $request)
     {
+return response()->json([
+    'info'=>$request->all(),
+]);
 
-        $validated = validator($request->all(), [
-            'issueFrom' => 'nullable|string',
-            'issueAddress' => 'nullable|string',
-            'issuePhone' => 'nullable|string',
-            'issueEmail' => 'nullable|string',
+        // $validated = validator($request->all(), [
+        //     'issueFrom' => 'nullable|string',
+        //     'issueAddress' => 'nullable|string',
+        //     'issuePhone' => 'nullable|string',
+        //     'issueEmail' => 'nullable|string',
 
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'phone' => 'required|numeric',
-            'email' => 'nullable|email',
+        //     'name' => 'required|string|max:255',
+        //     'address' => 'required|string|max:255',
+        //     'phone' => 'required|numeric',
+        //     'email' => 'nullable|email',
 
-            'status' => 'nullable|string',
-            'invoice_date' => 'required|date',
-            'currency' => 'required|string',
-            'tax_amount' => 'nullable|numeric',
-            'need_tax' => 'nullable|boolean',
-            'notes' => 'nullable|string',
-            'invoice_number' => 'required|string|max:255',
-            'paid_amount' => 'nullable|numeric',
-            'total_amount' => 'required|numeric|min:0',
-            'items' => 'required|array|min:1',
-            'items.*.name' => 'required|string|max:255',
-            'items.*.qty' => 'required|numeric|min:1',
-            'items.*.rate' => 'required|numeric|min:0'
-        ]);
+        //     'status' => 'nullable|string',
+        //     'invoice_date' => 'required|date',
+        //     'currency' => 'required|string',
+        //     'tax_amount' => 'nullable|numeric',
+        //     'need_tax' => 'nullable|boolean',
+        //     'notes' => 'nullable|string',
+        //     'invoice_number' => 'required|string|max:255',
+        //     'paid_amount' => 'nullable|numeric',
+        //     'total_amount' => 'required|numeric|min:0',
+        //     'items' => 'required|array|min:1',
+        //     'items.*.name' => 'required|string|max:255',
+        //     'items.*.qty' => 'required|numeric|min:1',
+        //     'items.*.rate' => 'required|numeric|min:0'
+        // ]);
 
-        if ($validated->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validated->errors()->first(),
-                'error' => $validated->errors()->first(),
-                'redirect' => route('invoiceBuilder') // or your target route
-            ]);
-        }
+        // if ($validated->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => $validated->errors()->first(),
+        //         'error' => $validated->errors()->first(),
+        //         'redirect' => route('invoiceBuilder') // or your target route
+        //     ]);
+        // }
 
-        $validatedData = $validated->validated();
+        // $validatedData = $validated->validated();
 
-        if (auth()->check()) {
-            DB::beginTransaction();
-            try {
-                //find  any existing customer else add as new
-                $user = User::find(Auth::id());
-                $customer = $user->customers()->where('phone', $validatedData['phone'])->first();
+        // if (auth()->check()) {
+        //     DB::beginTransaction();
+        //     try {
+        //         //find  any existing customer else add as new
+        //         $user = User::find(Auth::id());
+        //         $customer = $user->customers()->where('phone', $validatedData['phone'])->first();
 
-                if (!$customer) {
-                    $customer = Customers::create([
-                        'user_id' => Auth::id(),
-                        'name' => $validatedData['name'],
-                        'phone' => $validatedData['phone'],
-                        'email' => $validatedData['email'],
-                        'address' => $validatedData['address'],
-                    ]);
-                }
-                $status = $validatedData['paid_amount'] >= $validatedData['total_amount'] ? 'Paid' : 'Pending';
+        //         if (!$customer) {
+        //             $customer = Customers::create([
+        //                 'user_id' => Auth::id(),
+        //                 'name' => $validatedData['name'],
+        //                 'phone' => $validatedData['phone'],
+        //                 'email' => $validatedData['email'],
+        //                 'address' => $validatedData['address'],
+        //             ]);
+        //         }
+        //         $status = $validatedData['paid_amount'] >= $validatedData['total_amount'] ? 'Paid' : 'Pending';
 
 
-                //inset invoice for the user
-                $invoice = Invoices::create([
-                    'user_id' => Auth::id(),
-                    'customer_id' => $customer->id,
-                    'invoice_number' => $validatedData['invoice_number'],
-                    'invoice_date' => $validatedData['invoice_date'],
-                    'items' => json_encode($validatedData['items']),
-                    'tax_amount' => $validatedData['tax_amount'],
-                    'need_tax' => $validatedData['need_tax'],
-                    'notes' => $validatedData['notes'],
-                    'currency' => $validatedData['currency'],
-                    'paid_amount' => $validatedData['paid_amount'],
-                    'total_amount' => $validatedData['total_amount'],
-                    'status' => $status
-                ]);
-                DB::commit();
-                AdminNotifier::invoiceGenerate($invoice);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Invoice Created Success',
-                    'redirect' => route('previewInvoice', $validatedData['invoice_number']) // or your target route
-                ]);
-            } catch (Exception $e) {
-                //back if any errors in transactions
-                DB::rollBack();
-                return back()->with([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                    'redirect' => route('invoiceBuilder')
-                ]);
-            }
-        } else {
-            //return redirect()->route('previewInvoice')->with(['message'=>'generate success','data'=>$request->all()]);
-            session([$validatedData['invoice_number'] => $validatedData]);
-            return response()->json([
-                'success' => true,
-                'message' => 'redirect to preview page with data',
-                'redirect' => route('previewInvoice', $request->invoice_number) // or your target route
-            ]);
-        }
+        //         //inset invoice for the user
+        //         $invoice = Invoices::create([
+        //             'user_id' => Auth::id(),
+        //             'customer_id' => $customer->id,
+        //             'invoice_number' => $validatedData['invoice_number'],
+        //             'invoice_date' => $validatedData['invoice_date'],
+        //             'items' => json_encode($validatedData['items']),
+        //             'tax_amount' => $validatedData['tax_amount'],
+        //             'need_tax' => $validatedData['need_tax'],
+        //             'notes' => $validatedData['notes'],
+        //             'currency' => $validatedData['currency'],
+        //             'paid_amount' => $validatedData['paid_amount'],
+        //             'total_amount' => $validatedData['total_amount'],
+        //             'status' => $status
+        //         ]);
+        //         DB::commit();
+        //         AdminNotifier::invoiceGenerate($invoice);
+        //         return response()->json([
+        //             'success' => true,
+        //             'message' => 'Invoice Created Success',
+        //             'redirect' => route('previewInvoice', $validatedData['invoice_number']) // or your target route
+        //         ]);
+        //     } catch (Exception $e) {
+        //         //back if any errors in transactions
+        //         DB::rollBack();
+        //         return back()->with([
+        //             'success' => false,
+        //             'message' => $e->getMessage(),
+        //             'redirect' => route('invoiceBuilder')
+        //         ]);
+        //     }
+        // } else {
+        //     //return redirect()->route('previewInvoice')->with(['message'=>'generate success','data'=>$request->all()]);
+        //     session([$validatedData['invoice_number'] => $validatedData]);
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'redirect to preview page with data',
+        //         'redirect' => route('previewInvoice', $request->invoice_number) // or your target route
+        //     ]);
+        // }
 
         //        return redirect()->route('previewInvoice')->with('message', 'Registered successfully! Please check your email to verify.');
 

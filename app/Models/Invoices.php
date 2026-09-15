@@ -63,6 +63,9 @@ class Invoices extends Model
         "currency",
         "status"
     ];
+    protected $casts = [
+        'items' => 'array', // JSON automatically array hoye jabe
+    ];
 
     // An invoice belongs to a customer
     public function customer(): BelongsTo

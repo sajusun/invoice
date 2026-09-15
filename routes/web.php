@@ -16,7 +16,6 @@ Route::get('/', [HomePageController::class, 'home'])->name('home');
 Route::get('/home', [HomePageController::class, 'home'])->name('main');
 Route::get('/subscription-plan', [SubscriptionController::class, 'index'])->name('choose-plan');
 
-
 Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoice.builder');
 Route::get('/invoice/theme', [InvoicesController::class, 'theme']);
 Route::get('/invoice/{id}/preview', [InvoicesController::class, 'previewInvoice'])->name('previewInvoice');
@@ -31,11 +30,12 @@ Route::get('/invoice/status', [InvoicesController::class, 'change_status'])->nam
 
 Route::get('invoice/find/customer/{number}', [CustomersController::class, 'find_by_number']);
 Route::get('/dashboard/customers/{id}/view', [CustomersController::class, 'customer_details'])->name('customers.details');
-
 Route::get('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
 Route::post('/dashboard/customers/{id}/update', [CustomersController::class, 'customers_data_update'])->name('customers.update');
-
+Route::get('/dashboard/customers/add', [CustomersController::class, 'create'])->name('customers.add');
+Route::post('/dashboard/customers/add', [CustomersController::class, 'store'])->name('customers.add');
 Route::get('/dashboard/customers/search', [DashboardController::class, 'search_customers']);
+
 Route::get('/dashboard/customers/{id}', [DashboardController::class, 'get_customer_data']);
 Route::get('/dashboard/customers/{id}/invoice', [DashboardController::class, 'get_customer_invoice']);
 
@@ -68,7 +68,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/customers', [DashboardController::class, 'customers'])->name('customers');
-
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::get('dashboard/my-plan', [DashboardController::class, 'my_plan'])->name('subscription.plan');
@@ -77,7 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice']);
-    Route::post('/customer/{id}/delete', [CustomersController::class, 'delete_customer']);
+    Route::post('/customers/{id}/delete', [CustomersController::class, 'delete_customer']);
     //Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
 });
 
