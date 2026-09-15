@@ -29,14 +29,13 @@
 
         <!-- Admin Profile Dropdown -->
         @auth('admin')
-            <div class="relative" x-data="{ openAdmin: false }" @click.outside="openAdmin = false" data-dropdown-wrapper>
-                <button @click.stop="openAdmin = !openAdmin"
+            <div class="relative" x-data="{ openAdmin: false }" @click.outside="openAdmin = false">
+                <button @click="openAdmin = !openAdmin"
                         type="button"
                         id="admin-profile-button"
-                        data-dropdown-trigger="admin-profile-menu"
                         class="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer select-none"
                         aria-label="Admin menu" :aria-expanded="openAdmin">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm overflow-hidden shrink-0">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm overflow-hidden shrink-0 pointer-events-none">
                         @if(Auth::guard('admin')->user()->profile_pic)
                             <img src="{{ asset('storage/profile_pics/' . Auth::guard('admin')->user()->profile_pic) }}"
                                  alt="{{ Auth::guard('admin')->user()->name }}"
@@ -45,11 +44,11 @@
                             <span>{{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'A', 0, 1)) }}</span>
                         @endif
                     </div>
-                    <div class="hidden md:block text-left">
+                    <div class="hidden md:block text-left pointer-events-none">
                         <span class="block text-xs font-bold text-slate-900 leading-tight">{{ Auth::guard('admin')->user()->name }}</span>
                         <span class="block text-[10px] text-rose-600 font-bold uppercase tracking-wider">Super Administrator</span>
                     </div>
-                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ml-0.5"
+                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ml-0.5 pointer-events-none"
                        :class="{'rotate-180': openAdmin}"></i>
                 </button>
 
@@ -63,8 +62,7 @@
                      x-transition:leave="transition ease-in duration-100"
                      x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
                      x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
-                     class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200/80 py-2 z-50 transition-all"
-                     :class="{ '!block': openAdmin }">
+                     class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200/80 py-2 z-50">
                     <div class="px-4 py-2.5 border-b border-slate-100">
                         <p class="text-xs font-bold text-slate-900 truncate">{{ Auth::guard('admin')->user()->name }}</p>
                         <p class="text-[11px] text-slate-400 truncate">{{ Auth::guard('admin')->user()->email }}</p>

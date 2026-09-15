@@ -25,19 +25,18 @@
     <!-- Right: Quick Actions & Profile -->
     <div class="flex items-center gap-2 sm:gap-3">
         <!-- Quick Create Dropdown -->
-        <div class="relative" x-data="{ openCreate: false }">
-            <button @click.stop="openCreate = !openCreate"
+        <div class="relative" x-data="{ openCreate: false }" @click.outside="openCreate = false">
+            <button @click="openCreate = !openCreate"
                     type="button"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-blue-500/20 hover:shadow-md transition-all focus:outline-none cursor-pointer select-none">
-                <i class="fa-solid fa-plus text-xs"></i>
-                <span class="hidden sm:inline">New</span>
-                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5 transition-transform duration-200" :class="{'rotate-180': openCreate}"></i>
+                <i class="fa-solid fa-plus text-xs pointer-events-none"></i>
+                <span class="hidden sm:inline pointer-events-none">New</span>
+                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5 transition-transform duration-200 pointer-events-none" :class="{'rotate-180': openCreate}"></i>
             </button>
 
             <!-- Dropdown -->
             <div x-show="openCreate"
                  x-cloak
-                 @click.outside="openCreate = false"
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
                  x-transition:enter-end="opacity-100 scale-100 translate-y-0"
