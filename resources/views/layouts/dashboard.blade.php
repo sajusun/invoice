@@ -144,9 +144,10 @@
         </div>
     </div>
 
-    <!-- Mobile Menu Toggle Script -->
+    <!-- Dropdown & Mobile Menu Toggle Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
             const mobileMenu = document.getElementById('mobile-menu');
             const mobilePanel = document.getElementById('mobile-panel');
             const mobileBackdrop = document.getElementById('mobile-backdrop');
@@ -154,6 +155,7 @@
             const closeBtn = document.getElementById('close-menu');
 
             function openMobileNav() {
+                if (!mobileMenu) return;
                 mobileMenu.classList.remove('pointer-events-none');
                 mobileBackdrop.classList.remove('opacity-0', 'pointer-events-none');
                 mobileBackdrop.classList.add('opacity-100', 'pointer-events-auto');
@@ -162,6 +164,7 @@
             }
 
             function closeMobileNav() {
+                if (!mobileMenu) return;
                 mobileBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
                 mobileBackdrop.classList.add('opacity-0', 'pointer-events-none');
                 mobilePanel.classList.remove('translate-x-0');
@@ -174,8 +177,55 @@
             if (openBtn) openBtn.addEventListener('click', openMobileNav);
             if (closeBtn) closeBtn.addEventListener('click', closeMobileNav);
             if (mobileBackdrop) mobileBackdrop.addEventListener('click', closeMobileNav);
+
+            // Universal Dropdown Handler (Vanilla JS fail-safe)
+            document.addEventListener('click', function (e) {
+                const trigger = e.target.closest('[data-dropdown-trigger]');
+                if (trigger) {
+                    const targetId = trigger.getAttribute('data-dropdown-trigger');
+                    const menu = document.getElementById(targetId);
+                    if (menu) {
+                        const isHidden = menu.classList.contains('hidden') && !menu.classList.contains('!block');
+                        // Close all other dropdowns
+                        document.querySelectorAll('[data-dropdown-wrapper] [id]').forEach(m => {
+                            if (m.id !== targetId) {
+                                m.classList.add('hidden');
+                                m.classList.remove('!block');
+                            }
+                        });
+                        if (isHidden) {
+                            menu.classList.remove('hidden');
+                            menu.classList.add('!block');
+                        } else {
+                            menu.classList.add('hidden');
+                            menu.classList.remove('!block');
+                        }
+                    }
+                    return;
+                }
+
+                // If click is outside any dropdown wrapper, close all
+                if (!e.target.closest('[data-dropdown-wrapper]')) {
+                    document.querySelectorAll('[data-dropdown-wrapper] [id]').forEach(m => {
+                        m.classList.add('hidden');
+                        m.classList.remove('!block');
+                    });
+                }
+            });
+
+            // Escape key closes menus
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMobileNav();
+                    document.querySelectorAll('[data-dropdown-wrapper] [id]').forEach(m => {
+                        m.classList.add('hidden');
+                        m.classList.remove('!block');
+                    });
+                }
+            });
         });
     </script>
 </body>
 </html>
+
 

@@ -101,5 +101,20 @@
 
 ---
 
-*Last Updated: 2026-09-15 — Full Platform & User Layout Modernization Completed.*
+## 🛡️ Phase 10: Admin Panel Isolation & Invoice Builder Overhaul
+- [x] **10.1** Fail-Safe User Dropdown Engine:
+  - [x] Added dual Alpine + zero-dependency Vanilla JS toggle controller to prevent event dropouts
+  - [x] "+ New" button and User Profile dropdown working 100% reliably with click, outside click, and ESC dismiss
+- [x] **10.2** Complete Admin Panel Isolation & Dedicated Layout:
+  - [x] Dedicated dark-slate SaaS Admin theme (`layouts/admin.blade.php`, `custom-components/admin-dashboard-aside.blade.php`)
+  - [x] Strict separation with `auth:admin` guard and dedicated admin navbar (`components/admin-navbar.blade.php`)
+  - [x] Dynamic admin route highlighting, role badges, and isolated admin sign-out
+- [x] **10.3** Invoice Creation Studio & Backend Engine:
+  - [x] Upgraded Vue 3 Invoice Builder component (`builder.vue`) with multi-currency, auto-tax, and instant status toasts
+  - [x] Rebuilt `InvoicesController::makeInvoice()` to save client, create invoice, calculate line items, and dispatch webhooks
+
+---
+
+*Last Updated: 2026-09-15 — Full Platform, Admin Isolation & Invoice Builder Overhaul Completed.*
+
 

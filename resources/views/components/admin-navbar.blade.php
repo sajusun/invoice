@@ -1,116 +1,107 @@
-<header id="header" class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="header flex items-center justify-between transition max-w-7xl h-16 mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center">
-            <button id="mobile-menu-button" class="md:hidden text-gray-600 mr-4">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-            @auth('admin')
-                <a href="{{route('admin.dashboard')}}"><h1 class="text-2xl font-bold text-primary">Dashboard</h1></a>
-            @else
-                <a href="{{route('admin.dashboard')}}"><h1
-                        class="text-2xl font-bold text-primary">{{config('app.name')}} <span
-                            class="text-red-500">Admin</span></h1></a>
-            @endauth
+<header class="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <!-- Left: Mobile Toggle & Page Context -->
+    <div class="flex items-center gap-3 sm:gap-4">
+        <button id="admin-mobile-menu-button"
+                type="button"
+                class="md:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl focus:outline-none transition-colors cursor-pointer"
+                aria-label="Open sidebar">
+            <i class="fa-solid fa-bars-staggered text-lg"></i>
+        </button>
+
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-rose-50 text-rose-700 border border-rose-200">
+                Admin Panel
+            </span>
+            <span class="hidden sm:inline text-xs font-semibold text-slate-500">|</span>
+            <span class="hidden sm:inline text-xs font-bold text-slate-700">Platform Control System</span>
         </div>
+    </div>
+
+    <!-- Right: Quick Actions & Admin Profile -->
+    <div class="flex items-center gap-3 sm:gap-4">
+        <a href="{{ route('admin.dashboard.payments.create') }}"
+           class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Manual Payment</span>
+        </a>
+
+        <div class="h-5 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+
+        <!-- Admin Profile Dropdown -->
         @auth('admin')
-            <div class="flex items-center space-x-8">
-                <!-- Notification Button + Dropdown -->
-                {{--                x-data="{ open: false }"--}}
-                <div id="notificationBell" class="relative">
-                    <!-- Button -->
-                    <button @click="toggleDropdown" class="relative text-gray-600 hover:text-gray-900">
-                        <i class="fa-solid fa-bell text-lg"></i>
-                        <span id="notif_count"
-                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">@{{ unread }}</span>
-                    </button>
-
-                    <!-- Dropdown -->
-                    <div v-if="showDropdown"
-                         {{--                         @click.away="open = false"--}}
-                         class="absolute top-full mt-2 right-1/2 translate-x-1/2 w-72 bg-white shadow-lg rounded-xl p-4 z-50 "
-                         style="display: block">
-                        <p class="text-sm font-semibold mb-3">Notifications</p>
-                        <div v-if="notifications.length === 0" class="p-4 text-gray-500 text-center">
-                            No notifications yet.
-                        </div>
-                        <ul id="notif_list" v-else
-                            class="space-y-2 text-sm text-gray-700 max-h-60 overflow-y-auto">
-                            <template v-for="(notif, index) in notifications" :key="index">
-                                <li class="p-2 hover:bg-gray-50 rounded">
-                                    <a :href='notif.route'>
-                                        <p class="text-sm font-semibold text-gray-600">@{{ notif.title }}</p>
-                                        <p class="text-sm text-gray-500">@{{ notif.message }}</p>
-                                        <p class="text-xs text-gray-500">@{{ formatDate(notif.created_at) }}</p>
-                                    </a>
-                                </li>
-                            </template>
-                        </ul>
+            <div class="relative" x-data="{ openAdmin: false }" @click.outside="openAdmin = false" data-dropdown-wrapper>
+                <button @click.stop="openAdmin = !openAdmin"
+                        type="button"
+                        id="admin-profile-button"
+                        data-dropdown-trigger="admin-profile-menu"
+                        class="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer select-none"
+                        aria-label="Admin menu" :aria-expanded="openAdmin">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm overflow-hidden shrink-0">
+                        @if(Auth::guard('admin')->user()->profile_pic)
+                            <img src="{{ asset('storage/profile_pics/' . Auth::guard('admin')->user()->profile_pic) }}"
+                                 alt="{{ Auth::guard('admin')->user()->name }}"
+                                 class="w-full h-full object-cover">
+                        @else
+                            <span>{{ strtoupper(substr(Auth::guard('admin')->user()->name ?? 'A', 0, 1)) }}</span>
+                        @endif
                     </div>
-                </div>
+                    <div class="hidden md:block text-left">
+                        <span class="block text-xs font-bold text-slate-900 leading-tight">{{ Auth::guard('admin')->user()->name }}</span>
+                        <span class="block text-[10px] text-rose-600 font-bold uppercase tracking-wider">Super Administrator</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ml-0.5"
+                       :class="{'rotate-180': openAdmin}"></i>
+                </button>
 
-                <div class="relative">
-                    <div class="flex items-center space-x-4">
+                <!-- Admin Dropdown Menu -->
+                <div id="admin-profile-menu"
+                     x-show="openAdmin"
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+                     x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                     x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+                     class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200/80 py-2 z-50 transition-all"
+                     :class="{ '!block': openAdmin }">
+                    <div class="px-4 py-2.5 border-b border-slate-100">
+                        <p class="text-xs font-bold text-slate-900 truncate">{{ Auth::guard('admin')->user()->name }}</p>
+                        <p class="text-[11px] text-slate-400 truncate">{{ Auth::guard('admin')->user()->email }}</p>
+                    </div>
 
-                        <div class="relative" x-data="{ open: false }">
-                            <div @click="open = !open"
-                                 class="flex items-center space-x-2 focus:outline-none cursor-pointer"
-                                 aria-label="User menu" aria-haspopup="true" :aria-expanded="open">
+                    <div class="p-1 space-y-0.5">
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-xl transition-colors">
+                            <i class="fa-solid fa-chart-pie w-4 text-slate-400"></i>
+                            <span>Admin Dashboard</span>
+                        </a>
+                        <a href="{{ route('admin.dashboard.users-list') }}"
+                           class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-xl transition-colors">
+                            <i class="fa-solid fa-users w-4 text-slate-400"></i>
+                            <span>Manage Users</span>
+                        </a>
+                        <a href="{{ route('admin.profile.edit') }}"
+                           class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-rose-50 hover:text-rose-600 rounded-xl transition-colors">
+                            <i class="fa-solid fa-user-shield w-4 text-slate-400"></i>
+                            <span>Security Profile</span>
+                        </a>
+                    </div>
 
-                                <div
-                                    class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
-                                    @if(Auth::guard('admin')->user()->social_login)
-                                        <img src="{{Auth::user()->profile_pic}}" alt="Thumbnail">
-                                    @else
-                                        <img
-                                            src="{{ Auth::guard('admin')->user()->profile_pic ? asset('storage/profile_pics/' . Auth::guard('admin')->user()->profile_pic) : asset('storage/' . 'profile_pics/profile.png')}}"
-                                            alt="Thumbnail">
-                                    @endif
-
-                                </div>
-                                <span
-                                    class="hidden md:inline text-sm font-medium">{{ Auth::guard('admin')->user()->name}}</span>
-                                <i class="fas fa-angle-down w-4 mr-2" :class="{'transform rotate-180': open}"> </i>
-                            </div>
-
-                            <div
-                                x-show="open" @click.away="open = false"
-                                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
-                                style="display: none;">
-                                <div class="px-4 py-2 border-b border-gray-100">
-                                    <p class="text-sm font-medium text-gray-800">{{Auth::guard('admin')->user()->name}}</p>
-                                    <p class="text-xs text-gray-500 truncate">{{Auth::guard('admin')->user()->email}}</p>
-                                </div>
-                                <a href="{{ route('admin.dashboard') }}"
-                                   class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                    <i class="fas fa-dashboard w-4 mr-2"></i>
-                                    Dashboard
-                                </a>
-                                <a href="{{ route('admin.profile.edit') }}"
-                                   class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                    <i class="fas fa-user w-4 mr-2"></i>
-                                    Profile
-                                </a>
-
-                                <a href="{{ route('admin.roles.index') }}"
-                                   class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                    <i class="fas fa-cog w-4 mr-2"> </i>
-                                    Admin Users
-                                </a>
-                                <form method="POST" action="{{ route('admin.logout') }}">
-                                    @csrf
-                                    <button type="submit"
-                                            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                        <i class="fas fa-sign-out w-4 mr-2"> </i>
-                                        Sign out
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                    <div class="p-1 border-t border-slate-100 mt-1">
+                        <form method="POST" action="{{ route('admin.logout') }}">
+                            @csrf
+                            <button type="submit"
+                                    class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-xl transition-colors text-left cursor-pointer">
+                                <i class="fa-solid fa-right-from-bracket w-4"></i>
+                                <span>Sign Out Admin</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         @else
-            <span class="text-2xl font-bold text-red-500">Need Admin Access to Process</span>
+            <a href="{{ route('admin.login') }}" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-xs font-bold">Admin Login</a>
         @endauth
     </div>
 </header>

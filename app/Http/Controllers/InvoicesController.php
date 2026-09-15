@@ -81,112 +81,155 @@ class InvoicesController extends Controller
         return view('pages/invoice/preview2', ['invoice_data' => $data]);
     }
 
-    public function makeInvoice(Request $request)
+    public function makeInvoice(Request $request): JsonResponse
     {
-return response()->json([
-    'info'=>$request->all(),
-]);
+        $user = Auth::user();
 
-        // $validated = validator($request->all(), [
-        //     'issueFrom' => 'nullable|string',
-        //     'issueAddress' => 'nullable|string',
-        //     'issuePhone' => 'nullable|string',
-        //     'issueEmail' => 'nullable|string',
+        // Support both builder.vue nested format and flat request format
+        $clientName    = $request->input('client.name', $request->input('name', 'Valued Client'));
+        $clientEmail   = $request->input('client.email', $request->input('email'));
+        $clientPhone   = $request->input('client.phone', $request->input('phone', '0000000000'));
+        $clientAddress = $request->input('client.address', $request->input('address', ''));
 
-        //     'name' => 'required|string|max:255',
-        //     'address' => 'required|string|max:255',
-        //     'phone' => 'required|numeric',
-        //     'email' => 'nullable|email',
+        $invoiceNumber = $request->input('details.number', $request->input('invoice_number', InvoiceService::invoiceIdGenerator()));
+        $invoiceDate   = $request->input('details.issueDate', $request->input('invoice_date', date('Y-m-d')));
+        $dueDate       = $request->input('details.dueDate', $request->input('due_date'));
+        $notes         = $request->input('notes', '');
+        $terms         = $request->input('terms', '');
+        $currency      = $request->input('currency', $user?->settings?->default_currency ?? 'USD');
 
-        //     'status' => 'nullable|string',
-        //     'invoice_date' => 'required|date',
-        //     'currency' => 'required|string',
-        //     'tax_amount' => 'nullable|numeric',
-        //     'need_tax' => 'nullable|boolean',
-        //     'notes' => 'nullable|string',
-        //     'invoice_number' => 'required|string|max:255',
-        //     'paid_amount' => 'nullable|numeric',
-        //     'total_amount' => 'required|numeric|min:0',
-        //     'items' => 'required|array|min:1',
-        //     'items.*.name' => 'required|string|max:255',
-        //     'items.*.qty' => 'required|numeric|min:1',
-        //     'items.*.rate' => 'required|numeric|min:0'
-        // ]);
+        $rawItems = $request->input('items', []);
+        $items = [];
+        $subtotal = 0;
 
-        // if ($validated->fails()) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => $validated->errors()->first(),
-        //         'error' => $validated->errors()->first(),
-        //         'redirect' => route('invoiceBuilder') // or your target route
-        //     ]);
-        // }
+        foreach ($rawItems as $item) {
+            $desc = $item['description'] ?? $item['name'] ?? 'Item';
+            $qty  = max(1, (float) ($item['qty'] ?? 1));
+            $rate = max(0, (float) ($item['rate'] ?? 0));
+            $lineTotal = round($qty * $rate, 2);
+            $subtotal += $lineTotal;
 
-        // $validatedData = $validated->validated();
+            $items[] = [
+                'name' => $desc,
+                'description' => $desc,
+                'qty' => $qty,
+                'rate' => $rate,
+                'total' => $lineTotal,
+            ];
+        }
 
-        // if (auth()->check()) {
-        //     DB::beginTransaction();
-        //     try {
-        //         //find  any existing customer else add as new
-        //         $user = User::find(Auth::id());
-        //         $customer = $user->customers()->where('phone', $validatedData['phone'])->first();
+        if (empty($items)) {
+            $items[] = [
+                'name' => 'General Service',
+                'description' => 'General Service',
+                'qty' => 1,
+                'rate' => 100,
+                'total' => 100,
+            ];
+            $subtotal = 100;
+        }
 
-        //         if (!$customer) {
-        //             $customer = Customers::create([
-        //                 'user_id' => Auth::id(),
-        //                 'name' => $validatedData['name'],
-        //                 'phone' => $validatedData['phone'],
-        //                 'email' => $validatedData['email'],
-        //                 'address' => $validatedData['address'],
-        //             ]);
-        //         }
-        //         $status = $validatedData['paid_amount'] >= $validatedData['total_amount'] ? 'Paid' : 'Pending';
+        $taxRate = (float) $request->input('tax_percentage', 10);
+        $taxAmount = round($subtotal * ($taxRate / 100), 2);
+        $totalAmount = round($subtotal + $taxAmount, 2);
+        $paidAmount = (float) $request->input('paid_amount', 0);
+        $status = $paidAmount >= $totalAmount ? 'paid' : ($paidAmount > 0 ? 'partially_paid' : 'unpaid');
 
+        if ($user) {
+            DB::beginTransaction();
+            try {
+                // Find or create customer
+                $customer = null;
+                if (!empty($clientEmail)) {
+                    $customer = $user->customers()->where('email', $clientEmail)->first();
+                }
+                if (!$customer && !empty($clientPhone) && $clientPhone !== '0000000000') {
+                    $customer = $user->customers()->where('phone', $clientPhone)->first();
+                }
+                if (!$customer) {
+                    $customer = Customers::create([
+                        'user_id' => $user->id,
+                        'name' => $clientName,
+                        'email' => $clientEmail,
+                        'phone' => $clientPhone,
+                        'address' => $clientAddress,
+                    ]);
+                }
 
-        //         //inset invoice for the user
-        //         $invoice = Invoices::create([
-        //             'user_id' => Auth::id(),
-        //             'customer_id' => $customer->id,
-        //             'invoice_number' => $validatedData['invoice_number'],
-        //             'invoice_date' => $validatedData['invoice_date'],
-        //             'items' => json_encode($validatedData['items']),
-        //             'tax_amount' => $validatedData['tax_amount'],
-        //             'need_tax' => $validatedData['need_tax'],
-        //             'notes' => $validatedData['notes'],
-        //             'currency' => $validatedData['currency'],
-        //             'paid_amount' => $validatedData['paid_amount'],
-        //             'total_amount' => $validatedData['total_amount'],
-        //             'status' => $status
-        //         ]);
-        //         DB::commit();
-        //         AdminNotifier::invoiceGenerate($invoice);
-        //         return response()->json([
-        //             'success' => true,
-        //             'message' => 'Invoice Created Success',
-        //             'redirect' => route('previewInvoice', $validatedData['invoice_number']) // or your target route
-        //         ]);
-        //     } catch (Exception $e) {
-        //         //back if any errors in transactions
-        //         DB::rollBack();
-        //         return back()->with([
-        //             'success' => false,
-        //             'message' => $e->getMessage(),
-        //             'redirect' => route('invoiceBuilder')
-        //         ]);
-        //     }
-        // } else {
-        //     //return redirect()->route('previewInvoice')->with(['message'=>'generate success','data'=>$request->all()]);
-        //     session([$validatedData['invoice_number'] => $validatedData]);
-        //     return response()->json([
-        //         'success' => true,
-        //         'message' => 'redirect to preview page with data',
-        //         'redirect' => route('previewInvoice', $request->invoice_number) // or your target route
-        //     ]);
-        // }
+                $invoice = Invoices::create([
+                    'user_id' => $user->id,
+                    'customer_id' => $customer->id,
+                    'invoice_number' => $invoiceNumber,
+                    'invoice_date' => $invoiceDate,
+                    'due_date' => $dueDate,
+                    'items' => json_encode($items),
+                    'tax_amount' => $taxAmount,
+                    'need_tax' => $taxAmount > 0 ? 1 : 0,
+                    'notes' => trim($notes . ($terms ? "\nTerms: " . $terms : '')),
+                    'currency' => $currency,
+                    'paid_amount' => $paidAmount,
+                    'total_amount' => $totalAmount,
+                    'status' => $status,
+                ]);
 
-        //        return redirect()->route('previewInvoice')->with('message', 'Registered successfully! Please check your email to verify.');
+                DB::commit();
 
+                try {
+                    AdminNotifier::invoiceGenerate($invoice);
+                } catch (\Throwable $e) {
+                    // Suppress notifier errors
+                }
+
+                try {
+                    app(\App\Services\WebhookDispatcherService::class)->dispatchForUser($user, 'invoice.created', [
+                        'invoice_id' => $invoice->id,
+                        'invoice_number' => $invoice->invoice_number,
+                        'total_amount' => $invoice->total_amount,
+                        'status' => $invoice->status,
+                    ]);
+                } catch (\Throwable $e) {
+                    // Suppress webhook errors
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Invoice created successfully!',
+                    'invoice' => $invoice,
+                    'redirect' => route('previewInvoice', $invoice->invoice_number),
+                ]);
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to create invoice: ' . $e->getMessage(),
+                ], 422);
+            }
+        } else {
+            // Guest Session Storage
+            session([$invoiceNumber => [
+                'invoice_number' => $invoiceNumber,
+                'invoice_date' => $invoiceDate,
+                'items' => $items,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $totalAmount,
+                'paid_amount' => 0,
+                'status' => 'unpaid',
+                'customer' => [
+                    'name' => $clientName,
+                    'email' => $clientEmail,
+                    'phone' => $clientPhone,
+                    'address' => $clientAddress,
+                ],
+            ]]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice created in session!',
+                'redirect' => route('previewInvoice', $invoiceNumber),
+            ]);
+        }
     }
+
 
 
     public function get_all_invoices()
