@@ -1,96 +1,181 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="user-id" content="{{ auth()->id() }}">
 
-    <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @isset($meta)
-        {{$meta}}
-    @endisset
-    @vite(['resources/css/dashboard.css','resources/js/app.js'])
+    <title>{{ $title ?? config('app.name', 'Invozen') }}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+    </style>
 
+    @isset($meta)
+        {{ $meta }}
+    @endisset
+
+    @vite(['resources/css/dashboard.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 max-w-7xl mx-auto">
-<div id="dashboard-container" class="dashboard-grid">
-    @include('custom-components.dashboard-aside')
-    @include('custom-components.dashboard-header')
-    {{$slot}}
-</div>
-<div id="mobile-menu" class="mobile-menu fixed inset-0 z-50 bg-gray-800 bg-opacity-75 hidden">
-    <div class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 p-6">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-bold text-primary">Invozen</h1>
-            <button id="close-menu" class="text-gray-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+<body class="h-full bg-slate-50/60 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
+    <div class="min-h-screen flex">
+        <!-- Desktop Sidebar -->
+        <div class="hidden md:block">
+            @include('custom-components.dashboard-aside')
         </div>
-        <div class="space-y-2">
-            <a href="{{ route('dashboard') }}" class="sidebar-item active flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-gauge-high w-5 mr-3"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ route('invoices') }} " class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-file-invoice w-5 mr-3"></i>
-                <span>Invoices</span>
-            </a>
-            <a href="{{ route('customers') }} " class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-users w-5 mr-3"></i>
-                <span>Clients</span>
-            </a>
-            <a href="{{ route('invoice.builder') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-receipt w-5 mr-3"></i>
-                <span>Invoice Builder</span>
-            </a>
-            <a href="{{ route('subscription.plan') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-money-bill-transfer w-5 mr-3"></i>
-                <span>Plans</span>
-            </a>
-            <a href="#" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-chart-simple w-5 mr-3"></i>
-                <span>Reports</span>
-            </a>
-            <a href="{{ route('profile.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-user-gear w-5 mr-3"></i>
-                <span>Profile</span>
-            </a>
-            <a href="{{ route('developer.api-keys') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors {{ request()->routeIs('developer.*') ? 'active text-blue-600 bg-blue-50' : '' }}">
-                <i class="fa-solid fa-code w-5 mr-3"></i>
-                <span>API Keys & Webhooks</span>
-            </a>
-            <a href="{{ route('settings.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-gear w-5 mr-3"></i>
-                <span>Settings</span>
-            </a>
-            <form method="POST" action="{{ route('logout') }}" class="sidebar-item flex items-center p-0 rounded-lg transition-colors">
-                @csrf
-                <button type="submit"
-                        class="w-full text-red-500 sidebar-item text-left p-3 hover:text-red-600 flex items-center transition-colors">
-                    <i class="fa-solid fa-right-from-bracket w-5 mr-3 text-red-500"> </i>
-                    Logout
-                </button>
-            </form>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
+            @include('custom-components.dashboard-header')
+            
+            <main class="flex-1 pb-12">
+                {{ $slot }}
+            </main>
         </div>
     </div>
-</div>
-</body>
-<script>
-    // Mobile menu functionality
-    document.getElementById('mobile-menu-button').addEventListener('click', function () {
-        document.getElementById('mobile-menu').classList.remove('hidden');
-        setTimeout(() => {
-            document.getElementById('mobile-menu').classList.add('active');
-        }, 10);
-    });
 
-    document.getElementById('close-menu').addEventListener('click', function () {
-        document.getElementById('mobile-menu').classList.remove('active');
-        setTimeout(() => {
-            document.getElementById('mobile-menu').classList.add('hidden');
-        }, 300);
-    });
-</script>
+    <!-- Mobile Slide-over Drawer -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+        <!-- Backdrop -->
+        <div id="mobile-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+
+        <!-- Drawer Content -->
+        <div id="mobile-panel" class="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-white shadow-2xl z-50 flex flex-col -translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+            <!-- Mobile Brand & Close -->
+            <div class="h-16 flex items-center justify-between px-6 border-b border-slate-100">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                        <i class="fa-solid fa-file-invoice text-base"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-black tracking-tight text-slate-900">Invozen</span>
+                    </div>
+                </a>
+                <button id="close-menu" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Nav -->
+            <div class="flex-1 overflow-y-auto px-4 py-5 space-y-5 scrollbar-thin">
+                <div>
+                    <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Main Menu</p>
+                    <div class="space-y-1">
+                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                            <i class="fa-solid fa-gauge-high w-5 text-center text-base {{ request()->routeIs('dashboard') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{{ route('invoices') }}" class="sidebar-link {{ request()->routeIs('invoices*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-base {{ request()->routeIs('invoices*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Invoices</span>
+                        </a>
+                        <a href="{{ route('customers') }}" class="sidebar-link {{ request()->routeIs('customers*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-users w-5 text-center text-base {{ request()->routeIs('customers*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Clients</span>
+                        </a>
+
+                        <a href="{{ route('invoice.builder') }}" class="sidebar-link {{ request()->routeIs('invoice.builder*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-wand-magic-sparkles w-5 text-center text-base {{ request()->routeIs('invoice.builder*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Invoice Builder</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Financial</p>
+                    <div class="space-y-1">
+                        <a href="{{ route('subscription.plan') }}" class="sidebar-link {{ request()->routeIs('subscription.plan*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-gem w-5 text-center text-base {{ request()->routeIs('subscription.plan*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Plans & Billing</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Developer</p>
+                    <div class="space-y-1">
+                        <a href="{{ route('developer.api-keys') }}" class="sidebar-link {{ request()->routeIs('developer.*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-key w-5 text-center text-base {{ request()->routeIs('developer.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>API Keys & Hooks</span>
+                        </a>
+                        <a href="{{ route('api-docs') }}" target="_blank" class="sidebar-link">
+                            <i class="fa-solid fa-book-bookmark w-5 text-center text-base text-slate-400"></i>
+                            <span>API Documentation</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Preferences</p>
+                    <div class="space-y-1">
+                        <a href="{{ route('profile.edit') }}" class="sidebar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-user-circle w-5 text-center text-base {{ request()->routeIs('profile.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="{{ route('settings.edit') }}" class="sidebar-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-sliders w-5 text-center text-base {{ request()->routeIs('settings.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Drawer Bottom -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobilePanel = document.getElementById('mobile-panel');
+            const mobileBackdrop = document.getElementById('mobile-backdrop');
+            const openBtn = document.getElementById('mobile-menu-button');
+            const closeBtn = document.getElementById('close-menu');
+
+            function openMobileNav() {
+                mobileMenu.classList.remove('pointer-events-none');
+                mobileBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+                mobileBackdrop.classList.add('opacity-100', 'pointer-events-auto');
+                mobilePanel.classList.remove('-translate-x-full');
+                mobilePanel.classList.add('translate-x-0');
+            }
+
+            function closeMobileNav() {
+                mobileBackdrop.classList.remove('opacity-100', 'pointer-events-auto');
+                mobileBackdrop.classList.add('opacity-0', 'pointer-events-none');
+                mobilePanel.classList.remove('translate-x-0');
+                mobilePanel.classList.add('-translate-x-full');
+                setTimeout(() => {
+                    mobileMenu.classList.add('pointer-events-none');
+                }, 300);
+            }
+
+            if (openBtn) openBtn.addEventListener('click', openMobileNav);
+            if (closeBtn) closeBtn.addEventListener('click', closeMobileNav);
+            if (mobileBackdrop) mobileBackdrop.addEventListener('click', closeMobileNav);
+        });
+    </script>
+</body>
 </html>
+

@@ -1,62 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    grid-template-rows: 70px 1fr;
-    grid-template-areas:
-                "sidebar header"
-                "sidebar main";
-    min-height: 100vh;
+@layer base {
+    body {
+        @apply antialiased text-slate-800 bg-slate-50/60 selection:bg-blue-600 selection:text-white;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
 }
-.sidebar {
-    grid-area: sidebar;
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
-.header {
-    grid-area: header;
+
+::-webkit-scrollbar-track {
+    background: transparent;
 }
-.main {
-    grid-area: main;
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
 }
-.sidebar-item.active {
-    background-color: rgba(79, 70, 229, 0.1);
-    color: #4f46e5;
-    border-right: 3px solid #4f46e5;
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
-.sidebar-item:hover {
-    background-color: rgba(79, 70, 229, 0.05);
+
+/* Sidebar navigation item active & hover */
+.sidebar-link {
+    @apply flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150;
 }
+
+.sidebar-link.active {
+    @apply bg-blue-50 text-blue-600 font-semibold shadow-sm shadow-blue-500/5;
+}
+
+.sidebar-link:not(.active) {
+    @apply text-slate-600 hover:text-slate-900 hover:bg-slate-100/80;
+}
+
+.card-hover {
+    @apply transition-all duration-200;
+}
+
 .card-hover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
 }
+
 .chart-container {
     position: relative;
     height: 300px;
 }
-@media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-                    "header"
-                    "main";
-    }
-    .sidebar {
-        display: none;
-    }
-    .mobile-menu {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-    }
-    .mobile-menu.active {
-        transform: translateX(0);
-    }
-}
 
-
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 [v-cloak] {
     display: none;
 }
