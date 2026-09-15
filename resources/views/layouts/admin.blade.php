@@ -32,39 +32,27 @@
             </button>
         </div>
         <div class="space-y-2">
-            <a href="{{ route('dashboard') }}" class="sidebar-item active flex items-center p-3 rounded-lg transition-colors">
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }} flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-gauge-high w-5 mr-3"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('invoices') }} " class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-file-invoice w-5 mr-3"></i>
-                <span>Invoices</span>
-            </a>
-            <a href="{{ route('customers') }} " class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
+            <a href="{{ route('admin.dashboard.users-list') }}" class="sidebar-item {{ request()->routeIs('admin.dashboard.users-list*') ? 'active' : '' }} flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-users w-5 mr-3"></i>
-                <span>Clients</span>
+                <span>Users</span>
             </a>
-            <a href="{{ route('invoice.builder') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-receipt w-5 mr-3"></i>
-                <span>Invoice Builder</span>
-            </a>
-            <a href="{{ route('subscription.plan') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
+            <a href="{{ route('admin.dashboard.payments') }}" class="sidebar-item {{ request()->routeIs('admin.dashboard.payments*') ? 'active' : '' }} flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-money-bill-transfer w-5 mr-3"></i>
-                <span>Plans</span>
+                <span>Payments</span>
             </a>
-            <a href="#" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-chart-simple w-5 mr-3"></i>
-                <span>Reports</span>
-            </a>
-            <a href="{{ route('profile.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
+            <a href="{{ route('admin.profile.edit') }}" class="sidebar-item {{ request()->routeIs('admin.profile.*') ? 'active' : '' }} flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-user-gear w-5 mr-3"></i>
                 <span>Profile</span>
             </a>
-            <a href="{{ route('settings.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
-                <i class="fa-solid fa-gear w-5 mr-3"></i>
-                <span>Settings</span>
+            <a href="{{ route('admin.roles.index') }}" class="sidebar-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }} flex items-center p-3 rounded-lg transition-colors">
+                <i class="fa-solid fa-shield-halved w-5 mr-3"></i>
+                <span>Roles & Staff</span>
             </a>
-            <form method="POST" action="{{ route('logout') }}" class="sidebar-item flex items-center p-0 rounded-lg transition-colors">
+            <form method="POST" action="{{ route('admin.logout') }}" class="sidebar-item flex items-center p-0 rounded-lg transition-colors">
                 @csrf
                 <button type="submit"
                         class="w-full text-red-500 sidebar-item text-left p-3 hover:text-red-600 flex items-center transition-colors">
