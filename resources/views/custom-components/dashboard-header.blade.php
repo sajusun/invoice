@@ -25,26 +25,25 @@
     <!-- Right: Quick Actions & Profile -->
     <div class="flex items-center gap-2 sm:gap-3">
         <!-- Quick Create Dropdown -->
-        <div class="relative" x-data="{ openCreate: false }">
-            <button @click="openCreate = !openCreate"
+        <div class="relative" x-data="{ openCreate: false }" @click.outside="openCreate = false">
+            <button @click.stop="openCreate = !openCreate"
                     type="button"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-blue-500/20 hover:shadow-md transition-all focus:outline-none">
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-blue-500/20 hover:shadow-md transition-all focus:outline-none cursor-pointer">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span class="hidden sm:inline">New</span>
-                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5"></i>
+                <i class="fa-solid fa-chevron-down text-[9px] opacity-70 ml-0.5 transition-transform duration-200" :class="{'rotate-180': openCreate}"></i>
             </button>
 
             <!-- Dropdown -->
             <div x-show="openCreate"
-                 x-transition:enter="transition ease-out duration-100"
-                 x-transition:enter-start="transform opacity-0 scale-95"
-                 x-transition:enter-end="transform opacity-100 scale-100"
-                 x-transition:leave="transition ease-in duration-75"
-                 x-transition:leave-start="transform opacity-100 scale-100"
-                 x-transition:leave-end="transform opacity-0 scale-95"
-                 @click.away="openCreate = false"
-                 class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-slate-200/80 p-1.5 z-50"
-                 style="display: none;">
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+                 x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                 x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+                 class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-slate-200/80 p-1.5 z-50">
                 <a href="{{ route('invoice.builder') }}"
                    class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors">
                     <div class="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-[11px]">
@@ -66,5 +65,6 @@
 
         @include('custom-components.user_auth_or_not')
     </div>
+
 </header>
 
