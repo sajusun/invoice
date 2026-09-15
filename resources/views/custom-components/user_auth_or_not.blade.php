@@ -52,11 +52,9 @@
         </div>
 
         <!-- User Profile Dropdown -->
-        <div class="relative" x-data="{ open: false }" @click.outside="open = false" data-dropdown-wrapper>
+        <div class="relative" x-data="{ open: false }">
             <button @click.stop="open = !open"
                     type="button"
-                    id="user-profile-menu-button"
-                    data-dropdown-trigger="user-profile-menu"
                     class="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer select-none"
                     aria-label="User menu" :aria-expanded="open">
                 <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm overflow-hidden shrink-0">
@@ -77,17 +75,16 @@
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="user-profile-menu"
-                 x-show="open"
+            <div x-show="open"
                  x-cloak
+                 @click.outside="open = false"
                  x-transition:enter="transition ease-out duration-150"
-                 x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
-                 x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                  x-transition:leave="transition ease-in duration-100"
-                 x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
-                 x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
-                 class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200/80 py-2 z-50 transition-all"
-                 :class="{ '!block': open }">
+                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                 class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200/80 py-2 z-50">
                 <div class="px-4 py-2.5 border-b border-slate-100">
                     <p class="text-xs font-bold text-slate-900 truncate">{{ Auth::user()->name }}</p>
                     <p class="text-[11px] text-slate-400 truncate">{{ Auth::user()->email }}</p>
@@ -128,6 +125,7 @@
                 </div>
             </div>
         </div>
+
 
 
     </div>
