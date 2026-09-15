@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Plan;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PlanSeeder extends Seeder
@@ -13,28 +12,35 @@ class PlanSeeder extends Seeder
      */
     public function run(): void
     {
-        Plan::create([
-            'name' => 'Free',
-            'price' => 0,
-            'type' => 'free',
-            'max_invoices' => 50,
-            'max_customers' => 100
-        ]);
+        $plans = [
+            [
+                'name' => 'Free',
+                'price' => 0.00,
+                'type' => 'free',
+                'max_invoices' => 50,
+                'max_customers' => 100,
+            ],
+            [
+                'name' => 'Premium',
+                'price' => 9.99,
+                'type' => 'premium',
+                'max_invoices' => 5000,
+                'max_customers' => 1000,
+            ],
+            [
+                'name' => 'Business',
+                'price' => 37.99,
+                'type' => 'business',
+                'max_invoices' => null,
+                'max_customers' => null,
+            ],
+        ];
 
-        Plan::create([
-            'name' => 'Premium',
-            'price' => 9.99,
-            'type' => 'premium',
-            'max_invoices' => 5000, // unlimited
-            'max_customers' => 1000 // unlimited
-        ]);
-        Plan::create([
-            'name' => 'Business',
-            'price' => 37.99,
-            'type' => 'business',
-            'max_invoices' => null, // unlimited
-            'max_customers' => null // unlimited
-        ]);
-
+        foreach ($plans as $plan) {
+            Plan::updateOrCreate(
+                ['type' => $plan['type']],
+                $plan
+            );
+        }
     }
 }

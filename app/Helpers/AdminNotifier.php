@@ -6,13 +6,15 @@ use App\Models\AdminNotification;
 use App\Events\AdminNotification as AdminNotificationEvent;
 use App\Models\Invoices;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AdminNotifier
 {
     private static AdminNotifier|null $instance = null;
     private string $title;
     private string $message;
-    private string $route;
+    private ?string $route = null;
 
     private static function getInstance(): ?AdminNotifier
     {
@@ -25,65 +27,75 @@ class AdminNotifier
     public static function send(string $title, string $message, ?string $route = null): void
     {
         $notification = AdminNotification::create([
-            'title' => $title,
+            'title'   => $title,
             'message' => $message,
-            'route' => $route,
+            'route'   => $route,
         ]);
 
-        broadcast(new AdminNotificationEvent($notification));
-
+        try {
+            broadcast(new AdminNotificationEvent($notification));
+        } catch (Throwable $e) {
+            Log::warning('Websocket broadcast failed: ' . $e->getMessage());
+        }
     }
 
     private function push(): void
     {
         $notification = AdminNotification::create([
-            'title' => $this->title,
+            'title'   => $this->title,
             'message' => $this->message,
-            'route' => $this->route,
+            'route'   => $this->route,
         ]);
 
-        broadcast(new AdminNotificationEvent($notification));
+        try {
+            broadcast(new AdminNotificationEvent($notification));
+        } catch (Throwable $e) {
+            Log::warning('Websocket broadcast failed: ' . $e->getMessage());
+        }
     }
-
 
     public static function invoiceGenerate(Invoices $invoice): void
     {
         $instance = self::getInstance();
         $instance->route = '#';
-        $instance->title = " New Invoice";
-        $instance->message = "A new invoice Generate " . $invoice->id;
+        $instance->title = "New Invoice";
+        $instance->message = "A new invoice was generated: " . $invoice->invoice_number;
         $instance->push();
     }
+
     public static function userRegister(User $user): void
     {
         $instance = self::getInstance();
         $instance->route = route('admin.dashboard.user.page', $user->id);
         $instance->title = "New User Registered";
-        $instance->message = "A new user named ".$user->name ." just registered.";
+        $instance->message = "A new user named " . $user->name . " just registered.";
         $instance->push();
     }
+
     public static function userVerified(User $user): void
     {
         $instance = self::getInstance();
         $instance->route = route('admin.dashboard.user.page', $user->id);
         $instance->title = "Account Verification";
-        $instance->message = "A user named ".$user->name ." just verified there account.";
+        $instance->message = "User " . $user->name . " has verified their account.";
         $instance->push();
     }
+
     public static function userDelete(User $user): void
     {
         $instance = self::getInstance();
         $instance->route = route('admin.dashboard.user.page', $user->id);
-        $instance->title = "Account Delete";
-        $instance->message = "A  user named ".$user->name ." just delete there account.";
-        $instance->push();
-    } public static function purchasePlan(User $user): void
-    {
-        $instance = self::getInstance();
-        $instance->route = route('admin.dashboard.user.page', $user->id);
-        $instance->title = "Purchase Plan";
-        $instance->message = "A  user named ".$user->name ." just Purchase a plan.";
+        $instance->title = "Account Deleted";
+        $instance->message = "User " . $user->name . " has deleted their account.";
         $instance->push();
     }
 
+    public static function purchasePlan(User $user): void
+    {
+        $instance = self::getInstance();
+        $instance->route = route('admin.dashboard.user.page', $user->id);
+        $instance->title = "Plan Purchased";
+        $instance->message = "User " . $user->name . " purchased a plan.";
+        $instance->push();
+    }
 }

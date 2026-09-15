@@ -35,14 +35,17 @@ class DashboardController extends Controller
         $paid = $invoice_ctrl->invoice_status('paid');
 
 
-        AdminNotifier::send(
-            'New User Registered',
-            'A new user named ' . auth()->user()->name. ' just registered.',
-            route('admin.dashboard.user.page', auth()->user()->id)
-        );
-
-        return view('dashboard2', ['num_of_invoices' => $num_of_invoices, 'total' => $total,'due'=>$due,
-            'invoices' => $invoices, 'pending' => $pending,'canceled'=>$canceled,'paid'=>$paid,'currency'=>$currency,'customers'=>$customers]);
+        return view('dashboard2', [
+            'num_of_invoices' => $num_of_invoices,
+            'total'           => $total,
+            'due'             => $due,
+            'invoices'        => $invoices,
+            'pending'         => $pending,
+            'canceled'        => $canceled,
+            'paid'            => $paid,
+            'currency'        => $currency,
+            'customers'       => $customers,
+        ]);
     }
 
     public function customers(): View

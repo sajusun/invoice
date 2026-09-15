@@ -2,25 +2,27 @@
 
 namespace Database\Factories;
 
+use App\Models\Customers;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Customers>
  */
 class CustomersFactory extends Factory
 {
+    protected $model = Customers::class;
+
     public function definition(): array
     {
         return [
-            'name'        => $this->faker->name(),
-            'email'       => $this->faker->unique()->safeEmail(),
-            'phone'       => $this->faker->phoneNumber(),
-            'address'     => $this->faker->address(),
-            'user_id'     => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
+            'user_id'    => User::first()?->id ?? 1,
+            'name'       => $this->faker->company() . ' (' . $this->faker->name() . ')',
+            'email'      => $this->faker->unique()->safeEmail(),
+            'phone'      => $this->faker->phoneNumber(),
+            'address'    => $this->faker->streetAddress() . ', ' . $this->faker->city() . ', ' . $this->faker->stateAbbr(),
+            'created_at' => $this->faker->dateTimeBetween('-5 months', 'now'),
+            'updated_at' => now(),
         ];
     }
 }

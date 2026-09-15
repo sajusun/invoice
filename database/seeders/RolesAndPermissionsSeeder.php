@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
@@ -13,49 +14,87 @@ class RolesAndPermissionsSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        $permissions = ['*', 'create', 'read', 'edit', 'delete'];
+        // 1. Define standard permissions
+        $permissions = [
+            '*',
+            'create',
+            'read',
+            'edit',
+            'delete',
+            'manage_users',
+            'manage_invoices',
+            'manage_settings',
+            'manage_plans',
+        ];
 
         foreach ($permissions as $perm) {
             Permission::firstOrCreate(['name' => $perm]);
         }
 
-        $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
-        $admin = Role::firstOrCreate(['name' => 'admin']);
-        $moderator = Role::firstOrCreate(['name' => 'moderator']);
-        $guest = Role::firstOrCreate(['name' => 'guest']);
+        // 2. Define roles
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
+        $adminRole      = Role::firstOrCreate(['name' => 'admin']);
+        $moderatorRole  = Role::firstOrCreate(['name' => 'moderator']);
+        $guestRole      = Role::firstOrCreate(['name' => 'guest']);
 
-        Admin::firstOrCreate(
-            ['email' => 'admin123@gmail.com'],
-            [
-                'name' => 'default admin',
-                'password' => Hash::make('admin123'),
-                'role_id' => $admin->id,
-            ]
-        );
-        Admin::firstOrCreate(
-            ['email' => 'superadmin123@gmail.com'],
-            [
-                'name' => 'default super admin',
-                'password' => Hash::make('admin123'),
-                'role_id' => $superAdmin->id,
-            ]
-        );
-        Admin::firstOrCreate(
-            ['email' => 'moderator123@gmail.com'],
-            [
-                'name' => 'default moderator',
-                'password' => Hash::make('admin123'),
-                'role_id' => $moderator->id,
-            ]
-        );
+        // 3. Assign permissions to roles
+        $superAdminRole->permissions()->sync(Permission::all()->pluck('id'));
+        
+        $adminPermissions = Permission::whereIn('name', ['create', 'read', 'edit', 'delete', 'manage_users', 'manage_invoices', 'manage_settings'])->pluck('id');
+        $adminRole->permissions()->sync($adminPermissions);
 
-        $superAdmin->permissions()->attach(Permission::all());
-        $admin->permissions()->attach(Permission::whereIn('name', ['create', 'read', 'edit', 'delete'])->get());
-        $moderator->permissions()->attach(Permission::where('name', ['create', 'read', 'edit'])->get());
-        $guest->permissions()->attach(Permission::where('name', 'read')->first());
+        $moderatorPermissions = Permission::whereIn('name', ['create', 'read', 'edit', 'manage_invoices'])->pluck('id');
+        $moderatorRole->permissions()->sync($moderatorPermissions);
 
+        $guestPermissions = Permission::where('name', 'read')->pluck('id');
+        $guestRole->permissions()->sync($guestPermissions);
+
+        // 4. Create default admin users
+        $admins = [
+            [
+                'name'     => 'Super Admin',
+                'email'    => 'superadmin@gmail.com',
+                'password' => Hash::make('admin123'),
+                'role_id'  => $superAdminRole->id,
+                'phone'    => '+1 (555) 001-0001',
+            ],
+            [
+                'name'     => 'System Admin',
+                'email'    => 'admin@gmail.com',
+                'password' => Hash::make('admin123'),
+                'role_id'  => $adminRole->id,
+                'phone'    => '+1 (555) 002-0002',
+            ],
+            [
+                'name'     => 'Content Moderator',
+                'email'    => 'moderator@gmail.com',
+                'password' => Hash::make('admin123'),
+                'role_id'  => $moderatorRole->id,
+                'phone'    => '+1 (555) 003-0003',
+            ],
+        ];
+
+        foreach ($admins as $adminData) {
+            $phone = $adminData['phone'];
+            unset($adminData['phone']);
+
+            $admin = Admin::updateOrCreate(
+                ['email' => $adminData['email']],
+                $adminData
+            );
+
+            // Sync admin details
+            DB::table('admins_details')->updateOrInsert(
+                ['admin_id' => $admin->id],
+                [
+                    'phone'      => $phone,
+                    'dp'         => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
     }
-
 }
