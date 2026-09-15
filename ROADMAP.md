@@ -103,8 +103,9 @@
 
 ## 🛡️ Phase 10: Admin Panel Isolation & Invoice Builder Overhaul
 - [x] **10.1** Fail-Safe User Dropdown Engine:
-  - [x] Added dual Alpine + zero-dependency Vanilla JS toggle controller to prevent event dropouts
-  - [x] "+ New" button and User Profile dropdown working 100% reliably with click, outside click, and ESC dismiss
+  - [x] Resolved Reverb/Echo unhandled promise exception in `echo.js` and uncommented Vite Reverb env keys.
+  - [x] Added `pointer-events-none` on inner elements of dropdown buttons to ensure clean click target resolution.
+  - [x] Streamlined Alpine.js `@click` and `@click.outside` directives across user and admin headers.
 - [x] **10.2** Complete Admin Panel Isolation & Dedicated Layout:
   - [x] Dedicated dark-slate SaaS Admin theme (`layouts/admin.blade.php`, `custom-components/admin-dashboard-aside.blade.php`)
   - [x] Strict separation with `auth:admin` guard and dedicated admin navbar (`components/admin-navbar.blade.php`)
@@ -115,6 +116,21 @@
 
 ---
 
-*Last Updated: 2026-09-15 — Full Platform, Admin Isolation & Invoice Builder Overhaul Completed.*
+## 💎 Phase 11: Enterprise Admin Pages & Permission Control UI
+- [x] **11.1** Granular Role Permissions Matrix (`/admin/dashboard/roles`):
+  - [x] Modern Enterprise matrix table with feature tags, clean checkboxes, and SuperAdmin lock
+  - [x] Administrator directory table with instant role reassignment dropdown and actions
+  - [x] Add New Admin form (`/admin/dashboard/users/create`) & Edit Admin form (`/admin/dashboard/users/{id}/edit`)
+- [x] **11.2** Admin Security Profile (`/admin/profile`):
+  - [x] Admin hero banner, live avatar preview, and profile photo upload handling in `AdminProfileController`
+  - [x] Password change and credentials update with validation feedback
+- [x] **11.3** Platform Revenue & Payments Audit (`/admin/dashboard/payments`):
+  - [x] Revenue stat cards, transactions list, plan badges, and gateway badges with full pagination
+  - [x] Custom/Manual Subscription assignment studio (`/admin/dashboard/payments/create`)
+  - [x] Comprehensive User Inspector (`/admin/dashboard/user-info/{id}`) integrated with `<x-admin-layout>`
+
+---
+
+*Last Updated: 2026-09-15 — Full Platform, Navbar Dropdown Fix & Enterprise Admin Pages Overhaul Completed.*
 
 
