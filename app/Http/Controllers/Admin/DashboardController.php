@@ -33,7 +33,7 @@ class DashboardController extends Controller
             'route' => '/account',
         ]);
 
-        event(new UserNotificationEvent($notification));
+        // event(new UserNotificationEvent($notification));
 
         return view('admin.dashboard', compact(
             'totalUsers',
