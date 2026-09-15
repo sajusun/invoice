@@ -52,12 +52,12 @@
         </div>
 
         <!-- User Profile Dropdown -->
-        <div class="relative" x-data="{ open: false }">
-            <button @click.stop="open = !open"
+        <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+            <button @click="open = !open"
                     type="button"
                     class="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none cursor-pointer select-none"
                     aria-label="User menu" :aria-expanded="open">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm overflow-hidden shrink-0">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm overflow-hidden shrink-0 pointer-events-none">
                     @if(Auth::user()->profile_pic)
                         <img src="{{ Auth::user()->social_login ? Auth::user()->profile_pic : asset('storage/profile_pics/' . Auth::user()->profile_pic) }}"
                              alt="{{ Auth::user()->name }}"
@@ -66,18 +66,17 @@
                         <span>{{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}</span>
                     @endif
                 </div>
-                <div class="hidden md:block text-left">
+                <div class="hidden md:block text-left pointer-events-none">
                     <span class="block text-xs font-bold text-slate-900 leading-tight">{{ Auth::user()->name }}</span>
                     <span class="block text-[10px] text-slate-400 font-medium truncate max-w-[110px]">{{ Auth::user()->settings?->company_name ?? 'Personal' }}</span>
                 </div>
-                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ml-0.5"
+                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ml-0.5 pointer-events-none"
                    :class="{'rotate-180': open}"></i>
             </button>
 
             <!-- Dropdown Menu -->
             <div x-show="open"
                  x-cloak
-                 @click.outside="open = false"
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
                  x-transition:enter-end="opacity-100 scale-100 translate-y-0"
