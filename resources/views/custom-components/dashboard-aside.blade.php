@@ -49,6 +49,10 @@
                 <i class="fa-solid fa-user-gear w-5 mr-3"></i>
                 <span>Profile</span>
             </a>
+            <a href="{{ route('developer.api-keys') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors {{ request()->routeIs('developer.*') ? 'active text-blue-600 bg-blue-50' : '' }}">
+                <i class="fa-solid fa-code w-5 mr-3"></i>
+                <span>API Keys & Webhooks</span>
+            </a>
             <a href="{{ route('settings.edit') }}" class="sidebar-item flex items-center p-3 rounded-lg transition-colors">
                 <i class="fa-solid fa-gear w-5 mr-3"></i>
                 <span>Settings</span>

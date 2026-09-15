@@ -53,7 +53,8 @@ Route::view('/blog', 'pages.blog')->name('blog');
 Route::view('/guides', 'pages.guides')->name('guides');
 Route::view('/support', 'pages.support')->name('support');
 Route::view('/integrations', 'pages.integrations')->name('integrations');
-Route::view('/api-docs', 'pages.api-docs')->name('api-docs');
+Route::get('/api-docs', [App\Http\Controllers\DeveloperController::class, 'docs'])->name('api-docs');
+Route::get('/developer/docs', [App\Http\Controllers\DeveloperController::class, 'docs'])->name('developer.docs');
 
 Route::get('/contact-us', [HomePageController::class, 'contact_form'])->name('contact.form');
 Route::post('/contact-us', [HomePageController::class, 'submit_contact'])->name('contact.form');
@@ -71,6 +72,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::get('dashboard/my-plan', [DashboardController::class, 'my_plan'])->name('subscription.plan');
+
+    // Developer API Keys & Webhook management
+    Route::get('/dashboard/developer/api-keys', [App\Http\Controllers\DeveloperController::class, 'index'])->name('developer.api-keys');
+    Route::post('/dashboard/developer/api-keys', [App\Http\Controllers\DeveloperController::class, 'store'])->name('developer.api-keys.store');
+    Route::post('/dashboard/developer/api-keys/{apiKey}/toggle', [App\Http\Controllers\DeveloperController::class, 'toggle'])->name('developer.api-keys.toggle');
+    Route::delete('/dashboard/developer/api-keys/{apiKey}', [App\Http\Controllers\DeveloperController::class, 'destroy'])->name('developer.api-keys.destroy');
+
+    Route::post('/dashboard/developer/webhooks', [App\Http\Controllers\DeveloperController::class, 'storeWebhook'])->name('developer.webhooks.store');
+    Route::delete('/dashboard/developer/webhooks/{webhook}', [App\Http\Controllers\DeveloperController::class, 'destroyWebhook'])->name('developer.webhooks.destroy');
 });
 
 
