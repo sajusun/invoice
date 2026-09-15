@@ -107,6 +107,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(UserDetail::class);
     }
 
+    public function apiKeys(): HasMany
+    {
+        return $this->hasMany(ApiKey::class);
+    }
+
+    public function webhookEndpoints(): HasMany
+    {
+        return $this->hasMany(WebhookEndpoint::class);
+    }
+
 
 
     /**

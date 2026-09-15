@@ -30,4 +30,13 @@ class Plan extends Model
 {
     protected $fillable = ['name', 'price', 'type', 'max_invoices', 'max_customers'];
 
+    public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

@@ -32,9 +32,18 @@ class AdminProfileController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => 'email|required|unique:admins,email,' . Auth::guard('admin')->id(),
+            'profile_pic' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
 
         $user = Auth::guard('admin')->user();
+
+        if ($request->hasFile('profile_pic')) {
+            $file = $request->file('profile_pic');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('profile_pics', $filename, 'public');
+            $user->profile_pic = $filename;
+        }
+
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
         $user->save();

@@ -18,10 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )->withMiddleware(function (Middleware $middleware) {
        //
         $middleware->alias([
-            'admin' => AdminMiddleware::class,
+            'admin'           => AdminMiddleware::class,
             'checkPlanExpiry' => CheckPlanExpiry::class,
-            'permission' => CheckPermission::class,
-            'role' => CheckRole::class,
+            'permission'      => CheckPermission::class,
+            'role'            => CheckRole::class,
+            'auth.api_key'    => \App\Http\Middleware\AuthenticateApiKey::class,
 //            'admin.auth' => AdminAuthenticate::class,
         ]);
 //        $middleware->validateCsrfTokens([
