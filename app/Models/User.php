@@ -82,7 +82,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile_pic',
         'role_id',
         'plan_id',
+        'billing_cycle',
+        'subscription_status',
+        'stripe_customer_id',
+        'stripe_subscription_id',
         'expires_at',
+        'current_period_starts_at',
+        'current_period_ends_at',
+        'canceled_at',
     ];
 
     public function invoices(): HasMany
@@ -104,10 +111,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Setting::class);
     }
+
     public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
+
     public function detail(): HasOne
     {
         return $this->hasOne(UserDetail::class);
@@ -123,7 +132,61 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(WebhookEndpoint::class);
     }
 
+    /**
+     * Check if user has an active paid subscription or valid free plan
+     */
+    public function hasActiveSubscription(): bool
+    {
+        if (!$this->plan_id) {
+            return false;
+        }
 
+        // If free plan, it's always active
+        if ($this->plan?->type === 'free' || $this->plan?->monthly_price == 0) {
+            return true;
+        }
+
+        if ($this->subscription_status === 'canceled' && $this->current_period_ends_at && $this->current_period_ends_at->isPast()) {
+            return false;
+        }
+
+        if ($this->expires_at && \Carbon\Carbon::parse($this->expires_at)->isPast()) {
+            return false;
+        }
+
+        return in_array($this->subscription_status, ['active', 'trialing']);
+    }
+
+    /**
+     * Check if user can create another invoice this month
+     */
+    public function canCreateInvoice(): bool
+    {
+        $plan = $this->plan;
+        if (!$plan || is_null($plan->max_invoices)) {
+            return true; // Unlimited
+        }
+
+        $thisMonthCount = $this->invoices()
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        return $thisMonthCount < $plan->max_invoices;
+    }
+
+    /**
+     * Check if user can create another customer
+     */
+    public function canCreateCustomer(): bool
+    {
+        $plan = $this->plan;
+        if (!$plan || is_null($plan->max_customers)) {
+            return true; // Unlimited
+        }
+
+        return $this->customers()->count() < $plan->max_customers;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -145,6 +208,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'expires_at' => 'datetime',
+            'current_period_starts_at' => 'datetime',
+            'current_period_ends_at' => 'datetime',
+            'canceled_at' => 'datetime',
         ];
     }
 }
