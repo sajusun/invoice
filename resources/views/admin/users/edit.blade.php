@@ -2,13 +2,18 @@
     <x-slot name="title">Edit Administrator - {{ $user->name }}</x-slot>
 
     <div class="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto space-y-6">
+        <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
+                <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[11px] font-bold border border-indigo-100 mb-1">
+                    <i class="fa-solid fa-user-pen text-[10px]"></i>
+                    <span>Admin Account Management</span>
+                </div>
                 <h1 class="text-2xl font-black tracking-tight text-slate-900">Edit Administrator</h1>
-                <p class="text-xs text-slate-500 mt-1">Update administrator profile credentials and assign permissions role.</p>
+                <p class="text-xs text-slate-500 mt-0.5">Update administrator credentials, security access tier, and role permissions.</p>
             </div>
             <a href="{{ route('admin.roles.index') }}"
-               class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-white hover:bg-slate-100 border border-slate-200 transition-all shadow-2xs">
                 <i class="fa-solid fa-arrow-left"></i>
                 <span>Back to Matrix</span>
             </a>
@@ -17,38 +22,86 @@
         @if($errors->any())
             <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold space-y-1">
                 @foreach($errors->all() as $error)
-                    <p>• {{ $error }}</p>
+                    <p class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation text-rose-600"></i>
+                        <span>{{ $error }}</span>
+                    </p>
                 @endforeach
             </div>
         @endif
 
-        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
-            <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-5">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
+            <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-6">
                 @csrf
                 @method('PUT')
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Full Name</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required
-                           class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Full Name <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-regular fa-user text-xs"></i>
+                        </div>
+                        <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Address</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                           class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Email Address <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-regular fa-envelope text-xs"></i>
+                        </div>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Assigned Role</label>
-                    <select name="role_id" required
-                            class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all">
-                        @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
-                                {{ ucwords(str_replace('_', ' ', $role->name)) }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Reset Password <span class="text-slate-400 font-normal lowercase">(leave blank to keep existing password)</span>
+                    </label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-solid fa-key text-xs"></i>
+                        </div>
+                        <input type="password" name="password" minlength="8" placeholder="••••••••••••"
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Assigned Platform Role <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <select name="role_id" id="role-selector" required onchange="updateRoleCapabilitiesPreview()"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all cursor-pointer">
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}"
+                                        data-permissions="{{ json_encode($role->permissions->pluck('name')) }}"
+                                        data-is-super="{{ $role->name === 'super_admin' ? 'true' : 'false' }}"
+                                        {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
+                                    {{ ucwords(str_replace('_', ' ', $role->name)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Live Capabilities Preview Box -->
+                    <div class="mt-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-sparkles text-amber-500 text-xs"></i>
+                            <span class="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Granted Role Capabilities:</span>
+                        </div>
+                        <div id="role-capabilities-badges" class="flex flex-wrap gap-1.5">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
@@ -57,12 +110,54 @@
                         Cancel
                     </a>
                     <button type="submit"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-rose-600/20 hover:shadow-md transition-all cursor-pointer">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span>Save Changes</span>
+                            class="inline-flex items-center gap-2 px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow-md shadow-rose-600/30 transition-all cursor-pointer">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
+                        <span>Save Administrator</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        function updateRoleCapabilitiesPreview() {
+            const selector = document.getElementById('role-selector');
+            const selectedOption = selector.options[selector.selectedIndex];
+            const badgesContainer = document.getElementById('role-capabilities-badges');
+            
+            badgesContainer.innerHTML = '';
+
+            if (!selectedOption) return;
+
+            const isSuper = selectedOption.getAttribute('data-is-super') === 'true';
+            
+            if (isSuper) {
+                badgesContainer.innerHTML = `
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                        <i class="fa-solid fa-crown text-[10px]"></i> Unrestricted Super Admin Access (Wildcard *)
+                    </span>
+                `;
+                return;
+            }
+
+            try {
+                const perms = JSON.parse(selectedOption.getAttribute('data-permissions') || '[]');
+                if (perms.length === 0) {
+                    badgesContainer.innerHTML = '<span class="text-xs text-slate-400 italic">No capabilities currently assigned to this role tier.</span>';
+                    return;
+                }
+
+                perms.forEach(p => {
+                    const badge = document.createElement('span');
+                    badge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100';
+                    badge.innerHTML = `<i class="fa-solid fa-check text-[9px] text-emerald-500"></i> ${p.replace(/_/g, ' ')}`;
+                    badgesContainer.appendChild(badge);
+                });
+            } catch(e) {
+                badgesContainer.innerHTML = '<span class="text-xs text-slate-400">Custom capabilities</span>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateRoleCapabilitiesPreview);
+    </script>
 </x-admin-layout>

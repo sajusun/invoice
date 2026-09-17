@@ -98,7 +98,7 @@
                                 </td>
                                 <td class="py-3.5 px-6">
                                     @if($payment->user)
-                                        <a href="{{ route('admin.dashboard.userPage', $payment->user_id) }}" class="flex items-center gap-3 group">
+                                        <a href="{{ route('admin.dashboard.user.page', $payment->user_id) }}" class="flex items-center gap-3 group">
                                             <div class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-bold flex items-center justify-center text-xs group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                                                 {{ strtoupper(substr($payment->user->name ?? 'U', 0, 1)) }}
                                             </div>
