@@ -15,8 +15,12 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (Auth::guard('web')->check()) {
+            return redirect()->route('dashboard');
+        }
+
         return view('pages.login');
     }
 
@@ -39,7 +43,10 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
+        // Only invalidate the full session if Admin guard is not active
+        if (!Auth::guard('admin')->check()) {
+            $request->session()->invalidate();
+        }
 
         $request->session()->regenerateToken();
 
