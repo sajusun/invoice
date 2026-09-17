@@ -74,6 +74,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::get('dashboard/my-plan', [DashboardController::class, 'my_plan'])->name('subscription.plan');
 
+    // Reports & Financial Analytics
+    Route::get('/dashboard/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/dashboard/reports/export/csv', [\App\Http\Controllers\ReportController::class, 'exportCsv'])->name('reports.export.csv');
+    Route::get('/dashboard/reports/export/pdf', [\App\Http\Controllers\ReportController::class, 'exportPdf'])->name('reports.export.pdf');
+
     // Developer API Keys & Webhook management
     Route::get('/dashboard/developer/api-keys', [App\Http\Controllers\DeveloperController::class, 'index'])->name('developer.api-keys');
     Route::post('/dashboard/developer/api-keys', [App\Http\Controllers\DeveloperController::class, 'store'])->name('developer.api-keys.store');

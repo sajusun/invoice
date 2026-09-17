@@ -99,6 +99,10 @@
                             <i class="fa-solid fa-gem w-5 text-center text-base {{ request()->routeIs('subscription.plan*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                             <span>Plans & Billing</span>
                         </a>
+                        <a href="{{ route('reports.index') }}" class="sidebar-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-chart-line w-5 text-center text-base {{ request()->routeIs('reports.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                            <span>Financial Reports</span>
+                        </a>
                     </div>
                 </div>
 
