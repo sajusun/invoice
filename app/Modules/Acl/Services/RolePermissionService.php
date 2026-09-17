@@ -6,17 +6,18 @@ use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class RolePermissionService
 {
     /**
-     * Retrieve all roles with their associated permissions eagerly loaded.
+     * Retrieve all roles with their associated permissions and assigned admins eagerly loaded.
      *
      * @return Collection<int, Role>
      */
     public function getAllRolesWithPermissions(): Collection
     {
-        return Role::with('permissions')->orderBy('id')->get();
+        return Role::with(['permissions', 'admins'])->withCount('admins')->orderBy('id')->get();
     }
 
     /**
@@ -92,11 +93,53 @@ class RolePermissionService
      */
     public function createRole(string $name, array $permissionIds = []): Role
     {
-        $role = Role::firstOrCreate(['name' => strtolower(trim($name))]);
+        $normalizedName = strtolower(trim(preg_replace('/[^a-zA-Z0-9_]+/', '_', $name)));
+        
+        $role = Role::firstOrCreate(['name' => $normalizedName]);
+        
         if (!empty($permissionIds)) {
             $role->permissions()->sync($permissionIds);
         }
+
         return $role;
+    }
+
+    /**
+     * Update an existing role's name and permissions.
+     */
+    public function updateRole(Role|int $role, string $name, array $permissionIds = []): Role
+    {
+        $roleModel = $role instanceof Role ? $role : Role::findOrFail($role);
+
+        if ($roleModel->name === 'super_admin') {
+            throw new Exception('The Super Admin role cannot be modified or renamed.');
+        }
+
+        $normalizedName = strtolower(trim(preg_replace('/[^a-zA-Z0-9_]+/', '_', $name)));
+        $roleModel->update(['name' => $normalizedName]);
+        
+        $roleModel->permissions()->sync($permissionIds);
+
+        return $roleModel;
+    }
+
+    /**
+     * Safely delete a custom role.
+     */
+    public function deleteRole(Role|int $role): bool
+    {
+        $roleModel = $role instanceof Role ? $role : Role::findOrFail($role);
+
+        if ($roleModel->name === 'super_admin') {
+            throw new Exception('The Super Admin role is protected and cannot be deleted.');
+        }
+
+        if ($roleModel->admins()->count() > 0) {
+            throw new Exception("Cannot delete role '{$roleModel->name}' because {$roleModel->admins()->count()} administrator(s) are currently assigned to it. Please reassign them first.");
+        }
+
+        $roleModel->permissions()->detach();
+        return $roleModel->delete();
     }
 
     /**

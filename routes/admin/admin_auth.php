@@ -21,7 +21,11 @@ Route::middleware(['admin'])->prefix('admin/dashboard')->name('admin.')->group(f
     Route::post('project/{id}', [ProjectController::class, 'edit'])->name('project.update');
 
     Route::get('roles', [RolePermissionController::class, 'index'])->name('roles.index');
-    Route::post('roles/', [RolePermissionController::class, 'update'])->name('roles.update');
+    Route::post('roles', [RolePermissionController::class, 'update'])->name('roles.update');
+    Route::post('roles/create', [RolePermissionController::class, 'storeRole'])->name('roles.store');
+    Route::put('roles/{id}', [RolePermissionController::class, 'updateRole'])->name('roles.updateRole');
+    Route::delete('roles/{id}', [RolePermissionController::class, 'destroyRole'])->name('roles.destroy');
+
     Route::post('/users/{id}/change-role', [RolePermissionController::class, 'changeRole'])->name('users.changeRole');
 
     Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
@@ -31,7 +35,6 @@ Route::middleware(['admin'])->prefix('admin/dashboard')->name('admin.')->group(f
     Route::post('/users/create', [AdminController::class, 'store'])->name('users.store');
 
     Route::delete('/users/{id}/delete', [AdminController::class, 'delete'])->name('users.delete');
-
 });
 
 Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {

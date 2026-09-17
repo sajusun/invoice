@@ -52,11 +52,10 @@
                     <i class="fa-solid fa-gem w-5 text-center text-base {{ request()->routeIs('subscription.plan*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Plans & Billing</span>
                 </a>
-                <a href="#"
-                   class="sidebar-link opacity-60 hover:opacity-100">
-                    <i class="fa-solid fa-chart-line w-5 text-center text-base text-slate-400"></i>
-                    <span>Reports</span>
-                    <span class="ml-auto text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">Soon</span>
+                <a href="{{ route('reports.index') }}"
+                   class="sidebar-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-chart-line w-5 text-center text-base {{ request()->routeIs('reports.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Financial Reports</span>
                 </a>
             </div>
         </div>

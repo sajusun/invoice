@@ -13,15 +13,23 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-
+    /**
+     * Show the form for creating a new admin user.
+     */
     public function create()
     {
-        $roles = Role::all();
+        AuthNeed::permission('*')->role(['super_admin']);
+        $roles = Role::with('permissions')->get();
         return view('admin.users.create', compact('roles'));
     }
 
+    /**
+     * Store a newly created admin user in storage.
+     */
     public function store(Request $request)
     {
+        AuthNeed::permission('*')->role(['super_admin']);
+
         // Validate form inputs
         $request->validate([
             'name' => 'required|string|max:255',
@@ -29,8 +37,6 @@ class AdminController extends Controller
             'password' => 'required|string|min:8',
             'role_id' => 'required|exists:roles,id',
         ]);
-
-        AuthNeed::permission('*')->role(['super_admin']);
 
         // Create new admin user
         Admin::create([
@@ -40,51 +46,72 @@ class AdminController extends Controller
             'role_id' => $request->role_id,
         ]);
 
-        return redirect()->route('admin.roles.index')->with('admin', 'New admin user created successfully.');
+        return redirect()->route('admin.roles.index')->with('admin', 'New administrator account created successfully.');
     }
 
-    // Show edit form for admin user
+    /**
+     * Show the form for editing an admin user.
+     */
     public function edit($id)
     {
-//        AuthNeed::permission('*')->role(['super_admin', 'admin']);
+        AuthNeed::permission('*')->role(['super_admin']);
 
-        $user = Admin::findOrFail($id);
-        $roles = Role::all();
+        $user = Admin::with('role.permissions')->findOrFail($id);
+        $roles = Role::with('permissions')->get();
 
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
-    public function delete($id): RedirectResponse
-    {
-        $currentAdmin = Auth::guard('admin')->user();
-
-        AuthNeed::permission('*')->role(['super_admin']);
-        $user = Admin::findOrFail($id);
-       // dd($user->role->name);
-
-        if ($currentAdmin->id === $user->id || $user->role->name === "super_admin") {
-            return redirect()->back()->with('admin', 'Could not delete this user.');
-        }
-         $user->delete();
-        return redirect()->back()->with('admin', 'Admin user deleted successfully.');
-
-    }
-
-    // Update admin user
+    /**
+     * Update the specified admin user in storage.
+     */
     public function update(Request $request, $id)
     {
         AuthNeed::permission('*')->role(['super_admin']);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email,' . $id,
             'role_id' => 'required|exists:roles,id',
+            'password' => 'nullable|string|min:8',
         ]);
 
         $user = Admin::findOrFail($id);
-        $user->update($request->only('name', 'email', 'role_id'));
+        
+        $updateData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'role_id' => $request->role_id,
+        ];
 
-        return redirect()->route('admin.roles.index')->with('admin', 'Admin user updated successfully.');
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+        }
+
+        $user->update($updateData);
+
+        return redirect()->route('admin.roles.index')->with('admin', 'Administrator account updated successfully.');
     }
 
+    /**
+     * Remove the specified admin user from storage.
+     */
+    public function delete($id): RedirectResponse
+    {
+        AuthNeed::permission('*')->role(['super_admin']);
+        
+        $currentAdmin = Auth::guard('admin')->user();
+        $user = Admin::with('role')->findOrFail($id);
 
+        if ($currentAdmin->id === $user->id) {
+            return redirect()->back()->with('error', 'You cannot delete your own administrator account.');
+        }
+
+        if ($user->role && $user->role->name === 'super_admin') {
+            return redirect()->back()->with('error', 'Super Administrator accounts cannot be deleted.');
+        }
+
+        $user->delete();
+        return redirect()->back()->with('admin', 'Administrator account deleted successfully.');
+    }
 }
