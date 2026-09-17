@@ -20,6 +20,9 @@ class UserSeeder extends Seeder
         $premiumPlan  = Plan::where('type', 'premium')->first();
         $businessPlan = Plan::where('type', 'business')->first();
 
+        $adminRole = \App\Models\Role::where('name', 'admin')->first();
+        $guestRole = \App\Models\Role::where('name', 'guest')->first();
+
         // 1. Primary Test User (Premium Plan)
         $testUser = User::updateOrCreate(
             ['email' => 'testuser@example.com'],
@@ -27,6 +30,7 @@ class UserSeeder extends Seeder
                 'name'              => 'Test User',
                 'password'          => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role_id'           => $adminRole?->id,
                 'plan_id'           => $premiumPlan?->id,
                 'expires_at'        => now()->addYear(),
                 'created_at'        => now()->subMonths(3),
