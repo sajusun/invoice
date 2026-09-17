@@ -101,9 +101,34 @@ class DashboardController extends Controller
     public function my_plan(): View
     {
         $user = Auth::user();
-        $plans = Plan::all();
-        $payments = Payment::where('user_id', $user->id)->latest()->get();
 
-        return view('subscription-plan.my-plan', compact('payments', 'plans', 'user'));
+        if (!$user->plan_id) {
+            $freePlan = Plan::where('type', 'free')->orWhere('monthly_price', 0)->first();
+            if ($freePlan) {
+                $user->plan_id = $freePlan->id;
+                $user->save();
+            }
+        }
+
+        $user->loadMissing(['plan', 'settings']);
+        $plans = Plan::where('is_active', true)->orderBy('monthly_price', 'asc')->get();
+        if ($plans->isEmpty()) {
+            $plans = Plan::all();
+        }
+
+        $payments = Payment::with('plan')->where('user_id', $user->id)->latest()->get();
+
+        $invoicesThisMonth = $user->invoices()->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count();
+        $totalInvoicesCount = $user->invoices()->count();
+        $totalClientsCount = $user->customers()->count();
+
+        return view('subscription-plan.my-plan', compact(
+            'payments',
+            'plans',
+            'user',
+            'invoicesThisMonth',
+            'totalInvoicesCount',
+            'totalClientsCount'
+        ));
     }
 }
