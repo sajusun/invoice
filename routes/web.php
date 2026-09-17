@@ -85,9 +85,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice']);
-    Route::post('/customers/{id}/delete', [CustomersController::class, 'delete_customer']);
-    //Route::get('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'delete_invoice'])->name('invoice.update');
+    Route::post('/invoice/{invoiceNumber}/delete', [InvoicesController::class, 'delete_invoice'])->name('invoice.delete');
+    Route::post('/invoice/{invoiceNumber}/send-email', [InvoicesController::class, 'sendEmail'])->name('invoice.sendEmail');
+    Route::get('/invoice/{invoiceNumber}/edit', [InvoicesController::class, 'edit'])->name('invoice.edit');
+    Route::post('/invoice/{invoiceNumber}/update', [InvoicesController::class, 'update'])->name('invoice.update');
+    Route::post('/invoice/{invoiceNumber}/duplicate', [InvoicesController::class, 'duplicate'])->name('invoice.duplicate');
+    Route::post('/invoice/bulk-action', [InvoicesController::class, 'bulkAction'])->name('invoice.bulkAction');
+    Route::post('/customers/{id}/delete', [CustomersController::class, 'delete_customer'])->name('customers.delete');
 });
 
 require __DIR__ . '/auth.php';

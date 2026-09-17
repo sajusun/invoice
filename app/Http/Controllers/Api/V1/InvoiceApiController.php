@@ -259,4 +259,135 @@ class InvoiceApiController extends Controller
 
         return $pdf->stream("invoice-{$invoice->invoice_number}.pdf");
     }
+
+    /**
+     * Update an invoice via API.
+     */
+    public function update(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where(function ($q) use ($id) {
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id);
+            })
+            ->first();
+
+        if (!$invoice) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Not Found',
+                'message' => "Invoice '{$id}' not found.",
+            ], 404);
+        }
+
+        try {
+            $updated = InvoiceService::updateInvoice($invoice, $request->all());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice updated successfully.',
+                'data'    => new InvoiceResource($updated),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Update Failed',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Send invoice email to the customer via API.
+     */
+    public function sendEmail(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where(function ($q) use ($id) {
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id);
+            })
+            ->first();
+
+        if (!$invoice) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Not Found',
+                'message' => "Invoice '{$id}' not found.",
+            ], 404);
+        }
+
+        if (!$invoice->customer || !$invoice->customer->email) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Missing Email',
+                'message' => 'Customer does not have a valid email address configured.',
+            ], 422);
+        }
+
+        try {
+            $attachPdf = (bool) $request->boolean('attach_pdf', true);
+            InvoiceService::sendEmail($invoice, $attachPdf);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Invoice #{$invoice->invoice_number} sent to {$invoice->customer->email} successfully.",
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Send Email Failed',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Duplicate (clone) an invoice via API.
+     */
+    public function duplicate(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where(function ($q) use ($id) {
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id);
+            })
+            ->first();
+
+        if (!$invoice) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Not Found',
+                'message' => "Invoice '{$id}' not found.",
+            ], 404);
+        }
+
+        try {
+            $duplicated = InvoiceService::duplicateInvoice($invoice);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Invoice duplicated as #{$duplicated->invoice_number}.",
+                'data'    => new InvoiceResource($duplicated),
+            ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Duplicate Failed',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
 }

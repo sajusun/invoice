@@ -61,6 +61,27 @@ class CustomerService
     }
 
     /**
+     * Update an existing customer.
+     */
+    public static function updateCustomer(Customer $customer, array $data): Customer
+    {
+        $fields = ['name', 'company_name', 'email', 'phone', 'tax_id', 'address', 'notes', 'metadata'];
+        $updates = [];
+
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $data)) {
+                $updates[$field] = $data[$field];
+            }
+        }
+
+        if (!empty($updates)) {
+            $customer->update($updates);
+        }
+
+        return $customer->fresh();
+    }
+
+    /**
      * Delete customer ensuring multi-tenant ownership.
      */
     public static function deleteCustomer(int $customerId, ?User $user = null): bool

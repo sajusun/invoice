@@ -14,6 +14,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+
 class InvoicesController extends Controller
 {
     public function view(): View
@@ -261,5 +262,134 @@ class InvoicesController extends Controller
         }
 
         return redirect()->back()->with(['message' => 'Failed to delete invoice.', 'response' => 'error']);
+    }
+
+    /**
+     * Send invoice email to the customer.
+     */
+    public function sendEmail(Request $request, string $invoiceNumber): JsonResponse
+    {
+        $user    = Auth::user();
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        try {
+            InvoiceService::sendEmail($invoice, (bool) $request->boolean('attach_pdf', true));
+
+            return response()->json([
+                'success' => true,
+                'message' => "Invoice #{$invoiceNumber} sent to {$invoice->customer->email} successfully.",
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Show edit form for an invoice.
+     */
+    public function edit(string $invoiceNumber): View
+    {
+        $user    = Auth::user();
+        $invoice = $user->invoices()
+            ->with(['customer'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        $settings  = SettingService::forUser($user);
+        $customers = $user->customers()->orderBy('name')->get(['id', 'name', 'email', 'phone', 'address', 'company_name']);
+
+        return view('pages.invoice.edit', compact('invoice', 'settings', 'customers'));
+    }
+
+    /**
+     * Update an existing invoice.
+     */
+    public function update(Request $request, string $invoiceNumber): JsonResponse
+    {
+        $user    = Auth::user();
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        try {
+            $updated = InvoiceService::updateInvoice($invoice, $request->all());
+
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Invoice updated successfully.',
+                'invoice'  => $updated,
+                'redirect' => route('previewInvoice', $updated->invoice_number),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update invoice: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Duplicate (clone) an invoice.
+     */
+    public function duplicate(string $invoiceNumber): JsonResponse
+    {
+        $user    = Auth::user();
+        $source  = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        try {
+            $newInvoice = InvoiceService::duplicateInvoice($source);
+
+            return response()->json([
+                'success'  => true,
+                'message'  => "Invoice duplicated as #{$newInvoice->invoice_number}.",
+                'invoice'  => $newInvoice,
+                'redirect' => route('previewInvoice', $newInvoice->invoice_number),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to duplicate invoice: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Bulk action on multiple invoices (delete or status change).
+     */
+    public function bulkAction(Request $request): JsonResponse
+    {
+        $user    = Auth::user();
+        $action  = $request->input('action'); // 'delete' | 'status'
+        $numbers = (array) $request->input('invoice_numbers', []);
+        $status  = $request->input('status');
+
+        if (empty($numbers)) {
+            return response()->json(['success' => false, 'message' => 'No invoices selected.'], 422);
+        }
+
+        $query = $user->invoices()->whereIn('invoice_number', $numbers);
+
+        if ($action === 'delete') {
+            $count = $query->count();
+            $query->delete();
+            return response()->json(['success' => true, 'message' => "{$count} invoice(s) deleted."]);
+        }
+
+        if ($action === 'status' && $status) {
+            $count = $query->update(['status' => strtolower($status)]);
+            return response()->json(['success' => true, 'message' => "{$count} invoice(s) updated to '{$status}'."]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Invalid action.'], 422);
     }
 }

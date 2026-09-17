@@ -121,6 +121,42 @@ class CustomerApiController extends Controller
     }
 
     /**
+     * Update customer details.
+     */
+    public function update(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+        $customer = $user->customers()->find($id);
+
+        if (!$customer) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Not Found',
+                'message' => "Customer '{$id}' not found.",
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'name'         => 'sometimes|required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'email'        => 'nullable|email|max:255',
+            'phone'        => 'nullable|string|max:50',
+            'tax_id'       => 'nullable|string|max:100',
+            'address'      => 'nullable|string|max:500',
+            'notes'        => 'nullable|string|max:2000',
+            'metadata'     => 'nullable|array',
+        ]);
+
+        $updated = CustomerService::updateCustomer($customer, $validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer updated successfully.',
+            'data'    => new CustomerResource($updated),
+        ]);
+    }
+
+    /**
      * Delete customer.
      */
     public function destroy(Request $request, $id): JsonResponse

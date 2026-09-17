@@ -34,12 +34,16 @@ Route::middleware(['web', 'auth:admin'])->name('admin.')->group(function () {
 Route::prefix('v1')->middleware(['auth.api_key', 'throttle:120,1'])->group(function () {
     // Developer profile & quota stats
     Route::get('/me', [MeApiController::class, 'show']);
+    Route::get('/me/usage', [MeApiController::class, 'usage']);
 
     // Invoices API
     Route::get('/invoices', [InvoiceApiController::class, 'index']);
     Route::post('/invoices', [InvoiceApiController::class, 'store']);
     Route::get('/invoices/{id}', [InvoiceApiController::class, 'show']);
+    Route::match(['put', 'patch'], '/invoices/{id}', [InvoiceApiController::class, 'update']);
     Route::post('/invoices/{id}/mark-paid', [InvoiceApiController::class, 'markPaid']);
+    Route::post('/invoices/{id}/send-email', [InvoiceApiController::class, 'sendEmail']);
+    Route::post('/invoices/{id}/duplicate', [InvoiceApiController::class, 'duplicate']);
     Route::delete('/invoices/{id}', [InvoiceApiController::class, 'destroy']);
     Route::get('/invoices/{id}/pdf', [InvoiceApiController::class, 'pdf']);
 
@@ -47,5 +51,6 @@ Route::prefix('v1')->middleware(['auth.api_key', 'throttle:120,1'])->group(funct
     Route::get('/customers', [CustomerApiController::class, 'index']);
     Route::post('/customers', [CustomerApiController::class, 'store']);
     Route::get('/customers/{id}', [CustomerApiController::class, 'show']);
+    Route::match(['put', 'patch'], '/customers/{id}', [CustomerApiController::class, 'update']);
     Route::delete('/customers/{id}', [CustomerApiController::class, 'destroy']);
 });

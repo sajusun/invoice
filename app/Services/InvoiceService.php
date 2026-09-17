@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\AdminNotifier;
+use App\Mail\InvoiceMail;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class InvoiceService
@@ -304,5 +306,132 @@ class InvoiceService
             'company'     => $companyData,
             'items'       => is_array($invoice->items) ? $invoice->items : json_decode($invoice->items, true),
         ])->setPaper('a4');
+    }
+
+    /**
+     * Send invoice email to the customer.
+     *
+     * @throws \Throwable
+     */
+    public static function sendEmail(Invoice $invoice, bool $attachPdf = true): void
+    {
+        $invoice->loadMissing(['customer', 'user']);
+
+        $customerEmail = $invoice->customer?->email;
+
+        if (empty($customerEmail)) {
+            throw new Exception('Customer has no email address configured.');
+        }
+
+        Mail::to($customerEmail, $invoice->customer->name)
+            ->send(new InvoiceMail($invoice, $attachPdf));
+    }
+
+    /**
+     * Update an existing invoice with recalculated totals.
+     *
+     * @throws \Throwable
+     */
+    public static function updateInvoice(Invoice $invoice, array $data): Invoice
+    {
+        return DB::transaction(function () use ($invoice, $data) {
+            // Resolve new customer if provided
+            if (!empty($data['customer_id'])) {
+                $invoice->customer_id = $data['customer_id'];
+            } elseif (!empty($data['customer'])) {
+                $customer = CustomerService::findOrCreate($invoice->user, $data['customer']);
+                $invoice->customer_id = $customer->id;
+            }
+
+            // Recalculate totals if items provided
+            if (!empty($data['items'])) {
+                $calculations = static::calculateTotals(
+                    $data['items'],
+                    (float) ($data['tax_percentage'] ?? $data['tax_rate'] ?? 0),
+                    (float) ($data['discount_amount'] ?? 0),
+                    $data['discount_type'] ?? 'fixed'
+                );
+
+                $paidAmount  = (float) ($data['paid_amount'] ?? $invoice->paid_amount ?? 0);
+                $totalAmount = $calculations['total_amount'];
+
+                $status = $data['status'] ?? null;
+                if (!$status) {
+                    if ($paidAmount >= $totalAmount && $totalAmount > 0) {
+                        $status = 'paid';
+                    } elseif ($paidAmount > 0) {
+                        $status = 'partially_paid';
+                    } else {
+                        $status = $invoice->status;
+                    }
+                }
+
+                $invoice->fill([
+                    'items'           => $calculations['items'],
+                    'subtotal'        => $calculations['subtotal'],
+                    'tax_amount'      => $calculations['tax_amount'],
+                    'discount_amount' => $calculations['discount_amount'],
+                    'discount_type'   => $calculations['discount_type'],
+                    'total_amount'    => $totalAmount,
+                    'paid_amount'     => $paidAmount,
+                    'status'          => $status,
+                    'need_tax'        => $calculations['tax_amount'] > 0,
+                ]);
+            }
+
+            // Scalar field updates
+            foreach (['invoice_date', 'due_date', 'currency', 'notes', 'terms', 'metadata', 'status'] as $field) {
+                if (array_key_exists($field, $data)) {
+                    $invoice->$field = $data[$field];
+                }
+            }
+
+            $invoice->save();
+
+            // Webhook
+            try {
+                app(WebhookDispatcherService::class)->dispatchForUser($invoice->user, 'invoice.updated', [
+                    'invoice_id'     => $invoice->id,
+                    'invoice_number' => $invoice->invoice_number,
+                    'total_amount'   => $invoice->total_amount,
+                    'status'         => $invoice->status,
+                ]);
+            } catch (\Throwable) {
+            }
+
+            return $invoice->load('customer');
+        });
+    }
+
+    /**
+     * Duplicate (clone) an invoice as a new draft with a fresh invoice number.
+     */
+    public static function duplicateInvoice(Invoice $source): Invoice
+    {
+        $source->loadMissing(['customer', 'user']);
+
+        $newData = [
+            'customer_id'     => $source->customer_id,
+            'invoice_number'  => static::invoiceIdGenerator($source->user),
+            'invoice_date'    => now()->format('Y-m-d'),
+            'due_date'        => $source->due_date?->addDays(30)?->format('Y-m-d'),
+            'items'           => $source->items,
+            'subtotal'        => $source->subtotal,
+            'tax_amount'      => $source->tax_amount,
+            'discount_amount' => $source->discount_amount,
+            'discount_type'   => $source->discount_type,
+            'total_amount'    => $source->total_amount,
+            'paid_amount'     => 0,
+            'currency'        => $source->currency,
+            'status'          => 'draft',
+            'need_tax'        => $source->need_tax,
+            'notes'           => $source->notes,
+            'terms'           => $source->terms,
+            'metadata'        => $source->metadata,
+        ];
+
+        return Invoice::create(array_merge($newData, [
+            'user_id' => $source->user_id,
+        ]));
     }
 }

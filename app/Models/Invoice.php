@@ -36,6 +36,10 @@ class Invoice extends Model
         'notes',
         'terms',
         'metadata',
+        'is_recurring',
+        'recurring_frequency',
+        'recurring_end_date',
+        'last_recurring_at',
     ];
 
     protected function casts(): array
@@ -45,6 +49,9 @@ class Invoice extends Model
             'metadata' => 'array',
             'invoice_date' => 'date',
             'due_date' => 'date',
+            'recurring_end_date' => 'date',
+            'last_recurring_at' => 'date',
+            'is_recurring' => 'boolean',
             'subtotal' => 'decimal:2',
             'tax_amount' => 'decimal:2',
             'discount_amount' => 'decimal:2',
