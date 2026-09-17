@@ -22,12 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::if('hasPermission', function ($permission) {
-            $admin = Auth::guard('admin')->user();
-            if (!$admin || !$admin->role) {
-                return false;
-            }
-            return $admin->role->permissions->pluck('name')->contains($permission);
-        });
+        Paginator::useTailwind();
     }
 }

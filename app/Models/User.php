@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\Acl\Traits\HasRolesAndPermissions;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,10 +13,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-use App\Models\Invoices;
-use App\Models\Customers;
+use App\Models\Invoice;
+use App\Models\Customer;
 use App\Models\Payment;
-use App\Models\Settings;
+use App\Models\Setting;
 use App\Models\Plan;
 
 /**
@@ -65,7 +66,7 @@ use App\Models\Plan;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRolesAndPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -79,24 +80,29 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'social_login',
         'profile_pic',
+        'role_id',
+        'plan_id',
+        'expires_at',
     ];
 
     public function invoices(): HasMany
     {
-        return $this->hasMany(Invoices::class);
+        return $this->hasMany(Invoice::class);
     }
 
     public function customers(): HasMany
     {
-        return $this->hasMany(Customers::class);
+        return $this->hasMany(Customer::class);
     }
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
+
     public function settings(): HasOne
     {
-        return $this->hasOne(Settings::class);
+        return $this->hasOne(Setting::class);
     }
     public function plan(): BelongsTo
     {

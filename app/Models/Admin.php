@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\Acl\Traits\HasRolesAndPermissions;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -33,21 +34,15 @@ use Illuminate\Notifications\Notifiable;
  */
 class Admin extends Authenticatable
 {
-    use Notifiable;
-
+    use Notifiable, HasRolesAndPermissions;
 
     protected $guard = 'admin';
 
     protected $fillable = [
-        'name', 'email', 'password','role_id',
+        'name', 'email', 'password', 'role_id',
     ];
 
     protected $hidden = [
         'password', 'remember_token',
     ];
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
 }

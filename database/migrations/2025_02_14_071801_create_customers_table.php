@@ -13,14 +13,21 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->index();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
+            $table->string('company_name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone');
+            $table->string('tax_id')->nullable();
             $table->text('address')->nullable();
+            $table->text('notes')->nullable();
+            $table->json('metadata')->nullable(); // Developer custom attributes
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // Compound indices for fast search and cursor pagination
+            $table->index(['user_id', 'created_at', 'id']);
+            $table->index(['user_id', 'email']);
+            $table->index(['user_id', 'phone']);
         });
     }
 

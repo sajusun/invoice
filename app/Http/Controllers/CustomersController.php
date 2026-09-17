@@ -2,155 +2,161 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customers;
+use App\Models\Customer;
 use App\Models\User;
 use App\Services\CustomerService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class CustomersController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'verified']); // Only authenticated users can access this controller
-    }
-    public function create()
-    {
-        return view('pages/customers/customer_add');
+        $this->middleware(['auth', 'verified']);
     }
 
+    public function create(): View
+    {
+        return view('pages.customers.customer_add');
+    }
 
     public function customers()
     {
-        return User::find(Auth::id())->customers;
+        return Auth::user()->customers()->latest()->get();
     }
-    public function store(Request $request)
+
+    public function store(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'name'         => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'phone'        => [
+                'required',
+                'string',
+                'max:30',
+                Rule::unique('customers', 'phone')->where('user_id', $user->id),
+            ],
+            'email'        => 'nullable|email|max:255',
+            'tax_id'       => 'nullable|string|max:50',
+            'address'      => 'nullable|string|max:500',
+            'notes'        => 'nullable|string|max:1000',
+            'metadata'     => 'nullable|array',
+        ]);
+
         try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'phone' => 'required|string|max:20|unique:customers',
-                'email' => 'nullable|email',
-                'address' => 'nullable|string'
-            ]);
-
-            $userId = Auth::user()->id;
-            $customer = new Customers();
-
-            $customer->user_id = $userId;
-            $customer->name = $request->name;
-            $customer->email = $request->email;
-            $customer->phone = $request->phone;
-            $customer->address = $request->address;
-            $isSave = $customer->save();
-            if (!$isSave) {
-                return back()->with('error', 'Failed!');
-            }
+            CustomerService::findOrCreate($user, $validated);
+            return redirect()->route('customers')->with('success', 'Client created successfully!');
         } catch (\Throwable $th) {
-            return back()->with('error', 'Failed! ' . $th->getMessage());
+            return back()->withInput()->with('error', 'Failed to create client: ' . $th->getMessage());
         }
-        return back()->with('success', 'Client saved successfully!');
     }
 
-    //dont remove function here
-    public function total_customers()
+    public function total_customers(): int
     {
-        return User::find(Auth::id())->customers()->count();
+        return Auth::user()->customers()->count();
     }
 
-    public function total_revenue($id)
+    public function total_revenue(int $id): float
     {
-        return User::find(Auth::id())->invoices->where('customer_id', $id)->sum('total_amount');
+        return (float) Auth::user()->invoices()->where('customer_id', $id)->where('status', '!=', 'cancelled')->sum('total_amount');
     }
 
-    public function total_pending($id)
+    public function total_pending(int $id): int
     {
-        return User::find(Auth::id())->invoices->where('customer_id', $id)->where('status', 'pending')->count();
+        return Auth::user()->invoices()->where('customer_id', $id)->whereIn('status', ['unpaid', 'pending'])->count();
     }
 
-    public function customer_data($id)
+    public function customer_data(int $id): Customer
     {
-        return Customers::with('invoices')->findOrFail($id);
+        return Auth::user()->customers()->with('invoices')->findOrFail($id);
     }
 
-    public function get_customer_by_invoiceId($customer_id)
+    public function get_customer_by_invoiceId(int $customer_id): ?Customer
     {
-        return Customers::with('invoices')->where('id', $customer_id)->first();
-    }
-    public function get_customers($paginate = 100)
-    {
-        return User::find(Auth::id())->customers()->with('invoices')->paginate($paginate);
+        return Auth::user()->customers()->with('invoices')->where('id', $customer_id)->first();
     }
 
-
-    public function delete_customer($id)
+    public function get_customers(int $paginate = 15)
     {
-        $deleted = CustomerService::delete_customer($id);
+        return CustomerService::paginateForUser(Auth::user(), request(), $paginate);
+    }
+
+    public function delete_customer(int $id): RedirectResponse
+    {
+        $deleted = CustomerService::deleteCustomer($id, Auth::user());
 
         if ($deleted) {
-            return redirect()->back()->with(['message' => 'Client Delete Successfully.', 'response' => 'success']);
-        } else {
-            return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
+            return redirect()->back()->with(['message' => 'Client deleted successfully.', 'response' => 'success']);
         }
+
+        return redirect()->back()->with(['message' => 'Failed to delete client.', 'response' => 'error']);
     }
 
-    public function customer_details($id): View
+    public function customer_details(int $id): View
     {
-        $customer_ctrl = new CustomersController();
-        $customer = $customer_ctrl->get_customer_by_invoiceId($id);
-        return view('pages.customers.customers_details', ['customer' => $customer, 'controller' => $customer_ctrl]);
+        $customer = Auth::user()->customers()->with('invoices')->findOrFail($id);
+        $metrics = CustomerService::getCustomerMetrics($customer);
+
+        return view('pages.customers.customers_details', compact('customer', 'metrics'));
     }
 
-    public function customers_data_update($id): View|RedirectResponse
+    public function customers_data_update(Request $request, int $id): View|RedirectResponse
     {
-        if (Request()->isMethod('GET')) {
-            return $this->customer_details($id);
-        }
-        $validated = validator(request()->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'phone' => ['required', 'numeric', 'digits_between:10,12'],
-            'address' => ['required', 'string', 'max:255'],
-        ]);
-        if ($validated->fails()) {
-            return redirect()->back()->with(['message' => $validated->errors()->first(), 'response' => 'error']);
-        }
         $user = Auth::user();
-        $user = $user->Customers->find($id);
-        $user->name = Request()->name;
-        $user->email = Request()->email;
-        $user->phone = Request()->phone;
-        $user->address = Request()->address;
-        $user->save();
-        return redirect()->back()->with(['message' => 'Update Successfully.', 'response' => 'success']);
+        $customer = $user->customers()->findOrFail($id);
+
+        if ($request->isMethod('GET')) {
+            $metrics = CustomerService::getCustomerMetrics($customer);
+            return view('pages.customers.customers_details', compact('customer', 'metrics'));
+        }
+
+        $validated = $request->validate([
+            'name'         => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'email'        => 'nullable|email|max:255',
+            'phone'        => [
+                'required',
+                'string',
+                'max:30',
+                Rule::unique('customers', 'phone')->where('user_id', $user->id)->ignore($customer->id),
+            ],
+            'tax_id'       => 'nullable|string|max:50',
+            'address'      => 'nullable|string|max:500',
+            'notes'        => 'nullable|string|max:1000',
+            'metadata'     => 'nullable|array',
+        ]);
+
+        $customer->update($validated);
+
+        return redirect()->back()->with(['message' => 'Client updated successfully.', 'response' => 'success']);
     }
 
-
-    public function customerStats()
+    public function customerStats(): array
     {
+        $user = Auth::user();
 
-        $totalCustomers = Customers::count();
+        $totalCustomers = $user->customers()->count();
+        $newCustomers = $user->customers()->where('created_at', '>=', now()->subDays(7))->count();
 
-        $newCustomers = Customers::where('created_at', '>=', now()->subDays(7))->count();
-
-        $unpaidCustomers = Customers::whereHas('invoices', function ($query) {
-            $query->where('status', 'pending')
-                ->orWhere('status', 'unpaid');
+        $unpaidCustomers = $user->customers()->whereHas('invoices', function ($query) {
+            $query->whereIn('status', ['pending', 'unpaid']);
         })->count();
 
-        $overdueCustomers = Customers::whereHas('invoices', function ($query) {
+        $overdueCustomers = $user->customers()->whereHas('invoices', function ($query) {
             $query->where('status', 'overdue');
         })->count();
 
-        $status = [
+        return [
             'total'   => $totalCustomers,
             'new'     => $newCustomers,
             'unpaid'  => $unpaidCustomers,
             'overdue' => $overdueCustomers,
         ];
-        return $status;
     }
 }

@@ -3,32 +3,34 @@ namespace App\Services\Admin;
 
 use Illuminate\Support\Facades\Auth;
 
-class AuthNeed{
-    public static function permission($permission='read'): AuthNeed
+class AuthNeed
+{
+    public static function permission(string $permission = 'read'): self
     {
         $admin = Auth::guard('admin')->user();
 
-        if (!$admin->role->permissions->pluck('name')->contains($permission)) {
+        if (!$admin || !method_exists($admin, 'hasPermission') || !$admin->hasPermission($permission)) {
             abort(403, 'You do not have permission.');
         }
+
         return new self();
     }
 
-
-    public function role($role=''): AuthNeed
+    public function role(string|array $role = ''): self
     {
         $admin = Auth::guard('admin')->user();
 
-        if (!$admin || !$admin->role || !$this->hasRole($role)) {
+        if (!$admin || !method_exists($admin, 'hasRole') || !$admin->hasRole($role)) {
             abort(403, 'Unauthorized User Role.');
         }
+
         return new self();
     }
-    function hasRole($roles): bool
+
+    public function hasRole(string|array $roles): bool
     {
         $admin = Auth::guard('admin')->user();
-        $roles = is_string($roles) ? [$roles] : $roles;
-        return in_array($admin->role->name, $roles);
-    }
 
+        return $admin && method_exists($admin, 'hasRole') && $admin->hasRole($roles);
+    }
 }

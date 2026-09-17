@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateInvoiceRequest;
 use App\Http\Resources\Api\V1\InvoiceResource;
-use App\Models\Customers;
-use App\Models\Invoices;
+use App\Models\Invoice;
+use App\Services\InvoiceService;
 use App\Services\WebhookDispatcherService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\CursorPaginator;
 
 class InvoiceApiController extends Controller
 {
@@ -20,13 +20,13 @@ class InvoiceApiController extends Controller
     ) {}
 
     /**
-     * List user invoices with filters and pagination.
+     * List user invoices with filters and dynamic cursor pagination.
      */
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        $query = $user->invoices()->with(['customer:id,name,email,phone,address']);
+        $query = $user->invoices()->with(['customer']);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -45,24 +45,46 @@ class InvoiceApiController extends Controller
                 $q->where('invoice_number', 'like', "%{$search}%")
                   ->orWhereHas('customer', function ($cq) use ($search) {
                       $cq->where('name', 'like', "%{$search}%")
+                         ->orWhere('company_name', 'like', "%{$search}%")
                          ->orWhere('email', 'like', "%{$search}%")
                          ->orWhere('phone', 'like', "%{$search}%");
                   });
             });
         }
 
-        $perPage = min(100, max(5, (int) $request->get('per_page', 15)));
-        $invoices = $query->latest('invoice_date')->paginate($perPage);
+        // Filter by custom metadata (e.g. ?metadata[order_id]=1234)
+        if ($request->has('metadata') && is_array($request->metadata)) {
+            foreach ($request->metadata as $key => $value) {
+                $query->where("metadata->{$key}", $value);
+            }
+        }
 
-        return response()->json([
-            'success' => true,
-            'data'    => InvoiceResource::collection($invoices),
-            'meta'    => [
+        $perPage = min(100, max(5, (int) $request->get('per_page', 15)));
+        $invoices = $query->latest('invoice_date')->smartPaginate($perPage);
+
+        // Build dynamic pagination metadata
+        if ($invoices instanceof CursorPaginator) {
+            $meta = [
+                'per_page'    => $invoices->perPage(),
+                'next_cursor' => $invoices->nextCursor()?->encode(),
+                'prev_cursor' => $invoices->previousCursor()?->encode(),
+                'has_more'    => $invoices->hasMorePages(),
+                'pagination'  => 'cursor',
+            ];
+        } else {
+            $meta = [
                 'current_page' => $invoices->currentPage(),
                 'per_page'     => $invoices->perPage(),
                 'total'        => $invoices->total(),
                 'last_page'    => $invoices->lastPage(),
-            ],
+                'pagination'   => 'offset',
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => InvoiceResource::collection($invoices),
+            'meta'    => $meta,
         ]);
     }
 
@@ -87,107 +109,21 @@ class InvoiceApiController extends Controller
             }
         }
 
-        return DB::transaction(function () use ($user, $validated) {
-            // 2. Resolve Customer (either existing customer_id or create/find by phone/email)
-            if (!empty($validated['customer_id'])) {
-                $customer = $user->customers()->findOrFail($validated['customer_id']);
-            } else {
-                $custData = $validated['customer'];
-                $customer = $user->customers()
-                    ->where('phone', $custData['phone'])
-                    ->first();
-
-                if (!$customer) {
-                    $customer = Customers::create([
-                        'user_id' => $user->id,
-                        'name'    => $custData['name'],
-                        'phone'   => $custData['phone'],
-                        'email'   => $custData['email'] ?? null,
-                        'address' => $custData['address'] ?? null,
-                    ]);
-                }
-            }
-
-            // 3. Process line items and compute subtotal
-            $items = [];
-            $subTotal = 0;
-            foreach ($validated['items'] as $item) {
-                $qty = (float) $item['qty'];
-                $rate = (float) $item['rate'];
-                $lineTotal = round($qty * $rate, 2);
-                $subTotal += $lineTotal;
-
-                $items[] = [
-                    'name'  => $item['name'],
-                    'qty'   => $qty,
-                    'rate'  => $rate,
-                    'total' => $lineTotal,
-                ];
-            }
-
-            // 4. Calculate Tax & Totals
-            $needTax = $validated['need_tax'] ?? (!empty($validated['tax_rate']) || !empty($validated['tax_amount']));
-            if (!empty($validated['tax_amount'])) {
-                $taxAmount = (float) $validated['tax_amount'];
-            } elseif (!empty($validated['tax_rate'])) {
-                $taxAmount = round($subTotal * ($validated['tax_rate'] / 100), 2);
-            } else {
-                $taxAmount = 0.00;
-            }
-
-            $totalAmount = round($subTotal + $taxAmount, 2);
-
-            $status = strtolower($validated['status'] ?? 'unpaid');
-            $paidAmount = isset($validated['paid_amount']) ? (float) $validated['paid_amount'] : ($status === 'paid' ? $totalAmount : 0.00);
-
-            // 5. Generate Invoice Number if omitted
-            $invoiceNumber = $validated['invoice_number'] ?? null;
-            if (!$invoiceNumber) {
-                $prefix = $user->settings?->invoice_prefix ?? 'INV-';
-                $lastInvoice = Invoices::orderByDesc('id')->first();
-                $nextNum = 1001;
-                if ($lastInvoice && preg_match('/(\d+)$/', $lastInvoice->invoice_number, $m)) {
-                    $nextNum = ((int) $m[1]) + 1;
-                }
-                $invoiceNumber = $prefix . $nextNum;
-                while (Invoices::where('invoice_number', $invoiceNumber)->exists()) {
-                    $nextNum++;
-                    $invoiceNumber = $prefix . $nextNum;
-                }
-            }
-
-            $currency = $validated['currency'] ?? $user->settings?->default_currency ?? 'USD';
-            $invoiceDate = $validated['invoice_date'] ?? now()->format('Y-m-d');
-
-            // 6. Create Invoice
-            $invoice = Invoices::create([
-                'user_id'        => $user->id,
-                'customer_id'    => $customer->id,
-                'invoice_number' => $invoiceNumber,
-                'invoice_date'   => $invoiceDate,
-                'items'          => $items,
-                'notes'          => $validated['notes'] ?? null,
-                'tax_amount'     => $taxAmount,
-                'paid_amount'    => $paidAmount,
-                'total_amount'   => $totalAmount,
-                'status'         => $status,
-                'need_tax'       => $needTax,
-                'currency'       => $currency,
-            ]);
-
-            $invoice->setRelation('customer', $customer);
-
-            // 7. Dispatch Webhook
-            $this->webhookDispatcher->dispatch($user, 'invoice.created', [
-                'invoice' => (new InvoiceResource($invoice))->resolve(),
-            ]);
+        try {
+            $invoice = InvoiceService::createInvoice($user, $validated);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Invoice created successfully.',
-                'data'    => new InvoiceResource($invoice),
+                'data'    => new InvoiceResource($invoice->load('customer')),
             ], 201);
-        });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Creation Failed',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
     }
 
     /**
@@ -200,11 +136,10 @@ class InvoiceApiController extends Controller
         $invoice = $user->invoices()
             ->with(['customer'])
             ->where(function ($q) use ($id) {
-                if (is_numeric($id)) {
-                    $q->where('id', $id)->orWhere('invoice_number', $id);
-                } else {
-                    $q->where('invoice_number', $id);
-                }
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id)
+                  ->orWhere('public_hash', $id);
             })
             ->first();
 
@@ -231,11 +166,10 @@ class InvoiceApiController extends Controller
 
         $invoice = $user->invoices()
             ->where(function ($q) use ($id) {
-                if (is_numeric($id)) {
-                    $q->where('id', $id)->orWhere('invoice_number', $id);
-                } else {
-                    $q->where('invoice_number', $id);
-                }
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id)
+                  ->orWhere('public_hash', $id);
             })
             ->first();
 
@@ -247,19 +181,13 @@ class InvoiceApiController extends Controller
             ], 404);
         }
 
-        $invoice->status = 'paid';
-        $invoice->paid_amount = $invoice->total_amount;
-        $invoice->save();
-
-        // Dispatch Webhook
-        $this->webhookDispatcher->dispatch($user, 'invoice.paid', [
-            'invoice' => (new InvoiceResource($invoice))->resolve(),
-        ]);
+        $paidAmount = $request->has('paid_amount') ? (float) $request->paid_amount : null;
+        InvoiceService::markPaid($invoice, $paidAmount);
 
         return response()->json([
             'success' => true,
-            'message' => 'Invoice marked as paid.',
-            'data'    => new InvoiceResource($invoice),
+            'message' => 'Invoice marked as paid successfully.',
+            'data'    => new InvoiceResource($invoice->load('customer')),
         ]);
     }
 
@@ -272,11 +200,9 @@ class InvoiceApiController extends Controller
 
         $invoice = $user->invoices()
             ->where(function ($q) use ($id) {
-                if (is_numeric($id)) {
-                    $q->where('id', $id)->orWhere('invoice_number', $id);
-                } else {
-                    $q->where('invoice_number', $id);
-                }
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id);
             })
             ->first();
 
@@ -288,29 +214,36 @@ class InvoiceApiController extends Controller
             ], 404);
         }
 
+        $invoiceNumber = $invoice->invoice_number;
         $invoice->delete();
+
+        // Dispatch Webhook
+        try {
+            $this->webhookDispatcher->dispatch($user, 'invoice.deleted', [
+                'invoice_number' => $invoiceNumber,
+            ]);
+        } catch (\Throwable) {
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Invoice deleted successfully.',
+            'message' => "Invoice '{$invoiceNumber}' deleted successfully.",
         ]);
     }
 
     /**
-     * Download or stream PDF for an invoice.
+     * Stream / Download Invoice PDF via API.
      */
     public function pdf(Request $request, $id)
     {
         $user = $request->user();
 
         $invoice = $user->invoices()
-            ->with(['customer'])
+            ->with(['customer', 'user.settings'])
             ->where(function ($q) use ($id) {
-                if (is_numeric($id)) {
-                    $q->where('id', $id)->orWhere('invoice_number', $id);
-                } else {
-                    $q->where('invoice_number', $id);
-                }
+                $q->where('id', $id)
+                  ->orWhere('invoice_number', $id)
+                  ->orWhere('uuid', $id);
             })
             ->first();
 
@@ -322,18 +255,8 @@ class InvoiceApiController extends Controller
             ], 404);
         }
 
-        $companyData = [
-            'name'    => $user->settings?->company_name ?? $user->name,
-            'address' => $user->settings?->company_address ?? '',
-            'phone'   => $user->settings?->company_phone ?? '',
-            'email'   => $user->settings?->company_email ?? $user->email,
-        ];
+        $pdf = InvoiceService::generatePdf($invoice);
 
-        $pdf = Pdf::loadView('pages.preview.preview2', [
-            'invoice_data' => $invoice,
-            'company_data' => $companyData,
-        ]);
-
-        return $pdf->download("invoice-{$invoice->invoice_number}.pdf");
+        return $pdf->stream("invoice-{$invoice->invoice_number}.pdf");
     }
 }

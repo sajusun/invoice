@@ -2,37 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\Factory;
+use App\Models\Plan;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class HomePageController extends Controller
 {
-    public function homePage()
+    public function home(): View
     {
-        $subscription= new SubscriptionController();
-        $plans=$subscription->plans();
-        $user=auth()->user();
+        $plans = Plan::all();
+        $user = Auth::user();
 
-        return view('index',compact('plans','user'));
+        return view('home', compact('plans', 'user'));
     }
 
-    public function home()
+    public function homePage(): View
     {
-      return view('home');
+        return $this->home();
     }
 
     public function maintenanceMode(): View
     {
-      return view('pages.maintenance');
+        return view('pages.maintenance');
     }
 
-    public function contact_form()
+    public function contact_form(): View
     {
-      return  view('pages.contact');
+        return view('pages.contact');
     }
-    public function submit_contact(Request $request){
-        return redirect()->route('contact.form')->with('message','Successfully Submitted');
+
+    public function submit_contact(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'message' => 'required|string|max:2000',
+        ]);
+
+        return redirect()->route('contact.form')->with('message', 'Thank you! Your message has been received.');
     }
 }

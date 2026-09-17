@@ -47,22 +47,19 @@ class PaymentController extends Controller
 
     public static function onSignUp($user): void
     {
-        $plan = Plan::where('type', 'free')->first();
+        $plan = Plan::where('type', 'free')->first() ?? Plan::first();
 
-        $payment = Payment::create([
-            'user_id' => $user->id,
-            'plan_id' => $plan->id,
-            'payment_method' => 'Auto Sign Up',
-            'amount' => $plan->price,
-            'payment_status' => 'success',
-        ]);
+        if ($plan) {
+            Payment::create([
+                'user_id'        => $user->id,
+                'plan_id'        => $plan->id,
+                'payment_method' => 'Auto Sign Up',
+                'amount'         => $plan->price ?? 0,
+                'payment_status' => 'success',
+            ]);
 
-        $user->plan_id = $plan->id;
-        if ($plan->price > 0) {
-            $user->expires_at = now()->addDays(365);
-        } else {
-            $user->expires_at = null;
+            $user->plan_id = $plan->id;
+            $user->save();
         }
-        $user->save();
     }
 }
