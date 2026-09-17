@@ -22,32 +22,5 @@
         {{ $slot }}
     </main>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const closeMenuButton = document.getElementById('close-menu');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', function () {
-            mobileMenu.classList.add('visible');
-            document.body.style.overflow = 'hidden';
-        });
-
-        closeMenuButton.addEventListener('click', function () {
-            mobileMenu.classList.remove('visible');
-            document.body.style.overflow = 'auto';
-        });
-
-        // Close menu when clicking on links
-        const menuLinks = mobileMenu.querySelectorAll('a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', function () {
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            });
-        });
-    });
-</script>
-
 </body>
 </html>
