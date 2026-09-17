@@ -132,6 +132,15 @@ class InvoicesController extends Controller
             ]);
         }
 
+        // Check plan limits for authenticated user
+        if (!$user->canCreateInvoice()) {
+            return response()->json([
+                'success'     => false,
+                'message'     => 'Monthly invoice limit reached for your current plan (' . ($user->plan->name ?? 'Free') . '). Please upgrade your plan to continue creating invoices.',
+                'upgrade_url' => route('subscription.plans'),
+            ], 403);
+        }
+
         try {
             // Transform builder.vue nested inputs or flat inputs
             $clientData = [

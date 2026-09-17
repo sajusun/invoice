@@ -12,10 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->boolean('is_recurring')->default(false)->after('metadata')->index();
-            $table->string('recurring_frequency', 20)->nullable()->after('is_recurring'); // weekly, monthly, quarterly, yearly
-            $table->date('recurring_end_date')->nullable()->after('recurring_frequency');
-            $table->date('last_recurring_at')->nullable()->after('recurring_end_date');
+            if (!Schema::hasColumn('invoices', 'metadata')) {
+                $table->json('metadata')->nullable();
+            }
+            if (!Schema::hasColumn('invoices', 'is_recurring')) {
+                $table->boolean('is_recurring')->default(false)->index();
+            }
+            if (!Schema::hasColumn('invoices', 'recurring_frequency')) {
+                $table->string('recurring_frequency', 20)->nullable();
+            }
+            if (!Schema::hasColumn('invoices', 'recurring_end_date')) {
+                $table->date('recurring_end_date')->nullable();
+            }
+            if (!Schema::hasColumn('invoices', 'last_recurring_at')) {
+                $table->date('last_recurring_at')->nullable();
+            }
         });
     }
 

@@ -36,7 +36,12 @@ class Payment extends Model
         'plan_id',
         'payment_method',
         'amount',
+        'billing_cycle',
+        'currency',
+        'stripe_payment_intent_id',
+        'stripe_session_id',
         'payment_status',
+        'receipt_url',
     ];
     public function user()
     {
