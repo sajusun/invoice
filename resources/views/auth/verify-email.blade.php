@@ -1,75 +1,46 @@
-{{--<x-guest-layout>--}}
-{{--    <div class="mb-4 text-sm text-gray-600">--}}
-{{--        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}--}}
-{{--    </div>--}}
+<x-guest-layout>
+    <x-slot name="title">Verify Email Address - Invozen</x-slot>
 
-{{--    @if (session('status') == 'verification-link-sent')--}}
-{{--        <div class="mb-4 font-medium text-sm text-green-600">--}}
-{{--            {{ __('A new verification link has been sent to the email address you provided during registration.') }}--}}
-{{--        </div>--}}
-{{--    @endif--}}
-
-{{--    <div class="mt-4 flex items-center justify-between">--}}
-{{--        <form method="POST" action="{{ route('verification.send') }}">--}}
-{{--            @csrf--}}
-
-{{--            <div>--}}
-{{--                <x-primary-button>--}}
-{{--                    {{ __('Resend Verification Email') }}--}}
-{{--                </x-primary-button>--}}
-{{--            </div>--}}
-{{--        </form>--}}
-
-{{--        <form method="POST" action="{{ route('logout') }}">--}}
-{{--            @csrf--}}
-
-{{--            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">--}}
-{{--                {{ __('Log Out') }}--}}
-{{--            </button>--}}
-{{--        </form>--}}
-{{--    </div>--}}
-{{--</x-guest-layout>--}}
-
-    <!DOCTYPE html>
-<html>
-<head>
-    <title>Email Verification Required</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
-        .btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
-        .footer { margin-top: 20px; font-size: 12px; color: #777; }
-        .btn:hover{
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h2>Verify Your Email Address</h2>
-{{--    <p>Hello, {{ $name }}!</p>--}}
-    <p>Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?
-        If you didn't receive the email, we will gladly send you another..</p>
-
-    <form method="POST" action="{{ route('verification.send') }}">
-        @csrf
-        <div>
-            <button class="btn login-link">
-                {{ __('Resend Verification Email') }}
-            </button>
+    <div>
+        <div class="text-center mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Verify your email</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
+                Thanks for signing up! Before getting started, please verify your email address by clicking on the link we just sent to your inbox.
+            </p>
         </div>
-    </form>
 
-    <p>If you didn't create an account, you can ignore this email.</p>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
+        @if (session('status') == 'verification-link-sent')
+            <div class="mb-5 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-medium flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                <span>A new verification link has been sent to your email address.</span>
+            </div>
+        @endif
 
-        <button type="submit" class="btn" style="background: red">
-            {{ __('Log Out') }}
-        </button>
-    </form>
-    <p class="footer">This email was sent automatically. Please do not reply.</p>
-</div>
-</body>
-</html>
+        <div class="space-y-4">
+            <form method="POST" action="{{ route('verification.send') }}">
+                @csrf
+                <button type="submit"
+                        class="w-full flex items-center justify-center py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 shadow-md shadow-indigo-200 transition-all cursor-pointer">
+                    <i class="fa-solid fa-paper-plane mr-2 text-xs"></i>
+                    Resend Verification Email
+                </button>
+            </form>
 
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <a href="{{ route('profile.edit') }}" class="font-medium text-slate-600 hover:text-indigo-600 transition">
+                    Edit Profile
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="font-medium text-rose-600 hover:text-rose-700 hover:underline cursor-pointer">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-guest-layout>

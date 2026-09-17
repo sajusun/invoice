@@ -2,351 +2,394 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\AdminNotifier;
-use App\Models\Customers;
-use App\Models\Invoices;
+use App\Models\Invoice;
 use App\Models\User;
 use App\Services\InvoiceService;
-use App\Services\MethodService;
+use App\Services\SettingService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
-use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 
 class InvoicesController extends Controller
 {
-    /**
-     * @throws ValidationException
-     */
-
-    public function view()
+    public function view(): View
     {
-        $invoiceId = InvoiceService::invoiceIdGenerator();
-        if (Auth::check()) {
-            $settings = Auth::user()->settings;
+        $invoiceId = InvoiceService::invoiceIdGenerator(Auth::user());
+        $settings = Auth::check() ? SettingService::forUser(Auth::user()) : null;
 
-            return view('pages/invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
-        } else {
-            return view('pages/invoice', ['invoiceId' => $invoiceId]);
-        }
+        return view('pages.invoice', ['invoiceId' => $invoiceId, 'settings' => $settings]);
     }
-    public function invoiceList()
+
+    public function invoiceList(): View
     {
         return view('pages.invoice.invoice-list');
     }
 
-    public function theme()
+    public function theme(): View
     {
-        return View('pages.invoice.builder');
+        return view('pages.invoice.builder');
     }
-    public function getInvoiceCounts()
-    {
-        $counts = [
-            'all' => Invoices::count(),
-            'paid' => Invoices::where('status', 'paid')->count(),
-            'unpaid' => Invoices::where('status', 'unpaid')->count(),
-            'overdue' => Invoices::where('status', 'overdue')
-                //   ->where('due_date', '<', now())
-                ->count(),
-        ];
 
-        return $counts;
+    public function getInvoiceCounts(): array
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return ['all' => 0, 'paid' => 0, 'unpaid' => 0, 'overdue' => 0];
+        }
+
+        $query = $user->invoices();
+
+        return [
+            'all'     => (clone $query)->count(),
+            'paid'    => (clone $query)->where('status', 'paid')->count(),
+            'unpaid'  => (clone $query)->whereIn('status', ['unpaid', 'pending', 'partially_paid'])->count(),
+            'overdue' => (clone $query)->where('status', 'overdue')->count(),
+        ];
     }
 
     public function previewInvoice($id = '')
     {
+        $invoice = null;
+
         if (Auth::check()) {
-            $settings = new SettingsController();
-            $companyData = [
-                'name' => $settings->companyName(),
-                'address' => $settings->companyAddress(),
-                'phone' => $settings->companyPhone(),
-                'email' => $settings->companyEmail(),
-            ];
-            $data = InvoiceService::find_invoice($id);
-            return view('pages/invoice_preview', ['invoice_data' => $data, 'company_data' => $companyData]);
-           // return [$data, $companyData];
-        } elseif (session($id)) {
-            $data = session($id);
-        } else {
-            return Redirect()->route('invoice.builder');
+            $user = Auth::user();
+            $invoice = $user->invoices()
+                ->with(['customer'])
+                ->where(function ($q) use ($id) {
+                    $q->where('invoice_number', $id)
+                      ->orWhere('uuid', $id)
+                      ->orWhere('public_hash', $id)
+                      ->orWhere('id', $id);
+                })->first();
         }
-        return view('pages/invoice/preview2', ['invoice_data' => $data]);
+
+        // Check if invoice exists in guest session
+        if (!$invoice && session()->has($id)) {
+            $sessionData = session($id);
+            return view('pages.invoice.preview2', ['invoice_data' => $sessionData]);
+        }
+
+        if (!$invoice) {
+            // Also check if public hash matches any public invoice
+            $invoice = Invoice::with(['customer', 'user'])
+                ->where('public_hash', $id)
+                ->orWhere('uuid', $id)
+                ->first();
+        }
+
+        if (!$invoice) {
+            return redirect()->route('invoice.builder');
+        }
+
+        $companyData = SettingService::getCompanyData($invoice->user);
+
+        return view('pages.invoice_preview', [
+            'invoice_data' => $invoice,
+            'company_data' => $companyData,
+        ]);
     }
 
     public function makeInvoice(Request $request): JsonResponse
     {
         $user = Auth::user();
 
-        // Support both builder.vue nested format and flat request format
-        $clientName    = $request->input('client.name', $request->input('name', 'Valued Client'));
-        $clientEmail   = $request->input('client.email', $request->input('email'));
-        $clientPhone   = $request->input('client.phone', $request->input('phone', '0000000000'));
-        $clientAddress = $request->input('client.address', $request->input('address', ''));
+        // Guest Session Flow
+        if (!$user) {
+            $invoiceNumber = $request->input('details.number', $request->input('invoice_number', InvoiceService::invoiceIdGenerator()));
+            $calculations = InvoiceService::calculateTotals(
+                $request->input('items', []),
+                (float) $request->input('tax_percentage', 10)
+            );
 
-        $invoiceNumber = $request->input('details.number', $request->input('invoice_number', InvoiceService::invoiceIdGenerator()));
-        $invoiceDate   = $request->input('details.issueDate', $request->input('invoice_date', date('Y-m-d')));
-        $dueDate       = $request->input('details.dueDate', $request->input('due_date'));
-        $notes         = $request->input('notes', '');
-        $terms         = $request->input('terms', '');
-        $currency      = $request->input('currency', $user?->settings?->default_currency ?? 'USD');
-
-        $rawItems = $request->input('items', []);
-        $items = [];
-        $subtotal = 0;
-
-        foreach ($rawItems as $item) {
-            $desc = $item['description'] ?? $item['name'] ?? 'Item';
-            $qty  = max(1, (float) ($item['qty'] ?? 1));
-            $rate = max(0, (float) ($item['rate'] ?? 0));
-            $lineTotal = round($qty * $rate, 2);
-            $subtotal += $lineTotal;
-
-            $items[] = [
-                'name' => $desc,
-                'description' => $desc,
-                'qty' => $qty,
-                'rate' => $rate,
-                'total' => $lineTotal,
-            ];
-        }
-
-        if (empty($items)) {
-            $items[] = [
-                'name' => 'General Service',
-                'description' => 'General Service',
-                'qty' => 1,
-                'rate' => 100,
-                'total' => 100,
-            ];
-            $subtotal = 100;
-        }
-
-        $taxRate = (float) $request->input('tax_percentage', 10);
-        $taxAmount = round($subtotal * ($taxRate / 100), 2);
-        $totalAmount = round($subtotal + $taxAmount, 2);
-        $paidAmount = (float) $request->input('paid_amount', 0);
-        $status = $paidAmount >= $totalAmount ? 'paid' : ($paidAmount > 0 ? 'partially_paid' : 'unpaid');
-
-        if ($user) {
-            DB::beginTransaction();
-            try {
-                // Find or create customer
-                $customer = null;
-                if (!empty($clientEmail)) {
-                    $customer = $user->customers()->where('email', $clientEmail)->first();
-                }
-                if (!$customer && !empty($clientPhone) && $clientPhone !== '0000000000') {
-                    $customer = $user->customers()->where('phone', $clientPhone)->first();
-                }
-                if (!$customer) {
-                    $customer = Customers::create([
-                        'user_id' => $user->id,
-                        'name' => $clientName,
-                        'email' => $clientEmail,
-                        'phone' => $clientPhone,
-                        'address' => $clientAddress,
-                    ]);
-                }
-
-                $invoice = Invoices::create([
-                    'user_id' => $user->id,
-                    'customer_id' => $customer->id,
-                    'invoice_number' => $invoiceNumber,
-                    'invoice_date' => $invoiceDate,
-                    'due_date' => $dueDate,
-                    'items' => json_encode($items),
-                    'tax_amount' => $taxAmount,
-                    'need_tax' => $taxAmount > 0 ? 1 : 0,
-                    'notes' => trim($notes . ($terms ? "\nTerms: " . $terms : '')),
-                    'currency' => $currency,
-                    'paid_amount' => $paidAmount,
-                    'total_amount' => $totalAmount,
-                    'status' => $status,
-                ]);
-
-                DB::commit();
-
-                try {
-                    AdminNotifier::invoiceGenerate($invoice);
-                } catch (\Throwable $e) {
-                    // Suppress notifier errors
-                }
-
-                try {
-                    app(\App\Services\WebhookDispatcherService::class)->dispatchForUser($user, 'invoice.created', [
-                        'invoice_id' => $invoice->id,
-                        'invoice_number' => $invoice->invoice_number,
-                        'total_amount' => $invoice->total_amount,
-                        'status' => $invoice->status,
-                    ]);
-                } catch (\Throwable $e) {
-                    // Suppress webhook errors
-                }
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Invoice created successfully!',
-                    'invoice' => $invoice,
-                    'redirect' => route('previewInvoice', $invoice->invoice_number),
-                ]);
-            } catch (Exception $e) {
-                DB::rollBack();
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Failed to create invoice: ' . $e->getMessage(),
-                ], 422);
-            }
-        } else {
-            // Guest Session Storage
-            session([$invoiceNumber => [
+            $sessionData = [
                 'invoice_number' => $invoiceNumber,
-                'invoice_date' => $invoiceDate,
-                'items' => $items,
-                'tax_amount' => $taxAmount,
-                'total_amount' => $totalAmount,
-                'paid_amount' => 0,
-                'status' => 'unpaid',
-                'customer' => [
-                    'name' => $clientName,
-                    'email' => $clientEmail,
-                    'phone' => $clientPhone,
-                    'address' => $clientAddress,
+                'invoice_date'   => $request->input('details.issueDate', $request->input('invoice_date', date('Y-m-d'))),
+                'items'          => $calculations['items'],
+                'subtotal'       => $calculations['subtotal'],
+                'tax_amount'     => $calculations['tax_amount'],
+                'total_amount'   => $calculations['total_amount'],
+                'paid_amount'    => 0,
+                'status'         => 'unpaid',
+                'customer'       => [
+                    'name'    => $request->input('client.name', $request->input('name', 'Valued Client')),
+                    'email'   => $request->input('client.email', $request->input('email')),
+                    'phone'   => $request->input('client.phone', $request->input('phone', '0000000000')),
+                    'address' => $request->input('client.address', $request->input('address', '')),
                 ],
-            ]]);
+            ];
+
+            session([$invoiceNumber => $sessionData]);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Invoice created in session!',
+                'success'  => true,
+                'message'  => 'Invoice created in session!',
                 'redirect' => route('previewInvoice', $invoiceNumber),
             ]);
         }
+
+        try {
+            // Transform builder.vue nested inputs or flat inputs
+            $clientData = [
+                'name'    => $request->input('client.name', $request->input('name', 'Valued Client')),
+                'email'   => $request->input('client.email', $request->input('email')),
+                'phone'   => $request->input('client.phone', $request->input('phone', '0000000000')),
+                'address' => $request->input('client.address', $request->input('address', '')),
+            ];
+
+            $invoiceData = [
+                'customer'        => $clientData,
+                'customer_id'     => $request->input('customer_id'),
+                'invoice_number'  => $request->input('details.number', $request->input('invoice_number')),
+                'invoice_date'    => $request->input('details.issueDate', $request->input('invoice_date', date('Y-m-d'))),
+                'due_date'        => $request->input('details.dueDate', $request->input('due_date')),
+                'items'           => $request->input('items', []),
+                'tax_percentage'  => (float) $request->input('tax_percentage', $request->input('tax_rate', 0)),
+                'discount_amount' => (float) $request->input('discount_amount', 0),
+                'discount_type'   => $request->input('discount_type', 'fixed'),
+                'paid_amount'     => (float) $request->input('paid_amount', 0),
+                'currency'        => $request->input('currency', SettingService::forUser($user)->default_currency),
+                'notes'           => $request->input('notes'),
+                'terms'           => $request->input('terms'),
+                'metadata'        => $request->input('metadata'),
+            ];
+
+            $invoice = InvoiceService::createInvoice($user, $invoiceData);
+
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Invoice created successfully!',
+                'invoice'  => $invoice,
+                'redirect' => route('previewInvoice', $invoice->invoice_number),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create invoice: ' . $e->getMessage(),
+            ], 422);
+        }
     }
-
-
 
     public function get_all_invoices()
     {
-        $user = Auth::user();
-        $data = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
-            ->with(['customer:id,name,email,phone,address'])->latest()->get();
-        return $data;
+        return Auth::user()->invoices()
+            ->with(['customer'])
+            ->latest('invoice_date')
+            ->get();
     }
 
-    public function all_invoices_by_paginate($paginate)
+    public function all_invoices_by_paginate(int $paginate = 15)
     {
-        $user = Auth::user();
-        $data = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')
-            ->with(['customer:id,name,email,phone,address'])->latest()->paginate($paginate);
-        return $data;
+        return InvoiceService::paginateForUser(Auth::user(), request(), $paginate);
     }
 
-    public function search_invoice(Request $request)
+    public function search_invoice(Request $request): JsonResponse
     {
         $user = Auth::user();
-        // Search by customer name or invoice number
-        if ($request->has('search') && $request->search !== null) {
-            $search = $request->search;
-
-            $invoices = $user->invoices()->select('id', 'user_id', 'customer_id', 'invoice_number', 'status', 'total_amount', 'paid_amount', 'invoice_date')->with('customer')
-                ->when($search, function ($query, $search) {
-                    return $query->where('invoice_number', 'like', "%{$search}%")
-                        ->orWhereHas('customer', function ($q) use ($search) {
-                            $q->where('name', 'like', "%{$search}%")
-                                ->orWhere('email', 'like', "%{$search}%")
-                                ->orWhere('phone', 'like', "%{$search}%");
-                        });
-                })->latest()->paginate($request->paginate);
-        } else {
-            return response()->json([
-                'success' => true,
-                'message' => 'Get data from default',
-                'status' => $this->getInvoiceCounts(),
-                'invoices' => $this->all_invoices_by_paginate($request->paginate)
-
-            ]);
-        }
+        $invoices = InvoiceService::paginateForUser($user, $request, (int) $request->get('paginate', 15));
 
         return response()->json([
-            'success' => true,
-            'status' => $this->getInvoiceCounts(),
+            'success'  => true,
+            'status'   => $this->getInvoiceCounts(),
             'invoices' => $invoices,
-            'message' => 'search data',
-
+            'message'  => 'Invoices retrieved successfully.',
         ]);
     }
 
-    //    return a specific customers invoice
     public function find_invoice($id): array
     {
-        return User::find(Auth::id())->invoices->where('customer_id', $id)->all();
+        return Auth::user()->invoices()->where('customer_id', $id)->get()->all();
     }
 
-    public function num_of_invoices()
+    public function num_of_invoices(): int
     {
-        return User::find(Auth::id())->invoices->count();
+        return Auth::user()->invoices()->count();
     }
 
     public function get_invoice($id): JsonResponse
     {
-        $invoices = Invoices::all()->where('user_id', Auth::id())->where('id', $id);
-        return response()->json($invoices);
+        $invoice = Auth::user()->invoices()->with('customer')->findOrFail($id);
+        return response()->json($invoice);
     }
 
-
-    public function sum_of_total()
+    public function sum_of_total(): float
     {
-        $user = Auth::user();
-        return $user->invoices()->where('status', '!=', 'cancelled')->sum('total_amount');
+        return (float) Auth::user()->invoices()->where('status', '!=', 'cancelled')->sum('total_amount');
     }
 
-    public function sum_of_paid()
+    public function sum_of_paid(): float
     {
-        $user = Auth::user();
-        return $user->invoices()->where('status', '!=', 'cancelled')->sum('paid_amount');
+        return (float) Auth::user()->invoices()->where('status', '!=', 'cancelled')->sum('paid_amount');
     }
 
-    public function sum_of_due()
+    public function sum_of_due(): float
     {
-        return $this->sum_of_total() - $this->sum_of_paid();
+        return max(0, round($this->sum_of_total() - $this->sum_of_paid(), 2));
     }
 
-    public function invoice_status(string $status = 'pending')
+    public function invoice_status(string $status = 'pending'): int
     {
-        return Invoices::where('user_id', Auth::id())->where('status', $status)->get('status')->count();
+        return Auth::user()->invoices()->where('status', $status)->count();
     }
 
     public function change_status(Request $request): RedirectResponse
     {
         $user = Auth::user();
-        $invoice = $user->invoices->where('invoice_number', $request->id)->first();
-        //$invoice= Invoices::where('user_id', Auth::id())->where('invoice_number', $request->id)->first();
+        $invoice = $user->invoices()->where('invoice_number', $request->id)->firstOrFail();
 
-        if ($request->paymentStatus === 'Paid') {
-            $invoice->paid_amount = $invoice->total_amount;
-            $invoice->status = $request->paymentStatus;
+        $paymentStatus = strtolower($request->paymentStatus);
+
+        if ($paymentStatus === 'paid') {
+            InvoiceService::markPaid($invoice);
         } else {
-            $invoice->status = $request->paymentStatus;
+            $invoice->status = $paymentStatus;
+            $invoice->save();
         }
-        $invoice->save();
-        return redirect()->back()->with('message', 'Updated');
+
+        return redirect()->back()->with('message', 'Invoice status updated successfully.');
     }
 
-    public function delete_invoice($invoiceNumber)
+    public function delete_invoice($invoiceNumber): RedirectResponse
     {
         $deleted = InvoiceService::delete_invoice($invoiceNumber);
 
         if ($deleted) {
-            return redirect()->back()->with(['message' => 'Delete Successfully.', 'response' => 'success']);
-        } else {
-            return redirect()->back()->with(['message' => 'Failed.', 'response' => 'error']);
+            return redirect()->back()->with(['message' => 'Invoice deleted successfully.', 'response' => 'success']);
         }
+
+        return redirect()->back()->with(['message' => 'Failed to delete invoice.', 'response' => 'error']);
+    }
+
+    /**
+     * Send invoice email to the customer.
+     */
+    public function sendEmail(Request $request, string $invoiceNumber): JsonResponse
+    {
+        $user    = Auth::user();
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        try {
+            InvoiceService::sendEmail($invoice, (bool) $request->boolean('attach_pdf', true));
+
+            return response()->json([
+                'success' => true,
+                'message' => "Invoice #{$invoiceNumber} sent to {$invoice->customer->email} successfully.",
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Show edit form for an invoice.
+     */
+    public function edit(string $invoiceNumber): View
+    {
+        $user    = Auth::user();
+        $invoice = $user->invoices()
+            ->with(['customer'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        $settings  = SettingService::forUser($user);
+        $customers = $user->customers()->orderBy('name')->get(['id', 'name', 'email', 'phone', 'address', 'company_name']);
+
+        return view('pages.invoice.edit', compact('invoice', 'settings', 'customers'));
+    }
+
+    /**
+     * Update an existing invoice.
+     */
+    public function update(Request $request, string $invoiceNumber): JsonResponse
+    {
+        $user    = Auth::user();
+        $invoice = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        try {
+            $updated = InvoiceService::updateInvoice($invoice, $request->all());
+
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Invoice updated successfully.',
+                'invoice'  => $updated,
+                'redirect' => route('previewInvoice', $updated->invoice_number),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update invoice: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Duplicate (clone) an invoice.
+     */
+    public function duplicate(string $invoiceNumber): JsonResponse
+    {
+        $user    = Auth::user();
+        $source  = $user->invoices()
+            ->with(['customer', 'user'])
+            ->where('invoice_number', $invoiceNumber)
+            ->firstOrFail();
+
+        try {
+            $newInvoice = InvoiceService::duplicateInvoice($source);
+
+            return response()->json([
+                'success'  => true,
+                'message'  => "Invoice duplicated as #{$newInvoice->invoice_number}.",
+                'invoice'  => $newInvoice,
+                'redirect' => route('previewInvoice', $newInvoice->invoice_number),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to duplicate invoice: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Bulk action on multiple invoices (delete or status change).
+     */
+    public function bulkAction(Request $request): JsonResponse
+    {
+        $user    = Auth::user();
+        $action  = $request->input('action'); // 'delete' | 'status'
+        $numbers = (array) $request->input('invoice_numbers', []);
+        $status  = $request->input('status');
+
+        if (empty($numbers)) {
+            return response()->json(['success' => false, 'message' => 'No invoices selected.'], 422);
+        }
+
+        $query = $user->invoices()->whereIn('invoice_number', $numbers);
+
+        if ($action === 'delete') {
+            $count = $query->count();
+            $query->delete();
+            return response()->json(['success' => true, 'message' => "{$count} invoice(s) deleted."]);
+        }
+
+        if ($action === 'status' && $status) {
+            $count = $query->update(['status' => strtolower($status)]);
+            return response()->json(['success' => true, 'message' => "{$count} invoice(s) updated to '{$status}'."]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Invalid action.'], 422);
     }
 }

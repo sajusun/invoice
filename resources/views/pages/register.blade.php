@@ -1,196 +1,129 @@
-<x-home-layout>
-    <x-slot name="meta">
-        <title>Signup to {{config('app.name')}} - Create Your Free Account</title>
-        <meta name="description"
-              content="Join Invozen today and streamline your invoicing process. Sign up for free and start creating invoices in seconds.">
-        <meta name="keywords" content="sign up, invozen register, create account, free invoicing">
-        <meta name="robots" content="index, follow">
-        <link rel="canonical" href="{{route('register')}}">
-    </x-slot>
-    <x-slot name="header"></x-slot>
+<x-guest-layout>
+    <x-slot name="title">Create Your Free Account - Invozen</x-slot>
 
-        <div class="auth-container flex items-center justify-center py-12 px-4">
-            <div id="registration-form" class="w-full max-w-lg auth-card bg-white px-8 pt-4 pb-8">
-                <div class="text-center m-0">
-{{--                    <div--}}
-{{--                        class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-1">--}}
-{{--                        <i class="fa-solid fa-user-plus text-white text-xl"></i>--}}
-{{--                    </div>--}}
-                    <a href="/"><h1 class="text-3xl font-bold text-primary">{{config('app.name', 'App Name')}}</h1></a>
-                    <p class="text-gray-600 mt-1">Create your account</p>
+    <div>
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Create your account</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Start issuing invoices and managing clients in seconds.</p>
+        </div>
+
+        @if ($errors->any())
+            <div class="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-700 text-xs font-medium space-y-1">
+                @foreach ($errors->all() as $error)
+                    <div class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+                        <span>{{ $error }}</span>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        <form action="{{ route('register') }}" method="POST" class="space-y-4">
+            @csrf
+
+            <!-- Full Name -->
+            <div>
+                <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Full Name *</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-xs">
+                        <i class="fa-regular fa-user"></i>
+                    </span>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                           class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                           placeholder="Sarah Connor">
                 </div>
-                <div class="border-b my-4"></div>
-                @if ($errors->any())
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        <p>{{ $errors->first() }}</p>
-                    </div>
-                @endif
-                <form id="registration-form-fields" action="{{ route('register') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                        <input name="name" type="text"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200"
-                               placeholder="John Smith" required>
-                    </div>
+            </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input type="email" name="email"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200"
-                               placeholder="john@example.com" required>
-                    </div>
+            <!-- Email Address -->
+            <div>
+                <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Work Email *</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-xs">
+                        <i class="fa-regular fa-envelope"></i>
+                    </span>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="username"
+                           class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                           placeholder="sarah@company.com">
+                </div>
+            </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                        <select name="country" required class="w-full border px-3 py-2 rounded mt-1 cursor-pointer">
-                            <option value="">Select Country</option>
+            <!-- Country Selection -->
+            @if(isset($countries) && count($countries) > 0)
+                <div>
+                    <label for="country" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Country</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-xs">
+                            <i class="fa-solid fa-globe"></i>
+                        </span>
+                        <select name="country" id="country" class="w-full pl-9 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition appearance-none cursor-pointer">
+                            <option value="">Select country (optional)</option>
                             @foreach($countries as $country)
-                                <option class="cursor-pointer p-2"
-                                        value="{{$country['name']}}">{{$country['name']}}</option>
+                                <option value="{{ $country['name'] }}" {{ old('country') === $country['name'] ? 'selected' : '' }}>
+                                    {{ $country['name'] }}
+                                </option>
                             @endforeach
                         </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400 text-xs">
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </span>
                     </div>
+                </div>
+            @endif
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <div class="relative">
-                            <input type="password" id="password" name="password"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 pr-12"
-                                   placeholder="••••••••" required>
-                            <button type="button" id="togglePassword"
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                        <div class="relative">
-                            <input type="password" id="confirmPassword" name="password_confirmation"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus transition-all duration-200 pr-12"
-                                   placeholder="••••••••" required>
-                            <button type="button" id="toggleConfirmPassword"
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <input type="checkbox" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded">
-                        <label class="text-sm text-gray-600">
-                            I agree to the <span
-                                class="text-blue-600 hover:underline cursor-pointer">Terms of Service</span> and <span
-                                class="text-blue-600 hover:underline cursor-pointer">Privacy Policy</span>
-                        </label>
-                    </div>
-
-                    <button type="submit"
-                            class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors">
-                        Create Account
+            <!-- Password -->
+            <div x-data="{ show: false }">
+                <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Password *</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-xs">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input :type="show ? 'text' : 'password'" id="password" name="password" required autocomplete="new-password"
+                           class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                           placeholder="At least 8 characters">
+                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600">
+                        <i :class="show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'" class="text-xs"></i>
                     </button>
-
-                    <div class="text-center">
-                        <span class="text-gray-600">Already have an account? </span>
-                        <a href="{{ route('login') }}">
-                            <span class="text-blue-600 hover:underline font-medium cursor-pointer">Sign in</span>
-                        </a>
-                    </div>
-                </form>
+                </div>
             </div>
+
+            <!-- Confirm Password -->
+            <div x-data="{ show: false }">
+                <label for="password_confirmation" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Confirm Password *</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-xs">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </span>
+                    <input :type="show ? 'text' : 'password'" id="password_confirmation" name="password_confirmation" required autocomplete="new-password"
+                           class="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                           placeholder="Repeat password">
+                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600">
+                        <i :class="show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'" class="text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terms & Conditions Checkbox -->
+            <div class="flex items-start pt-1">
+                <input type="checkbox" id="terms" required class="w-4 h-4 mt-0.5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer">
+                <label for="terms" class="ml-2 block text-xs text-slate-600 cursor-pointer">
+                    I agree to the <a href="{{ route('t&c') }}" target="_blank" class="text-indigo-600 hover:underline font-medium">Terms of Service</a> and <a href="{{ route('pp') }}" target="_blank" class="text-indigo-600 hover:underline font-medium">Privacy Policy</a>.
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+                <button type="submit"
+                        class="w-full flex items-center justify-center py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 shadow-md shadow-indigo-200 transition-all cursor-pointer">
+                    Create Account
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-500">
+            Already have an account?
+            <a href="{{ route('login') }}" class="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
+                Sign in
+            </a>
         </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Toggle password visibility
-            const togglePassword = document.getElementById('togglePassword');
-            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-
-            togglePassword.addEventListener('click', function () {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-
-                // Toggle eye icon
-                const icon = this.querySelector('i');
-                if (type === 'text') {
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-
-            toggleConfirmPassword.addEventListener('click', function () {
-                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                confirmPasswordInput.setAttribute('type', type);
-
-                // Toggle eye icon
-                const icon = this.querySelector('i');
-                if (type === 'text') {
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-
-            // // Form validation
-            // const form = document.getElementById('registration-form-fields');
-            // const errorDiv = document.getElementById('error-message');
-            //
-            // form.addEventListener('submit', function(e) {
-            //     e.preventDefault();
-            //
-            //     // Get form values
-            //     const name = form.elements['name'].value;
-            //     const email = form.elements['email'].value;
-            //     const country = form.elements['country'].value;
-            //     const password = form.elements['password'].value;
-            //     const confirmPassword = form.elements['password_confirmation'].value;
-            //     const terms = document.getElementById('terms').checked;
-            //
-            //     // Reset error message
-            //     errorDiv.classList.add('hidden');
-            //
-            //     // Validation checks
-            //     if (!name || !email || !country || !password || !confirmPassword) {
-            //         showError('Please fill in all fields');
-            //         return;
-            //     }
-            //
-            //     if (password !== confirmPassword) {
-            //         showError('Passwords do not match');
-            //         return;
-            //     }
-            //
-            //     if (password.length < 8) {
-            //         showError('Password must be at least 8 characters long');
-            //         return;
-            //     }
-            //
-            //     if (!terms) {
-            //         showError('You must agree to the Terms of Service and Privacy Policy');
-            //         return;
-            //     }
-            //
-            //     // If all validations pass
-            //     // alert('Registration successful! (This is a demo)');
-            //     form.reset();
-            // });
-            //
-            // function showError(message) {
-            //     errorDiv.querySelector('p').textContent = message;
-            //     errorDiv.classList.remove('hidden');
-            //
-            //     // Scroll to error message
-            //     errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // }
-        });
-    </script>
-</x-home-layout>
-
+    </div>
+</x-guest-layout>

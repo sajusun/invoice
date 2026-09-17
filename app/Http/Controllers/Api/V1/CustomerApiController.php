@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateCustomerRequest;
 use App\Http\Resources\Api\V1\CustomerResource;
-use App\Models\Customers;
+use App\Models\Customer;
+use App\Services\CustomerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\CursorPaginator;
 
 class CustomerApiController extends Controller
 {
     /**
-     * List user customers.
+     * List user customers with dynamic cursor pagination.
      */
     public function index(Request $request): JsonResponse
     {
@@ -24,23 +26,45 @@ class CustomerApiController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('company_name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
-        $perPage = min(100, max(5, (int) $request->get('per_page', 15)));
-        $customers = $query->latest()->paginate($perPage);
+        // Filter by custom metadata (e.g. ?metadata[crm_id]=xyz)
+        if ($request->has('metadata') && is_array($request->metadata)) {
+            foreach ($request->metadata as $key => $value) {
+                $query->where("metadata->{$key}", $value);
+            }
+        }
 
-        return response()->json([
-            'success' => true,
-            'data'    => CustomerResource::collection($customers),
-            'meta'    => [
+        $perPage = min(100, max(5, (int) $request->get('per_page', 15)));
+        $customers = $query->latest('created_at')->smartPaginate($perPage);
+
+        // Build dynamic pagination metadata
+        if ($customers instanceof CursorPaginator) {
+            $meta = [
+                'per_page'    => $customers->perPage(),
+                'next_cursor' => $customers->nextCursor()?->encode(),
+                'prev_cursor' => $customers->previousCursor()?->encode(),
+                'has_more'    => $customers->hasMorePages(),
+                'pagination'  => 'cursor',
+            ];
+        } else {
+            $meta = [
                 'current_page' => $customers->currentPage(),
                 'per_page'     => $customers->perPage(),
                 'total'        => $customers->total(),
                 'last_page'    => $customers->lastPage(),
-            ],
+                'pagination'   => 'offset',
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => CustomerResource::collection($customers),
+            'meta'    => $meta,
         ]);
     }
 
@@ -65,9 +89,7 @@ class CustomerApiController extends Controller
         }
 
         $validated = $request->validated();
-        $validated['user_id'] = $user->id;
-
-        $customer = Customers::create($validated);
+        $customer = CustomerService::findOrCreate($user, $validated);
 
         return response()->json([
             'success' => true,
@@ -82,7 +104,7 @@ class CustomerApiController extends Controller
     public function show(Request $request, $id): JsonResponse
     {
         $user = $request->user();
-        $customer = $user->customers()->find($id);
+        $customer = $user->customers()->with('invoices')->find($id);
 
         if (!$customer) {
             return response()->json([
@@ -99,9 +121,9 @@ class CustomerApiController extends Controller
     }
 
     /**
-     * Delete customer.
+     * Update customer details.
      */
-    public function destroy(Request $request, $id): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         $user = $request->user();
         $customer = $user->customers()->find($id);
@@ -114,7 +136,41 @@ class CustomerApiController extends Controller
             ], 404);
         }
 
-        $customer->delete();
+        $validated = $request->validate([
+            'name'         => 'sometimes|required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'email'        => 'nullable|email|max:255',
+            'phone'        => 'nullable|string|max:50',
+            'tax_id'       => 'nullable|string|max:100',
+            'address'      => 'nullable|string|max:500',
+            'notes'        => 'nullable|string|max:2000',
+            'metadata'     => 'nullable|array',
+        ]);
+
+        $updated = CustomerService::updateCustomer($customer, $validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer updated successfully.',
+            'data'    => new CustomerResource($updated),
+        ]);
+    }
+
+    /**
+     * Delete customer.
+     */
+    public function destroy(Request $request, $id): JsonResponse
+    {
+        $user = $request->user();
+        $deleted = CustomerService::deleteCustomer((int) $id, $user);
+
+        if (!$deleted) {
+            return response()->json([
+                'success' => false,
+                'error'   => 'Not Found',
+                'message' => "Customer '{$id}' not found.",
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,

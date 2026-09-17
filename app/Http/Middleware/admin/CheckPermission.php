@@ -14,12 +14,12 @@ class CheckPermission
      *
      * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
-    public function handle(Request $request, Closure $next, $permission): Response
+    public function handle(Request $request, Closure $next, string $permission): Response
     {
         $admin = Auth::guard('admin')->user();
 
-        if (!$admin || !$admin->role || !$admin->role->permissions->pluck('name')->contains($permission)) {
-            abort(403, 'Unauthorized permission.');
+        if (!$admin || !$admin->hasPermission($permission)) {
+            abort(403, 'Unauthorized permission capability.');
         }
 
         return $next($request);

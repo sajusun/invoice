@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             InvoiceSeeder::class,
             PaymentSeeder::class,
             NotificationSeeder::class,
+            ApiKeySeeder::class,
         ]);
     }
 }

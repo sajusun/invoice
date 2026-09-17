@@ -16,10 +16,14 @@ class CreateCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'    => 'required|string|max:255',
-            'email'   => 'nullable|email|max:255',
-            'phone'   => 'required|string|max:50',
-            'address' => 'nullable|string|max:500',
+            'name'         => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'email'        => 'nullable|email|max:255',
+            'phone'        => 'required|string|max:50',
+            'tax_id'       => 'nullable|string|max:50',
+            'address'      => 'nullable|string|max:500',
+            'notes'        => 'nullable|string|max:1000',
+            'metadata'     => 'nullable|array',
         ];
     }
 

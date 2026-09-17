@@ -2,11 +2,7 @@
 <tr>
 <td class="header">
 <a href="{{ $url }}" style="display: inline-block;">
-@if (trim($slot) === 'Laravel')
-<img src="https://laravel.com/img/notification-logo.png" class="logo" alt="Laravel Logo">
-@else
-{{ $slot }}
-@endif
+<span style="font-size: 20px; font-weight: 800; color: #4f46e5; text-decoration: none; font-family: sans-serif;">⚡ Invozen</span>
 </a>
 </td>
 </tr>

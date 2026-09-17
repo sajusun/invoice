@@ -38,8 +38,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'country' => ['required', 'string', 'max:255'],
-
+            'country' => ['nullable', 'string', 'max:255'],
         ]);
 
         $user = User::create([
@@ -50,19 +49,13 @@ class RegisteredUserController extends Controller
         $this->on_register_run($user);
 
         event(new Registered($user));
-        AdminNotifier::userRegister($user);
-        return redirect()->route('signup.success',$user->email)->with($user->email,
-            'Registration success! Please check your email to verify.');
+        try {
+            AdminNotifier::userRegister($user);
+        } catch (\Throwable) {}
 
-//        return redirect(route('register',
-//            ['message'=>'registered successfully! Please check your email to verify.'],
-//            absolute: false));
+        \Illuminate\Support\Facades\Auth::login($user);
 
-//        return response()->json(['message' => 'User registered successfully! Please check your email to verify.']);
-
-//        Auth::login($user);
-//
-//        return redirect(route('dashboard', absolute: false));
+        return redirect(route('dashboard', absolute: false));
     }
 
     public function signup_success($email)

@@ -1,201 +1,242 @@
 <template>
-    <div id="invoice" class="container mx-auto px-4 py-4">
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-blue-100 rounded-lg">
-                        <i class="fas fa-file-invoice text-blue-600 text-xl"></i>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Invoices</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ status.all }}</p>
-                    </div>
+    <div id="invoice" class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Header & Top Stats -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Invoices</h1>
+                    <p class="text-sm text-slate-500 mt-1">Manage, issue, track, and dispatch your client invoices.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="/invoice/builder" class="inline-flex items-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 shadow-md shadow-indigo-200 transition-all">
+                        <i class="fas fa-plus mr-2 text-xs"></i>
+                        New Invoice
+                    </a>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-green-100 rounded-lg">
-                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+            <!-- Stats KPI Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Invoices</span>
+                        <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Paid</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ status.paid }}</p>
-                    </div>
+                    <div class="text-2xl font-bold text-slate-900">{{ counts.all }}</div>
+                    <div class="text-xs text-slate-400 mt-1">All created invoices</div>
                 </div>
-            </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-yellow-100 rounded-lg">
-                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Paid Invoices</span>
+                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Unpaid</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ status.unpaid }}</p>
-                    </div>
+                    <div class="text-2xl font-bold text-emerald-600">{{ counts.paid }}</div>
+                    <div class="text-xs text-slate-400 mt-1">Settled in full</div>
                 </div>
-            </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="p-3 bg-red-100 rounded-lg">
-                        <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pending / Unpaid</span>
+                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <i class="fas fa-clock"></i>
+                        </div>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Overdue</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ status.overdue }}</p>
+                    <div class="text-2xl font-bold text-amber-600">{{ counts.unpaid }}</div>
+                    <div class="text-xs text-slate-400 mt-1">Awaiting payment</div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Overdue</span>
+                        <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
                     </div>
+                    <div class="text-2xl font-bold text-rose-600">{{ counts.overdue }}</div>
+                    <div class="text-xs text-slate-400 mt-1">Past due date</div>
                 </div>
             </div>
         </div>
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <select name="paginate" id="paginate" v-model="pageSize" @change="per_page"
-                        class="border-gray-300 text-gray-700 text-sm hover:bg-gray-50">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    <div class="mt-4 md:mt-0 flex space-x-3">
-                        <div class="relative">
-                            <input v-model="searchQuery" @keydown.enter="onTypeKey" type="text"
-                                placeholder="Search invoices..."
-                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
 
-                        </div>
-                        <a href="/invoice/builder" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-plus mr-2"></i>
-                            New Invoice
-                        </a>
+        <!-- Main Card & Data Table -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <!-- Filter & Search Toolbar -->
+            <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Status Filter Tabs -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+                    <button v-for="tab in ['all', 'unpaid', 'paid', 'overdue']" :key="tab"
+                        @click="setStatusFilter(tab)"
+                        :class="activeTab === tab ? 'bg-indigo-600 text-white font-medium shadow-sm' : 'text-slate-600 hover:bg-slate-100 font-normal'"
+                        class="px-3.5 py-1.5 rounded-xl text-xs capitalize transition-all">
+                        {{ tab }}
+                    </button>
+                </div>
+
+                <!-- Search & Page Size Controls -->
+                <div class="flex items-center gap-3">
+                    <div class="relative flex-1 sm:w-64">
+                        <i class="fas fa-search absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                        <input v-model="searchQuery" @input="debounceSearch" type="text"
+                            placeholder="Search by ID, client..."
+                            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" />
                     </div>
+
+                    <select v-model="pageSize" @change="per_page"
+                        class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500 transition">
+                        <option value="10">10 / page</option>
+                        <option value="25">25 / page</option>
+                        <option value="50">50 / page</option>
+                        <option value="100">100 / page</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Bulk Action Bar -->
+            <div v-if="selectedIds.length > 0" class="bg-indigo-50 px-6 py-3 border-b border-indigo-100 flex items-center justify-between text-xs">
+                <span class="font-medium text-indigo-900">
+                    <i class="fas fa-check-square mr-1.5"></i> {{ selectedIds.length }} invoice(s) selected
+                </span>
+                <div class="flex items-center gap-2">
+                    <button @click="bulkMarkPaid" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition shadow-sm">
+                        Mark as Paid
+                    </button>
+                    <button @click="bulkDelete" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg transition shadow-sm">
+                        Delete Selected
+                    </button>
+                    <button @click="selectedIds = []" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition">
+                        Cancel
+                    </button>
                 </div>
             </div>
 
             <!-- Table -->
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-slate-100 text-left text-xs">
+                    <thead class="bg-slate-50/75 text-slate-500 font-semibold uppercase tracking-wider">
                         <tr>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('id')">
-                                #
-                                <i class="fas fa-sort ml-1" :class="sortIcon('id')"></i>
+                            <th class="py-3 px-4 w-10 text-center">
+                                <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
                             </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('invoice_number')">
-                                Invoice ID
-                                <i class="fas fa-sort ml-1" :class="sortIcon('invoice_number')"></i>
+                            <th class="py-3 px-4 cursor-pointer" @click="sortBy('invoice_number')">
+                                Invoice # <i class="fas fa-sort ml-1 text-slate-300"></i>
                             </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('customer.name')">
-                                Customer Name
-                                <i class="fas fa-sort ml-1" :class="sortIcon('customer.name')"></i>
+                            <th class="py-3 px-4 cursor-pointer" @click="sortBy('customer.name')">
+                                Customer <i class="fas fa-sort ml-1 text-slate-300"></i>
                             </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('invoice_date')">
-                                Created At
-                                <i class="fas fa-sort ml-1" :class="sortIcon('invoice_date')"></i>
+                            <th class="py-3 px-4 cursor-pointer" @click="sortBy('invoice_date')">
+                                Date <i class="fas fa-sort ml-1 text-slate-300"></i>
                             </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('total_amount')">
-                                Total Amount
-                                <i class="fas fa-sort ml-1" :class="sortIcon('total_amount')"></i>
+                            <th class="py-3 px-4 cursor-pointer text-right" @click="sortBy('total_amount')">
+                                Amount <i class="fas fa-sort ml-1 text-slate-300"></i>
                             </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('paid_amount')">
-                                Paid Amount
-                                <i class="fas fa-sort ml-1" :class="sortIcon('paid_amount')"></i>
-                            </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                @click="sortBy('status')">
-                                Status
-                                <i class="fas fa-sort ml-1" :class="sortIcon('status')"></i>
-                            </th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
-                            </th>
+                            <th class="py-3 px-4 text-center">Status</th>
+                            <th class="py-3 px-4 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(invoice, index) in filteredInvoices" :key="invoice.id"
-                            class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ (currentPage - 1) * pageSize + index + 1 }}
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr v-if="loading" class="text-center py-12">
+                            <td colspan="7" class="py-12">
+                                <div class="flex items-center justify-center space-x-2 text-indigo-600 font-medium">
+                                    <div class="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                                    <span>Loading invoices...</span>
+                                </div>
                             </td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
-                                {{ invoice.invoice_number }}
+                        </tr>
+
+                        <tr v-else-if="filteredInvoices.length === 0" class="text-center py-12">
+                            <td colspan="7" class="py-12 text-slate-400">
+                                <i class="fas fa-folder-open text-3xl mb-2 block"></i>
+                                No invoices found matching your criteria.
                             </td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ invoice.customer.name }}
+                        </tr>
+
+                        <tr v-for="invoice in filteredInvoices" :key="invoice.id"
+                            class="hover:bg-slate-50/75 transition-colors">
+                            <td class="py-3.5 px-4 text-center">
+                                <input type="checkbox" :value="invoice.invoice_number" v-model="selectedIds" class="rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
                             </td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ formatDate(invoice.invoice_date) }}
-                            </td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ formatCurrency(invoice.total_amount) }}
-                            </td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ formatCurrency(invoice.paid_amount) }}
-                            </td>
-                            <td class="px-3 py-4 whitespace-nowrap">
-                                <span
-                                    :class="`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(invoice.status)}`">
-                                    <i :class="`${getStatusIcon(invoice.status)} mr-1`"></i>
-                                    {{ invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1) }}
+                            <td class="py-3.5 px-4 font-mono font-semibold text-indigo-600">
+                                <a :href="'/invoice/' + invoice.invoice_number + '/preview'" class="hover:underline">
+                                    #{{ invoice.invoice_number }}
+                                </a>
+                                <span v-if="invoice.is_recurring" title="Recurring Invoice" class="ml-1.5 px-1.5 py-0.5 rounded text-[10px] bg-indigo-50 text-indigo-700 font-sans font-normal border border-indigo-100">
+                                    <i class="fas fa-sync-alt text-[9px]"></i> {{ invoice.recurring_frequency }}
                                 </span>
                             </td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    <a :href="view(invoice.invoice_number)"
-                                        class="text-blue-600 hover:text-blue-900 transition-colors" title="View">
+                            <td class="py-3.5 px-4 font-medium text-slate-900">
+                                <div>{{ invoice.customer ? invoice.customer.name : 'N/A' }}</div>
+                                <div class="text-[11px] text-slate-400 font-normal">{{ invoice.customer ? invoice.customer.email : '' }}</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-500">
+                                <div>{{ formatDate(invoice.invoice_date) }}</div>
+                                <div v-if="invoice.due_date" class="text-[11px] text-slate-400">Due: {{ formatDate(invoice.due_date) }}</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-semibold text-slate-900">
+                                {{ formatCurrency(invoice.total_amount, invoice.currency) }}
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span :class="getStatusClass(invoice.status)" class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide">
+                                    <span class="w-1.5 h-1.5 rounded-full mr-1.5" :class="getStatusDot(invoice.status)"></span>
+                                    {{ (invoice.status || 'unpaid').toUpperCase() }}
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center gap-1.5">
+                                    <!-- Preview -->
+                                    <a :href="'/invoice/' + invoice.invoice_number + '/preview'" title="Preview Invoice"
+                                        class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition">
                                         <i class="fas fa-eye"></i>
-                                </a>
-                                    <button @click="editInvoice(invoice)"
-                                        class="text-green-600 hover:text-green-900 transition-colors" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- Edit -->
+                                    <a :href="'/invoice/' + invoice.invoice_number + '/edit'" title="Edit Invoice"
+                                        class="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <!-- Send Email -->
+                                    <button @click="sendEmail(invoice)" title="Send Invoice via Email"
+                                        class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                                        <i class="fas fa-paper-plane"></i>
                                     </button>
-                                    <button @click="downloadInvoice(invoice)"
-                                        class="text-purple-600 hover:text-purple-900 transition-colors"
-                                        title="Download">
-                                        <i class="fas fa-download"></i>
+                                    <!-- Duplicate -->
+                                    <button @click="duplicateInvoice(invoice)" title="Duplicate Invoice"
+                                        class="p-1.5 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                                        <i class="fas fa-copy"></i>
                                     </button>
-                                    <button @click="deleteInvoice(invoice.id)"
-                                        class="text-red-600 hover:text-red-900 transition-colors" title="Delete">
+                                    <!-- Delete -->
+                                    <button @click="deleteInvoice(invoice)" title="Delete Invoice"
+                                        class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        <tr v-if="invoices.length === 0">
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No invoices found
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 border-t border-gray-200">
-                <div class="flex flex-col md:flex-row items-center justify-between">
-                    <div class="text-sm text-gray-700 mb-4 md:mb-0">
-                       Showing <span class="font-medium">{{ paginate.from }}</span>
-                        to <span class="font-medium">{{ paginate.to }}</span>
-                        of <span class="font-medium">{{ paginate.total }}</span> results
-                    </div>
-                    <div class="flex space-x-2">
-                        <div class="flex space-x-2">
-                            <button v-for="link in paginate.links" :key="link.label" @click="onClickLinks(link.url)"
-                                v-html="link.label" :disabled="link.url === null" :class="`px-2 py-1 border rounded-md text-xm
-            ${link.active ? 'border-blue-500 bg-blue-50 text-blue-600' : ''}
-            ${link.url === null ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-50'}`">
-                            </button>
-                        </div>
-                      
-                    </div>
+
+            <!-- Pagination Bar -->
+            <div class="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                <div>
+                    Showing <span class="font-semibold text-slate-700">{{ paginate.from || 0 }}</span>
+                    to <span class="font-semibold text-slate-700">{{ paginate.to || 0 }}</span>
+                    of <span class="font-semibold text-slate-700">{{ paginate.total || 0 }}</span> invoices
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button v-for="(link, i) in paginate.links" :key="i"
+                        @click="onClickLinks(link.url)"
+                        v-html="link.label"
+                        :disabled="!link.url"
+                        :class="[
+                            'px-3 py-1.5 rounded-lg border text-xs transition-colors',
+                            link.active ? 'bg-indigo-600 text-white border-indigo-600 font-semibold' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50',
+                            !link.url ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+                        ]">
+                    </button>
                 </div>
             </div>
         </div>
@@ -206,207 +247,208 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
-let invoices = ref([]);
-let paginate = ref([]);
-let status = {};
+const invoices = ref([])
+const paginate = ref({})
+const counts = ref({ all: 0, paid: 0, unpaid: 0, overdue: 0 })
+const loading = ref(false)
 
-const searchQuery = ref('');
-const sortField = ref('id');
-const sortDirection = ref('asc');
-let currentPage = ref(1);
-const pageSize = ref(10);
+const searchQuery = ref('')
+const activeTab = ref('all')
+const sortField = ref('id')
+const sortDirection = ref('desc')
+const pageSize = ref(10)
+const selectedIds = ref([])
 
+let debounceTimer = null
+
+const debounceSearch = () => {
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => {
+        fetchInvoices()
+    }, 300)
+}
+
+const setStatusFilter = (tab) => {
+    activeTab.value = tab
+    fetchInvoices()
+}
 
 const per_page = () => {
-    saveToLocalStorage();
+    localStorage.setItem('pageSize', pageSize.value)
     fetchInvoices()
-
-}
-const onTypeKey = () => {
-    fetchInvoices();
-};
-const onClickLinks = (link) => {
-    if (!link) return;
-    fetchInvoices(link)
-}
-const setPaginate = (paginate_data) => {
-    paginate.value.prev_page_url = paginate_data.prev_page_url;
-    paginate.value.next_page_url = paginate_data.next_page_url;
-    paginate.value.links = paginate_data.links;
-    paginate.value.from = paginate_data.from;
-    paginate.value.to = paginate_data.to;
-    paginate.value.total = paginate_data.total;
-    paginate.value.currentPage = paginate_data.currentPage;
 }
 
-let fetchInvoices = async (url = '/invoice/search') => {
-    // loading.value = true
+const onClickLinks = (url) => {
+    if (url) fetchInvoices(url)
+}
+
+const fetchInvoices = async (url = '/invoice/search') => {
+    loading.value = true
     try {
         const { data } = await axios.get(url, {
             params: {
                 search: searchQuery.value,
+                status: activeTab.value !== 'all' ? activeTab.value : null,
                 paginate: pageSize.value,
             }
-        });
-        console.log(data)
-        let invoice = data.invoices;
-        invoices.value = invoice.data;
-        status=data.status;
-        setPaginate(invoice);
+        })
 
+        if (data.invoices) {
+            invoices.value = data.invoices.data || []
+            paginate.value = data.invoices
+        }
+        if (data.status) {
+            counts.value = data.status
+        }
     } catch (e) {
-        console.error(e)
+        console.error('Failed to load invoices:', e)
     } finally {
-        // loading.value = false
+        loading.value = false
     }
 }
 
 onMounted(() => {
-    getFromLocalStorage();
-    fetchInvoices();
-});
+    const savedSize = localStorage.getItem('pageSize')
+    if (savedSize) pageSize.value = parseInt(savedSize)
+    fetchInvoices()
+})
+
+const isAllSelected = computed(() => {
+    return invoices.value.length > 0 && selectedIds.value.length === invoices.value.length
+})
+
+const toggleSelectAll = (e) => {
+    if (e.target.checked) {
+        selectedIds.value = invoices.value.map(i => i.invoice_number)
+    } else {
+        selectedIds.value = []
+    }
+}
 
 const filteredInvoices = computed(() => {
+    return invoices.value
+})
 
-    let filtered = invoices.value;
-    filtered.sort((a, b) => {
-        let aVal = a[sortField.value];
-        let bVal = b[sortField.value];
-
-        if (typeof aVal === 'string') {
-            aVal = aVal.toLowerCase();
-            bVal = bVal.toLowerCase();
-        }
-
-        if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1;
-        return 0;
-    });
-
- return filtered;
-});
-
-const totalInvoices = computed(() => paginate.value.total);
-
-// const totalPages = computed(() => Math.ceil(invoices.value.length / pageSize.value));
-const totalPages = computed(() => paginate.value.links ? paginate.value.links.length : 0);
-
-// const statusCounts = computed(() => {
-//     const counts = { paid: 0, pending: 0, overdue: 0, partial: 0 };
-//     invoices.value.forEach(invoice => {
-//         counts[invoice.status]++;
-//     });
-//     return counts;
-// });
-
-// Methods
-const formatCurrency = (amount) => {
+const formatCurrency = (amount, curr = 'USD') => {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD'
-    }).format(amount);
-};
+        currency: curr || 'USD'
+    }).format(amount || 0)
+}
 
-const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-};
+const formatDate = (dateStr) => {
+    if (!dateStr) return '-'
+    const d = new Date(dateStr)
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+}
 
-const getStatusClass = (status) => {
-    const classes = {
-        'paid': 'bg-green-100 text-green-800',
-        'pending': 'bg-yellow-100 text-yellow-800',
-        'overdue': 'bg-red-100 text-red-800',
-        'partial': 'bg-blue-100 text-blue-800'
-    };
-    return classes[status] || 'bg-gray-100 text-gray-800';
-};
+const getStatusClass = (st) => {
+    const s = (st || '').toLowerCase()
+    if (s === 'paid') return 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
+    if (s === 'overdue') return 'bg-rose-50 text-rose-700 border border-rose-200/60'
+    if (s === 'draft') return 'bg-slate-100 text-slate-700 border border-slate-200'
+    return 'bg-amber-50 text-amber-700 border border-amber-200/60'
+}
 
-const getStatusIcon = (status) => {
-    const icons = {
-        'paid': 'fas fa-check-circle',
-        'pending': 'fas fa-clock',
-        'overdue': 'fas fa-exclamation-circle',
-        'partial': 'fas fa-hourglass-half'
-    };
-    return icons[status] || 'fas fa-question-circle';
-};
+const getStatusDot = (st) => {
+    const s = (st || '').toLowerCase()
+    if (s === 'paid') return 'bg-emerald-500'
+    if (s === 'overdue') return 'bg-rose-500'
+    if (s === 'draft') return 'bg-slate-400'
+    return 'bg-amber-500'
+}
 
 const sortBy = (field) => {
     if (sortField.value === field) {
-        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
     } else {
-        sortField.value = field;
-        sortDirection.value = 'asc';
+        sortField.value = field
+        sortDirection.value = 'asc'
     }
-};
+}
 
-const sortIcon = (field) => {
-    if (sortField.value !== field) return 'text-gray-300';
-    return sortDirection.value === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
-};
-
-const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        currentPage.value++;
+const sendEmail = async (invoice) => {
+    const customerEmail = invoice.customer ? invoice.customer.email : ''
+    if (!customerEmail) {
+        alert('Customer email address is not configured.')
+        return
     }
-};
 
-const prevPage = () => {
-    if (currentPage.value > 1) {
-        currentPage.value--;
+    if (!confirm(`Send invoice #${invoice.invoice_number} to ${customerEmail}?`)) {
+        return
     }
-};
 
-const saveToLocalStorage = () => {
-    localStorage.setItem('pageSize', pageSize.value);
-};
-const getFromLocalStorage = () => {
-    let page = localStorage.getItem('pageSize');
-    if (page) {
-        pageSize.value = page;
+    try {
+        const { data } = await axios.post(`/invoice/${invoice.invoice_number}/send-email`, {
+            attach_pdf: true
+        })
+
+        if (data.success) {
+            alert(data.message || 'Invoice sent successfully!')
+        } else {
+            alert(data.message || 'Failed to send invoice email.')
+        }
+    } catch (e) {
+        alert(e.response?.data?.message || 'Error sending invoice email.')
     }
-};
+}
 
-// const addInvoice = () => {
-//     const newId = Math.max(...invoices.value.map(i => i.id), 0) + 1;
-//     const invoice = {
-//         id: newId,
-//         invoiceId: `INV-${String(newId).padStart(3, '0')}`,
-//         customerName: newInvoice.value.customerName,
-//         createdAt: new Date().toISOString().split('T')[0],
-//         totalAmount: parseFloat(newInvoice.value.totalAmount),
-//         paidAmount: parseFloat(newInvoice.value.paidAmount),
-//         status: newInvoice.value.status
-//     };
-
-//     invoices.value.push(invoice);
-//     saveToLocalStorage();
-//     resetNewInvoice();
-//     showAddForm.value = false;
-// };
-
-
-const view = (id) => {
-    return `${id}/preview`
-   // alert(`Viewing invoice: ${invoice.invoice_number}\nCustomer: ${invoice.customer.name}\nTotal: ${formatCurrency(invoice.total_amount)}`);
-};
-
-const editInvoice = (invoice) => {
-    alert(`Editing invoice: ${invoice.invoice_number}`);
-    // In a real app, you'd open an edit form with the invoice data
-};
-
-const downloadInvoice = (invoice) => {
-    alert(`Downloading invoice: ${invoice.invoice_number}`);
-    // In a real app, you'd generate and download a PDF
-};
-
-const deleteInvoice = (id) => {
-    if (confirm('Are you sure you want to delete this invoice?')) {
-        invoices.value = invoices.value.filter(invoice => invoice.id !== id);
-        saveToLocalStorage();
+const duplicateInvoice = async (invoice) => {
+    if (!confirm(`Duplicate invoice #${invoice.invoice_number}?`)) {
+        return
     }
-};
 
+    try {
+        const { data } = await axios.post(`/invoice/${invoice.invoice_number}/duplicate`)
+        if (data.success) {
+            alert(data.message || 'Invoice duplicated successfully!')
+            fetchInvoices()
+        }
+    } catch (e) {
+        alert(e.response?.data?.message || 'Error duplicating invoice.')
+    }
+}
+
+const deleteInvoice = async (invoice) => {
+    if (!confirm(`Are you sure you want to delete invoice #${invoice.invoice_number}?`)) {
+        return
+    }
+
+    try {
+        await axios.post(`/invoice/${invoice.invoice_number}/delete`)
+        fetchInvoices()
+    } catch (e) {
+        alert('Error deleting invoice.')
+    }
+}
+
+const bulkMarkPaid = async () => {
+    if (!confirm(`Mark ${selectedIds.value.length} selected invoices as Paid?`)) return
+
+    try {
+        const { data } = await axios.post('/invoice/bulk-action', {
+            action: 'mark_paid',
+            invoice_numbers: selectedIds.value
+        })
+        selectedIds.value = []
+        fetchInvoices()
+    } catch (e) {
+        alert('Bulk action failed.')
+    }
+}
+
+const bulkDelete = async () => {
+    if (!confirm(`Delete ${selectedIds.value.length} selected invoices permanently?`)) return
+
+    try {
+        const { data } = await axios.post('/invoice/bulk-action', {
+            action: 'delete',
+            invoice_numbers: selectedIds.value
+        })
+        selectedIds.value = []
+        fetchInvoices()
+    } catch (e) {
+        alert('Bulk delete failed.')
+    }
+}
 </script>
