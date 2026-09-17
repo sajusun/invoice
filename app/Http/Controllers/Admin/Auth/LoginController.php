@@ -10,6 +10,10 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('admin.auth.login');
     }
 
@@ -26,10 +30,15 @@ class LoginController extends Controller
         ]);
     }
 
-    public function logout(request $request)
+    public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
-        $request->session()->invalidate();
+
+        // Only invalidate the full session if Web User guard is not active
+        if (!Auth::guard('web')->check()) {
+            $request->session()->invalidate();
+        }
+
         $request->session()->regenerateToken();
         return redirect()->route('admin.login');
     }
