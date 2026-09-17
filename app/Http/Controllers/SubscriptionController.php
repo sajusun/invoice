@@ -10,12 +10,18 @@ class SubscriptionController extends Controller
     public function index()
     {
         $plans = $this->plans();
-        return view('subscription-plan.plan', compact('plans'));
+        $user = auth()->user();
+        return view('subscription-plan.plan', compact('plans', 'user'));
     }
 
     public function plans(): Collection
     {
-        return Plan::all();
+        $plans = Plan::all();
+        if ($plans->isEmpty()) {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\PlanSeeder']);
+            $plans = Plan::all();
+        }
+        return $plans;
     }
 
     public function subscribe(Request $request)
