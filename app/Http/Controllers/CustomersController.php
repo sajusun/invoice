@@ -49,6 +49,10 @@ class CustomersController extends Controller
             'metadata'     => 'nullable|array',
         ]);
 
+        if (!$user->canCreateCustomer()) {
+            return back()->withInput()->with('error', 'Client directory limit reached for your current plan (' . ($user->plan->name ?? 'Free') . '). Please upgrade your subscription to add more clients.');
+        }
+
         try {
             CustomerService::findOrCreate($user, $validated);
             return redirect()->route('customers')->with('success', 'Client created successfully!');

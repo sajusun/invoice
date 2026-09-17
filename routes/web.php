@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomePageController::class, 'home'])->name('home');
 Route::get('/home', [HomePageController::class, 'home'])->name('main');
-Route::get('/subscription-plan', [SubscriptionController::class, 'index'])->name('choose-plan');
+Route::get('/subscription-plan', [SubscriptionController::class, 'index'])->name('subscription.plans');
+Route::get('/plans', [SubscriptionController::class, 'index'])->name('choose-plan');
 
 Route::get('/invoice/builder', [InvoicesController::class, 'view'])->name('invoice.builder');
 Route::get('/invoice/theme', [InvoicesController::class, 'theme']);

@@ -363,27 +363,33 @@ print("Created invoice:", res.json()["data"]["invoice_number"])</pre>
     </section>
 
     <!-- Pricing Section -->
-    <section id="pricing" class="py-20 bg-slate-50 border-t border-slate-200/60" x-data="{ billing: 'monthly' }">
+    <section id="pricing" class="py-24 bg-slate-50 border-t border-slate-200/60" x-data="{ billing: 'monthly' }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-14">
-                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
-                    Transparent Pricing
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
+                    <i class="fa-solid fa-sparkles text-[10px] mr-1"></i> Transparent Pricing
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4 mb-4 tracking-tight">
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-900 mt-4 mb-4 tracking-tight">
                     Simple Plans for Every Stage of Growth
                 </h2>
                 <p class="text-base sm:text-lg text-slate-600">
-                    No hidden fees. Upgrade or downgrade anytime as your invoicing needs evolve.
+                    No hidden fees. Switch between monthly or annual billing anytime to save 20%.
                 </p>
 
                 <!-- Billing Toggle -->
-                <div class="mt-8 inline-flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
-                    <button @click="billing = 'monthly'" :class="billing === 'monthly' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-4 py-2 rounded-xl text-sm transition-all">
+                <div class="mt-8 inline-flex items-center gap-1.5 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+                    <button @click="billing = 'monthly'"
+                            :class="billing === 'monthly' ? 'bg-indigo-600 text-white font-bold shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+                            class="px-5 py-2.5 rounded-xl text-sm transition-all duration-200">
                         Monthly Billing
                     </button>
-                    <button @click="billing = 'annual'" :class="billing === 'annual' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-4 py-2 rounded-xl text-sm transition-all flex items-center gap-1.5">
+                    <button @click="billing = 'annual'"
+                            :class="billing === 'annual' ? 'bg-indigo-600 text-white font-bold shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+                            class="px-5 py-2.5 rounded-xl text-sm transition-all duration-200 flex items-center gap-2">
                         <span>Annual Billing</span>
-                        <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Save 20%</span>
+                        <span class="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full shadow-xs">
+                            Save 20%
+                        </span>
                     </button>
                 </div>
             </div>
@@ -391,59 +397,139 @@ print("Created invoice:", res.json()["data"]["invoice_number"])</pre>
             <!-- Pricing Cards Grid -->
             <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
                 @forelse($plans ?? [] as $plan)
-                    <div class="flex flex-col justify-between p-8 rounded-3xl bg-white border {{ $loop->iteration == 2 ? 'border-indigo-600 ring-4 ring-indigo-50 shadow-2xl relative' : 'border-slate-200 shadow-md' }}">
-                        @if($loop->iteration == 2)
-                            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-indigo-600 text-white text-[11px] font-bold uppercase tracking-wider shadow-sm">
+                    @php
+                        $isFeatured = (bool) $plan->is_popular || strtolower($plan->type) === 'premium' || $loop->iteration == 2;
+                        $isBusiness = strtolower($plan->type) === 'business' || $loop->iteration == 3;
+                    @endphp
+
+                    <div class="flex flex-col justify-between p-8 sm:p-9 rounded-3xl bg-white border transition-all duration-300 relative
+                        {{ $isFeatured ? 'border-indigo-600 ring-4 ring-indigo-50 shadow-2xl shadow-indigo-100/60 z-10' : 'border-slate-200 shadow-md hover:shadow-lg' }}">
+                        
+                        @if($isFeatured)
+                            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[11px] font-bold uppercase tracking-wider shadow-md">
                                 Most Popular
                             </div>
                         @endif
 
                         <div>
-                            <h3 class="text-xl font-bold text-slate-900">{{ $plan->name }}</h3>
-                            <p class="text-xs text-slate-500 mt-1 mb-6">{{ $plan->description ?? 'Ideal for growing businesses' }}</p>
-
-                            <div class="flex items-baseline gap-1 mb-6">
-                                <span class="text-4xl font-extrabold text-slate-900">
-                                    ${{ number_format($plan->price, 0) }}
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-2xl font-extrabold text-slate-900">{{ $plan->name }}</h3>
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                                    @if($isFeatured) bg-indigo-50 text-indigo-700 border border-indigo-100
+                                    @elseif($isBusiness) bg-purple-50 text-purple-700 border border-purple-100
+                                    @else bg-slate-100 text-slate-700 @endif">
+                                    {{ ucfirst($plan->slug ?? $plan->type) }}
                                 </span>
-                                <span class="text-sm font-semibold text-slate-500">/ month</span>
                             </div>
 
-                            <ul class="space-y-3.5 text-sm text-slate-600 mb-8">
-                                <li class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-check text-indigo-600 text-sm"></i>
-                                    <span>{{ $plan->max_invoices ? number_format($plan->max_invoices) . ' Invoices/month' : 'Unlimited Invoices' }}</span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-check text-indigo-600 text-sm"></i>
-                                    <span>{{ $plan->max_customers ? number_format($plan->max_customers) . ' Customers' : 'Unlimited Customers' }}</span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-check text-indigo-600 text-sm"></i>
-                                    <span>RESTful Developer API & Keys</span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-check text-indigo-600 text-sm"></i>
-                                    <span>Automated PDF Downloads</span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <i class="fa-solid fa-check text-indigo-600 text-sm"></i>
-                                    <span>HMAC-SHA256 Webhooks</span>
-                                </li>
-                            </ul>
+                            <p class="text-xs text-slate-500 mb-6 min-h-[36px] leading-relaxed">
+                                {{ $plan->description ?? 'Ideal for growing businesses and agencies needing reliable invoicing.' }}
+                            </p>
+
+                            <!-- Dynamic Price Display -->
+                            <div class="mb-6 pb-6 border-b border-slate-100 min-h-[96px] flex flex-col justify-center">
+                                @if($plan->monthly_price == 0)
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-mono">$0</span>
+                                        <span class="text-sm font-semibold text-slate-500">/ month</span>
+                                    </div>
+                                    <span class="text-xs font-medium text-emerald-600 mt-1">Free forever. No credit card required.</span>
+                                @else
+                                    <!-- Monthly Price View -->
+                                    <div x-show="billing === 'monthly'" class="space-y-1">
+                                        <div class="flex items-baseline gap-1">
+                                            <span class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-mono">
+                                                ${{ number_format($plan->monthly_price, 0) }}
+                                            </span>
+                                            <span class="text-sm font-semibold text-slate-500">/ month</span>
+                                        </div>
+                                        <span class="text-xs font-medium text-slate-400 block">Billed monthly. Cancel anytime.</span>
+                                    </div>
+
+                                    <!-- Annual Price View -->
+                                    <div x-show="billing === 'annual'" class="space-y-1" style="display: none;">
+                                        <div class="flex items-baseline gap-2">
+                                            <span class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-mono text-indigo-600">
+                                                ${{ number_format($plan->annual_monthly_equivalent, 0) }}
+                                            </span>
+                                            <span class="text-sm font-semibold text-slate-500">/ mo</span>
+                                            <span class="text-sm font-semibold text-slate-400 line-through">
+                                                ${{ number_format($plan->monthly_price, 0) }}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                                            <i class="fa-solid fa-tag text-[10px]"></i>
+                                            <span>Billed ${{ number_format($plan->annual_price, 0) }}/yr (Save ${{ number_format($plan->annual_savings, 0) }})</span>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Features List -->
+                            <div class="mb-8">
+                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-3.5">What's included:</span>
+                                <ul class="space-y-3 text-xs text-slate-600">
+                                    @if($plan->features && is_array($plan->features))
+                                        @foreach($plan->features as $feat)
+                                            <li class="flex items-center gap-2.5">
+                                                <div class="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                                    <i class="fa-solid fa-check text-[9px]"></i>
+                                                </div>
+                                                <span class="leading-relaxed">{{ $feat }}</span>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="flex items-center gap-2.5">
+                                            <div class="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-check text-[9px]"></i>
+                                            </div>
+                                            <span><strong>{{ $plan->max_invoices ? number_format($plan->max_invoices) : 'Unlimited' }}</strong> Invoices / month</span>
+                                        </li>
+                                        <li class="flex items-center gap-2.5">
+                                            <div class="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-check text-[9px]"></i>
+                                            </div>
+                                            <span><strong>{{ $plan->max_customers ? number_format($plan->max_customers) : 'Unlimited' }}</strong> Client Directory storage</span>
+                                        </li>
+                                        <li class="flex items-center gap-2.5">
+                                            <div class="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-check text-[9px]"></i>
+                                            </div>
+                                            <span>RESTful Developer API & Webhooks</span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
                         </div>
 
-                        <a href="{{ route('register') }}" class="w-full text-center py-3.5 px-4 rounded-xl {{ $loop->iteration == 2 ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-800' }} font-bold text-sm transition-all">
-                            Get Started
-                        </a>
+                        <!-- Action Button -->
+                        <div>
+                            @auth
+                                @if($plan->monthly_price == 0)
+                                    <a href="{{ route('dashboard') }}" class="w-full inline-flex items-center justify-center py-3.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all">
+                                        Current Base Plan
+                                    </a>
+                                @else
+                                    <a :href="'{{ url('/checkout') }}/{{ $plan->id }}?cycle=' + billing"
+                                       class="w-full inline-flex items-center justify-center py-3.5 px-4 rounded-xl font-bold text-xs transition-all shadow-md
+                                       {{ $isFeatured ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 text-white' }}">
+                                        Upgrade to {{ $plan->name }}
+                                        <i class="fa-solid fa-arrow-right text-[10px] ml-1.5"></i>
+                                    </a>
+                                @endif
+                            @else
+                                <a :href="'{{ route('register') }}?plan={{ $plan->slug ?? $plan->type }}&cycle=' + billing"
+                                   class="w-full inline-flex items-center justify-center py-3.5 px-4 rounded-xl font-bold text-xs transition-all shadow-md
+                                   {{ $isFeatured ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200' : 'bg-slate-900 hover:bg-slate-800 text-white' }}">
+                                    Get Started
+                                    <i class="fa-solid fa-arrow-right text-[10px] ml-1.5"></i>
+                                </a>
+                            @endauth
+                        </div>
                     </div>
                 @empty
-                    <!-- Fallback default plans if DB empty -->
-                    <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-md">
-                        <h3 class="text-xl font-bold text-slate-900">Free Tier</h3>
-                        <p class="text-xs text-slate-500 mt-1 mb-6">For freelancers and quick invoicing</p>
-                        <div class="text-4xl font-extrabold text-slate-900 mb-6">$0 <span class="text-sm font-semibold text-slate-500">/mo</span></div>
-                        <a href="{{ route('register') }}" class="w-full block text-center py-3 px-4 rounded-xl bg-slate-100 font-bold text-sm text-slate-800">Start Free</a>
+                    <div class="col-span-3 text-center py-12 text-slate-400">
+                        No pricing plans found. Please seed the database.
                     </div>
                 @endforelse
             </div>
